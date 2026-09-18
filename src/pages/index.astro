@@ -20,10 +20,9 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 		</p>
 	</section>
 
-	{/* ─── Step 0 ─── */}
+	{/* ─── Prereqs ─── */}
 	<section id="prereqs" class="step">
 		<header class="step-header">
-			<p class="step-meta">Step 0 · before you start</p>
 			<h2 class="step-title">Before you start</h2>
 		</header>
 
@@ -32,7 +31,7 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 			<ul>
 				<li><strong class="text-kumo-default">Node.js</strong>, <code>git</code>, and a terminal</li>
 				<li>
-					<strong class="text-kumo-default">A coding agent</strong> — whatever you already use.
+					<strong class="text-kumo-default">A coding agent</strong> — whatever you already use.{" "}
 					<a href="https://opencode.ai">OpenCode</a> works fine if you don't have one.
 				</li>
 				<li>
@@ -41,13 +40,14 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 				</li>
 				<li>
 					A <strong class="text-kumo-default">free Cloudflare account</strong> — no credit card
-					required. <a href="https://dash.cloudflare.com/sign-up">Sign up</a> now if you don't have
-					one; it's one less thing to do mid-step.
+					required.{" "}
+					<a href="https://dash.cloudflare.com/sign-up">Sign up</a> now if you don't have one; it's
+					one less thing to do mid-step.
 				</li>
 				<li>
-					<strong class="text-kumo-default">Optional but helpful:</strong> the
-					<a href="https://cli.github.com/">GitHub CLI</a> (<code>gh</code>), authenticated —
-					lets your agent open the pull request for you in Step 3.
+					<strong class="text-kumo-default">Optional but helpful:</strong> the{" "}
+					<a href="https://cli.github.com/">GitHub CLI</a> (<code>gh</code>), authenticated — lets
+					your agent open the pull request for you in Step 3.
 				</li>
 			</ul>
 		</div>
@@ -56,62 +56,50 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 	{/* ─── Step 1 ─── */}
 	<section id="deploy" class="step">
 		<header class="step-header">
-			<p class="step-meta">Step 1 · ~5 min</p>
-			<h2 class="step-title">Deploy to Cloudflare</h2>
+			<h2 class="step-title"><span class="step-num-inline">1.</span>Deploy to Cloudflare</h2>
 			<p class="step-lede">
 				One click. A repo in your account, a database, and a production Worker — wired up for you.
 			</p>
 		</header>
 
 		<div class="step-body mb-6">
-			<p>
-				Click the button below. It creates a copy of the app's repo in your own GitHub account,
-				provisions a production D1 database, connects <strong class="text-kumo-default"
-					>Workers Builds</strong
-				> (Cloudflare's own CI/CD) to that repo, and deploys.
-			</p>
-			<p>No custom GitHub Actions to set up, no secrets to paste in. That part is automatic.</p>
+			<p>Clicking the button below will:</p>
+			<ul>
+				<li>Create a copy of the app's repo in your own GitHub account</li>
+				<li>Provision a production D1 database</li>
+				<li>
+					Connect <strong class="text-kumo-default">Workers Builds</strong> (Cloudflare's own
+					CI/CD) to that repo
+				</li>
+				<li>Deploy the Worker</li>
+			</ul>
+			<p>No custom GitHub Actions to set up, no secrets to paste in — that part is automatic.</p>
 		</div>
 
 		<div class="mb-6">
-			<a href={`https://deploy.workers.cloudflare.com/?url=${REPO_URL}`}>
+			<a
+				href={`https://deploy.workers.cloudflare.com/?url=${REPO_URL}`}
+				target="_blank"
+				rel="noopener noreferrer"
+			>
 				<img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
 			</a>
 		</div>
 
-		<div class="callout callout--check">
-			<span class="callout-icon" aria-hidden="true">✓</span>
-			<div>
-				<p class="callout-title">Checkpoint</p>
-				<p class="callout-body">
-					Open the production URL Cloudflare gives you. You should see an <strong>Activity Log</strong
-					> with three seeded entries — <em>"Deployed the production Worker"</em>,
-					<em>"Provisioned the D1 database"</em>, <em>"Wired up Workers Builds"</em>. Remember
-					what's in there; you'll compare it against your Preview shortly.
-				</p>
-			</div>
-		</div>
-
-		<div class="mt-6 arch" aria-label="Architecture after step 1">
-			<div class="arch-row">
-				<span class="arch-node arch-node--accent">Worker</span>
-				<span class="arch-arrow">↔</span>
-				<span class="arch-node arch-node--accent">D1 · production</span>
-			</div>
-			<div class="arch-row">
-				<span class="arch-node">*.workers.dev</span>
-				<span class="arch-arrow">→</span>
-				<span class="arch-node arch-node--muted">Internet</span>
-			</div>
-			<p class="arch-caption">One Worker, one production D1 database, seeded with three rows.</p>
-		</div>
+		<p class="checkpoint-line">
+			<span class="checkpoint-line-mark" aria-hidden="true">✓</span>
+			<span>
+				<strong>You should see:</strong> open the production URL Cloudflare gives you — an
+				Activity Log with three seeded entries. Remember what's in there; you'll compare it against
+				your Preview shortly.
+			</span>
+		</p>
 	</section>
 
 	{/* ─── Step 2 ─── */}
 	<section id="isolate" class="step">
 		<header class="step-header">
-			<p class="step-meta">Step 2 · ~6 min</p>
-			<h2 class="step-title">Isolate a resource</h2>
+			<h2 class="step-title"><span class="step-num-inline">2.</span>Isolate a resource</h2>
 			<p class="step-lede">
 				A new branch inherits your code automatically. It does not inherit your database.
 			</p>
@@ -120,13 +108,12 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 		<div class="step-body mb-6">
 			<p>
 				Cloudflare Workers Previews build a live deployment for every pull request — same code,
-				same routes, same bindings, <strong class="text-kumo-default">by default</strong>. For most
-				resources that's exactly what you want.
+				same routes, same bindings, by default. For most resources that's exactly what you want.
 			</p>
 			<p>
 				D1 is the exception, on purpose: Cloudflare will not point a Preview at your production
 				database unless you explicitly tell it to, so a stray branch can't accidentally read or
-				write real data. You opt in with a <code>previews.d1_databases</code> override in
+				write real data. You opt in with a <code>previews.d1_databases</code> override in{" "}
 				<code>wrangler.json</code>.
 			</p>
 			<p>
@@ -137,36 +124,32 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 
 		<PromptBlock label="Step 2 · Isolate a resource" text={PROMPTS.isolateResource} />
 
-		<div class="mt-5 callout callout--check">
-			<span class="callout-icon" aria-hidden="true">✓</span>
-			<div>
-				<p class="callout-title">Checkpoint</p>
-				<p class="callout-body">
-					<code>wrangler.json</code> now has a <code>previews.d1_databases</code> block pointing at
-					a database that isn't the production one, and the change is committed.
-				</p>
-			</div>
-		</div>
+		<p class="checkpoint-line mt-5">
+			<span class="checkpoint-line-mark" aria-hidden="true">✓</span>
+			<span>
+				<strong>You should see:</strong> <code>wrangler.json</code> now has a{" "}
+				<code>previews.d1_databases</code> block pointing at a database that isn't the production
+				one, and the change is committed.
+			</span>
+		</p>
 
-		<div class="mt-4 callout callout--aha">
-			<span class="callout-icon" aria-hidden="true">!</span>
-			<div>
-				<p class="callout-title">Aha</p>
-				<p class="callout-body">
+		<details class="fallback mt-5">
+			<summary>Why doesn't this apply to Durable Objects?</summary>
+			<div class="fallback-body">
+				<p>
 					Durable Objects and Containers don't need this step — they isolate per Preview
 					automatically, no override block required. D1 (and R2, and KV) need one because they're
 					shared, standalone resources that outlive any single Worker; the platform can't safely
 					guess which copy a branch should get.
 				</p>
 			</div>
-		</div>
+		</details>
 	</section>
 
 	{/* ─── Step 3 ─── */}
 	<section id="preview" class="step">
 		<header class="step-header">
-			<p class="step-meta">Step 3 · ~5 min</p>
-			<h2 class="step-title">Open your Preview</h2>
+			<h2 class="step-title"><span class="step-num-inline">3.</span>Open your Preview</h2>
 			<p class="step-lede">Push the branch, open a pull request, and Workers Builds does the rest.</p>
 		</header>
 
@@ -176,7 +159,7 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 
 		<PromptBlock label="Step 3 · Open a pull request" text={PROMPTS.openPullRequest} />
 
-		<div class="mt-6 callout callout--warn">
+		<div class="mt-5 callout callout--warn">
 			<span class="callout-icon" aria-hidden="true">!</span>
 			<div>
 				<p class="callout-title">Don't wait on the PR comment</p>
@@ -189,79 +172,57 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 			</div>
 		</div>
 
-		<div class="mt-5 callout callout--check">
-			<span class="callout-icon" aria-hidden="true">✓</span>
-			<div>
-				<p class="callout-title">Checkpoint</p>
-				<p class="callout-body">
-					Open the Preview URL. You should see an <strong>empty</strong> Activity Log — no seeded
-					rows. That's your new database, freshly created, genuinely isolated from production.
-				</p>
-			</div>
-		</div>
-
-		<div class="mt-6 arch" aria-label="Architecture after step 3">
-			<div class="arch-row">
-				<span class="arch-node arch-node--accent">Worker · main</span>
-				<span class="arch-arrow">↔</span>
-				<span class="arch-node arch-node--accent">D1 · production (3 rows)</span>
-			</div>
-			<div class="arch-row">
-				<span class="arch-node arch-node--accent">Worker · your branch (Preview)</span>
-				<span class="arch-arrow">↔</span>
-				<span class="arch-node arch-node--accent">D1 · your branch (0 rows)</span>
-			</div>
-			<p class="arch-caption">
-				Same code deployed twice. Two separate databases, because you told it to.
-			</p>
-		</div>
+		<p class="checkpoint-line mt-5">
+			<span class="checkpoint-line-mark" aria-hidden="true">✓</span>
+			<span>
+				<strong>You should see:</strong> open the Preview URL — an <strong>empty</strong> Activity
+				Log, no seeded rows. That's your new database, freshly created, genuinely isolated from
+				production.
+			</span>
+		</p>
 	</section>
 
 	{/* ─── Step 4 ─── */}
 	<section id="interact" class="step">
 		<header class="step-header">
-			<p class="step-meta">Step 4 · ~5 min</p>
-			<h2 class="step-title">Prove isolation</h2>
+			<h2 class="step-title"><span class="step-num-inline">4.</span>Prove isolation</h2>
 			<p class="step-lede">Don't take the empty list on faith. Write to it, then check production.</p>
 		</header>
 
 		<div class="step-body mb-6">
 			<ol>
-				<li>On your Preview URL, type something into <strong>Log an activity…</strong> and click <strong>Add entry</strong>.</li>
+				<li>
+					On your Preview URL, type something into <strong>Log an activity…</strong> and click{" "}
+					<strong>Add entry</strong>.
+				</li>
 				<li>Add one more. Then click <strong>Delete</strong> on one of them.</li>
 				<li>Open your <strong>production</strong> URL from Step 1 in another tab.</li>
 			</ol>
 		</div>
 
-		<div class="callout callout--check">
-			<span class="callout-icon" aria-hidden="true">✓</span>
-			<div>
-				<p class="callout-title">Checkpoint</p>
-				<p class="callout-body">
-					Production still shows exactly the same three original rows — nothing you added or
-					deleted in the Preview shows up there. Two deployments of identical code, writing to two
-					different databases.
-				</p>
-			</div>
-		</div>
+		<p class="checkpoint-line">
+			<span class="checkpoint-line-mark" aria-hidden="true">✓</span>
+			<span>
+				<strong>You should see:</strong> production still shows exactly the same three original
+				rows — nothing you added or deleted in the Preview shows up there.
+			</span>
+		</p>
 
-		<div class="mt-4 callout callout--aha">
-			<span class="callout-icon" aria-hidden="true">!</span>
-			<div>
-				<p class="callout-title">Aha</p>
-				<p class="callout-body">
+		<details class="fallback mt-5">
+			<summary>Why does this matter?</summary>
+			<div class="fallback-body">
+				<p>
 					This is what "isolated environment for every change" actually means in practice — not a
 					slide, a database you can watch stay separate while you poke at it.
 				</p>
 			</div>
-		</div>
+		</details>
 	</section>
 
 	{/* ─── Step 5 ─── */}
 	<section id="observability" class="step">
 		<header class="step-header">
-			<p class="step-meta">Step 5 · ~4 min</p>
-			<h2 class="step-title">Observability</h2>
+			<h2 class="step-title"><span class="step-num-inline">5.</span>Observability</h2>
 			<p class="step-lede">Your Preview has its own logs and traces too — not just its own database.</p>
 		</header>
 
@@ -270,30 +231,28 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 			<ol>
 				<li>Go to <strong>Workers &amp; Pages</strong> → your Worker.</li>
 				<li>
-					Open the <strong>Observability</strong> tab while on the Worker's <strong>production</strong
-					> view, then switch to the <strong>Previews</strong> tab and select your branch.
+					Open the <strong>Observability</strong> tab while on the Worker's{" "}
+					<strong>production</strong> view, then switch to the <strong>Previews</strong> tab and
+					select your branch.
 				</li>
 				<li>Refresh your Preview URL a couple of times, then check the request list.</li>
 			</ol>
 		</div>
 
-		<div class="callout callout--check">
-			<span class="callout-icon" aria-hidden="true">✓</span>
-			<div>
-				<p class="callout-title">Checkpoint</p>
-				<p class="callout-body">
-					You see requests and logs scoped to your branch's Preview — separate from production's
-					traffic, same as the database.
-				</p>
-			</div>
-		</div>
+		<p class="checkpoint-line">
+			<span class="checkpoint-line-mark" aria-hidden="true">✓</span>
+			<span>
+				<strong>You should see:</strong> requests and logs scoped to your branch's Preview —
+				separate from production's traffic, same as the database.
+			</span>
+		</p>
 	</section>
 
 	{/* ─── Step 6 ─── */}
 	<section id="final" class="step">
 		<header class="step-header">
-			<p class="step-meta">Step 6 · TBD</p>
-			<h2 class="step-title">TBD — pending a conversation with Yomna</h2>
+			<h2 class="step-title"><span class="step-num-inline">6.</span>TBD</h2>
+			<p class="step-lede">Pending a conversation with Yomna.</p>
 		</header>
 
 		<div class="callout callout--warn">
@@ -312,13 +271,12 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 	{/* ─── Wrap-up ─── */}
 	<section id="wrap-up" class="step">
 		<header class="step-header">
-			<p class="step-meta">After the session</p>
 			<h2 class="step-title">Clean up</h2>
 		</header>
 
 		<div class="step-body">
 			<p>
-				Closing or merging your pull request deletes the Preview deployment automatically. It does
+				Closing or merging your pull request deletes the Preview deployment automatically. It does{" "}
 				<strong class="text-kumo-default">not</strong> delete the D1 database you created in Step 2
 				— that's a standalone account resource that outlives the branch. Delete it yourself once
 				you're done:
@@ -329,7 +287,7 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 			<div class="command-block-bar">
 				<span class="command-block-label">Cleanup</span>
 			</div>
-			<pre><code>npx wrangler d1 delete &lt;your-preview-db-name&gt;</code></pre>
+			<pre><code>npx wrangler d1 delete workshop-preview-db</code></pre>
 		</div>
 	</section>
 </BaseLayout>
