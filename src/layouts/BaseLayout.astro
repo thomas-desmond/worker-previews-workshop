@@ -1,0 +1,48 @@
+---
+import "../styles/app.css";
+import { SITE } from "../lib/site";
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = SITE.title,
+	description = SITE.description,
+} = Astro.props;
+const pageTitle = title === SITE.title ? title : `${title} · ${SITE.title}`;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content={description} />
+		<meta name="theme-color" content="#FF4801" />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<title>{pageTitle}</title>
+	</head>
+	<body class="flex min-h-dvh flex-col">
+		<slot name="hero" />
+		<slot name="nav" />
+		<main class="mx-auto w-full max-w-3xl flex-1 px-4 py-10 sm:px-6 sm:py-12">
+			<slot />
+		</main>
+		<footer class="border-t-2 border-kumo-line">
+			<div class="mx-auto max-w-3xl px-4 py-6 text-base font-medium text-kumo-default sm:px-6">
+				{SITE.title} · Built on Cloudflare Workers ·
+				<a
+					class="font-bold underline underline-offset-2"
+					href="https://developers.cloudflare.com/workers/configuration/previews/"
+					>Workers Previews docs</a
+				>
+			</div>
+		</footer>
+	</body>
+</html>
