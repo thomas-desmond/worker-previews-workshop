@@ -1,4 +1,5 @@
 ---
+import Figure from "../components/Figure.astro";
 import Hero from "../components/Hero.astro";
 import { PromptBlock } from "../components/PromptBlock";
 import { StepNav } from "../components/StepNav";
@@ -133,7 +134,20 @@ const stepByIndex = (i: number) => STEPS[i];
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
 					<p>Open the production URL Cloudflare gives you. You should see an <strong>Activity Log</strong> with three seeded entries. Remember what's in there — you'll compare it against your Preview shortly.</p>
+					<Figure
+						src="/screenshots/app-production-seeded.png"
+						alt="The production Activity Log showing three seeded entries: Wired up Workers Builds, Provisioned the D1 database, and Deployed the production Worker."
+						caption="Your production app — three seeded rows. This is the data your Preview will not have."
+					/>
 				</div>
+			</div>
+
+			<div class="step-next">
+				<a href="#isolate" class="step-next-link">
+					<span class="step-next-hint">Next</span>
+					Isolate a resource
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+				</a>
 			</div>
 		</div>
 	</article>
@@ -226,6 +240,14 @@ git checkout -b isolate-preview-db</code></pre>
 					</p>
 				</div>
 			</details>
+
+			<div class="step-next">
+				<a href="#preview" class="step-next-link">
+					<span class="step-next-hint">Next</span>
+					Open your Preview
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+				</a>
+			</div>
 		</div>
 	</article>
 
@@ -248,6 +270,12 @@ git checkout -b isolate-preview-db</code></pre>
 				<div class="phase-content">
 					<p>Ask your agent to push and open the PR:</p>
 					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.openPullRequest} />
+					<p class="phase-note">Within a minute or two, <strong>Workers Builds</strong> deploys the Preview and comments the URL directly on your pull request.</p>
+					<Figure
+						alt="A GitHub pull request with a Cloudflare Workers and Pages bot comment containing the Preview deployment URL."
+						placeholderLabel="Placeholder — the Workers Builds bot comment on the PR, showing the Preview URL to click."
+						caption="Where the Preview URL shows up. Click it to open your Preview in a new tab."
+					/>
 				</div>
 			</div>
 
@@ -255,11 +283,24 @@ git checkout -b isolate-preview-db</code></pre>
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
 					<p>Open the Preview URL from the PR — you should see an <strong>empty</strong> Activity Log, no seeded rows. That's your new database, freshly created.</p>
+					<Figure
+						src="/screenshots/app-preview-empty.png"
+						alt="The Preview Activity Log showing 'No entries yet.' — no seeded rows, because the Preview has its own fresh, empty database."
+						caption="Your Preview — same code, but its own empty database. No seeded rows."
+					/>
 					<div class="tip tip--pin">
 						<span class="tip-label">Keep both tabs open</span>
 						<p>Preview tab + production tab from Step 1. You'll flip between them in the next step.</p>
 					</div>
 				</div>
+			</div>
+
+			<div class="step-next">
+				<a href="#interact" class="step-next-link">
+					<span class="step-next-hint">Next</span>
+					Prove isolation
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+				</a>
 			</div>
 		</div>
 	</article>
@@ -292,6 +333,11 @@ git checkout -b isolate-preview-db</code></pre>
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
 					<p>Production still shows only its original three rows. The entry you just added is nowhere to be found. Two deployments of the same code, two separate databases.</p>
+					<Figure
+						src="/screenshots/app-preview-added-entry.png"
+						alt="The Preview Activity Log now showing a single entry the attendee just added, while production is unchanged."
+						caption="Your new entry lives only in the Preview. Flip to your production tab — still just the three seeded rows."
+					/>
 				</div>
 			</div>
 
@@ -301,6 +347,14 @@ git checkout -b isolate-preview-db</code></pre>
 					<p>This is what "isolated environment for every change" actually means in practice — not a slide, a database you can watch stay separate while you poke at it.</p>
 				</div>
 			</details>
+
+			<div class="step-next">
+				<a href="#observability" class="step-next-link">
+					<span class="step-next-hint">Next</span>
+					Observability
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+				</a>
+			</div>
 		</div>
 	</article>
 
@@ -325,6 +379,13 @@ git checkout -b isolate-preview-db</code></pre>
 					<ol class="steps-inline">
 						<li>Go to <strong>Workers &amp; Pages</strong> → your Worker.</li>
 						<li>Open the <strong>Observability</strong> tab (production view), then switch to <strong>Previews</strong> and select your branch.</li>
+					</ol>
+					<Figure
+						alt="The Cloudflare dashboard Observability tab for the Worker, with the Previews view selected and the attendee's branch chosen from the selector."
+						placeholderLabel="Placeholder — the dashboard: Workers & Pages → your Worker → Observability tab, with the Previews view and your branch selected."
+						caption="The screen most people can't find on their own: switch from the production view to Previews, then pick your branch."
+					/>
+					<ol class="steps-inline" start="3">
 						<li>Refresh your Preview URL a couple of times, then check the request list.</li>
 					</ol>
 				</div>
@@ -334,7 +395,20 @@ git checkout -b isolate-preview-db</code></pre>
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
 					<p>Requests and logs scoped to your branch's Preview — separate from production's traffic, same as the database.</p>
+					<Figure
+						alt="The Observability request list scoped to the Preview branch, showing only the requests made to the Preview URL, separate from production traffic."
+						placeholderLabel="Placeholder — the per-branch request/log list, showing only your Preview's requests (not production's)."
+						caption="Success looks like this: a request list scoped to your branch alone — separate logs and traces, same as the separate database."
+					/>
 				</div>
+			</div>
+
+			<div class="step-next">
+				<a href="#final" class="step-next-link">
+					<span class="step-next-hint">Next</span>
+					Final step
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+				</a>
 			</div>
 		</div>
 	</article>

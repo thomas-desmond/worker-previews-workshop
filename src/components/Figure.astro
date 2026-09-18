@@ -1,0 +1,48 @@
+---
+/**
+ * Figure — a captioned screenshot slot with two states from one API:
+ *
+ *  - Placeholder (no `src`): a labelled dashed box describing the screenshot
+ *    that belongs here. Ships safely today; drop a real image in later by
+ *    adding a `src` — zero layout change.
+ *  - Image (`src` given): a lazy-loaded <img> with the same caption.
+ *
+ * Pass `width`/`height` when you know them to avoid layout shift.
+ */
+interface Props {
+	src?: string;
+	alt: string;
+	caption?: string;
+	/** Shown inside the placeholder box when there is no `src`. */
+	placeholderLabel?: string;
+	width?: number;
+	height?: number;
+}
+
+const { src, alt, caption, placeholderLabel, width, height } = Astro.props;
+---
+
+<figure class="figure">
+	{
+		src ? (
+			<div class="figure-frame">
+				<img
+					src={src}
+					alt={alt}
+					width={width}
+					height={height}
+					loading="lazy"
+					decoding="async"
+				/>
+			</div>
+		) : (
+			<div class="figure-placeholder" role="img" aria-label={alt}>
+				<span class="figure-placeholder-tag">Screenshot</span>
+				<span class="figure-placeholder-label">
+					{placeholderLabel ?? alt}
+				</span>
+			</div>
+		)
+	}
+	{caption && <figcaption class="figure-cap">{caption}</figcaption>}
+</figure>
