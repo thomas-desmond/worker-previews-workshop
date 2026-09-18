@@ -76,11 +76,12 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 			<p>No custom GitHub Actions to set up, no secrets to paste in — that part is automatic.</p>
 		</div>
 
-		<div class="mb-6">
+		<div class="mb-6 deploy-button-wrap">
 			<a
 				href={`https://deploy.workers.cloudflare.com/?url=${REPO_URL}`}
 				target="_blank"
 				rel="noopener noreferrer"
+				class="deploy-button-link"
 			>
 				<img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
 			</a>
@@ -100,25 +101,59 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 	<section id="isolate" class="step">
 		<header class="step-header">
 			<h2 class="step-title"><span class="step-num-inline">2.</span>Isolate a resource</h2>
-			<p class="step-lede">
-				A new branch inherits your code automatically. It does not inherit your database.
-			</p>
+			<p class="step-lede">Give your branch its own database, so its Preview has real data to show.</p>
 		</header>
+
+		<div class="step-body mb-4">
+			<p>First, get the repo onto your machine and make a branch — quick setup, nothing interesting yet:</p>
+		</div>
+
+		<div class="command-block">
+			<div class="command-block-bar">
+				<span class="command-block-label">Setup</span>
+			</div>
+			<pre><code>git clone https://github.com/&lt;you&gt;/d1-template-preview.git
+cd d1-template-preview
+git checkout -b isolate-preview-db</code></pre>
+		</div>
+
+		<div class="step-body mt-6 mb-6">
+			<p>
+				Now the actual point of this step. Previews inherit your <strong class="text-kumo-default"
+					>code</strong
+				> automatically — same branch, same routes. They do not inherit your{" "}
+				<strong class="text-kumo-default">configuration</strong> — variables, secrets, and bindings
+				like D1 come from a separate Previews configuration that starts <strong>empty</strong> unless
+				someone sets one. This template hasn't, so your branch's Preview has no database bound yet
+				at all.
+			</p>
+			<p>
+				D1, KV, R2, and most other resources all work the same way: each is bound by an ID or name,
+				and any two deployments pointing at the same ID share the same data — whether that's
+				production and a Preview, or two different Previews. To isolate one, you bind it to a{" "}
+				<em>different</em> resource. That's what you're about to do.
+			</p>
+		</div>
+
+		<div class="step-body mb-6">
+			<pre><code>{`{
+  "d1_databases": [
+    { "binding": "DB", "database_name": "d1-template-database" } // production
+  ],
+  "previews": {
+    "d1_databases": [
+      { "binding": "DB", "database_name": "workshop-preview-db" } // your branch's Preview
+    ]
+  }
+}`}</code></pre>
+		</div>
 
 		<div class="step-body mb-6">
 			<p>
-				Cloudflare Workers Previews build a live deployment for every pull request — same code,
-				same routes, same bindings, by default. For most resources that's exactly what you want.
-			</p>
-			<p>
-				D1 is the exception, on purpose: Cloudflare will not point a Preview at your production
-				database unless you explicitly tell it to, so a stray branch can't accidentally read or
-				write real data. You opt in with a <code>previews.d1_databases</code> override in{" "}
-				<code>wrangler.json</code>.
-			</p>
-			<p>
-				Ask your agent to create a branch, provision a brand-new D1 database, and add that
-				override:
+				Same binding name (<code>DB</code>), different database — that's the whole mechanism. You
+				could point future branches at this same database if you wanted them to share data, or give
+				each its own; this workshop gives yours its own. Ask your agent to create the database and
+				add that block:
 			</p>
 		</div>
 
@@ -137,10 +172,11 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 			<summary>Why doesn't this apply to Durable Objects?</summary>
 			<div class="fallback-body">
 				<p>
-					Durable Objects and Containers don't need this step — they isolate per Preview
-					automatically, no override block required. D1 (and R2, and KV) need one because they're
-					shared, standalone resources that outlive any single Worker; the platform can't safely
-					guess which copy a branch should get.
+					Durable Objects and Containers are the actual exception here. When the class lives in
+					the same Worker, each Preview gets its own namespace and storage automatically — no
+					override needed — because that state belongs to the Worker itself, not to an external
+					resource identified by an ID. D1, KV, and R2 are the norm, not the exception: bind by ID,
+					and anything sharing that ID shares the data.
 				</p>
 			</div>
 		</details>
@@ -159,25 +195,19 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 
 		<PromptBlock label="Step 3 · Open a pull request" text={PROMPTS.openPullRequest} />
 
-		<div class="mt-5 callout callout--warn">
-			<span class="callout-icon" aria-hidden="true">!</span>
-			<div>
-				<p class="callout-title">Don't wait on the PR comment</p>
-				<p class="callout-body">
-					Cloudflare's bot usually comments the Preview URL on the PR within a minute or two, but
-					it can occasionally lag well behind the deploy itself. If it hasn't shown up yet, check
-					the <strong>Workers Builds</strong> check on the PR — once that's green, your Preview is
-					live even if the comment isn't there yet.
-				</p>
-			</div>
-		</div>
-
 		<p class="checkpoint-line mt-5">
 			<span class="checkpoint-line-mark" aria-hidden="true">✓</span>
 			<span>
 				<strong>You should see:</strong> open the Preview URL — an <strong>empty</strong> Activity
-				Log, no seeded rows. That's your new database, freshly created, genuinely isolated from
-				production.
+				Log, no seeded rows. That's your new database, freshly created.
+			</span>
+		</p>
+
+		<p class="checkpoint-line mt-4">
+			<span class="checkpoint-line-mark" aria-hidden="true">→</span>
+			<span>
+				Keep this Preview tab open, along with your production tab from Step 1 — you'll flip
+				between the two in the next step.
 			</span>
 		</p>
 	</section>
@@ -192,19 +222,19 @@ import { PROMPTS, REPO_URL, SITE } from "../lib/site";
 		<div class="step-body mb-6">
 			<ol>
 				<li>
-					On your Preview URL, type something into <strong>Log an activity…</strong> and click{" "}
-					<strong>Add entry</strong>.
+					On your <strong>Preview</strong> tab, type something into <strong>Log an activity…</strong>{" "}
+					and click <strong>Add entry</strong>.
 				</li>
-				<li>Add one more. Then click <strong>Delete</strong> on one of them.</li>
-				<li>Open your <strong>production</strong> URL from Step 1 in another tab.</li>
+				<li>Switch to your <strong>production</strong> tab from Step 1 and refresh it.</li>
 			</ol>
 		</div>
 
 		<p class="checkpoint-line">
 			<span class="checkpoint-line-mark" aria-hidden="true">✓</span>
 			<span>
-				<strong>You should see:</strong> production still shows exactly the same three original
-				rows — nothing you added or deleted in the Preview shows up there.
+				<strong>You should see:</strong> production still shows only its original three rows — the
+				entry you just added is nowhere to be found there. Two deployments of the same code, two
+				separate databases.
 			</span>
 		</p>
 

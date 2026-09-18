@@ -214,6 +214,25 @@ body {
 	margin-right: 0.3em;
 }
 
+/* Deploy to Cloudflare button — deliberately oversized, it's the primary CTA */
+.deploy-button-wrap {
+	display: flex;
+}
+
+.deploy-button-link {
+	display: inline-flex;
+	transition: transform 0.15s ease;
+}
+
+.deploy-button-link:hover {
+	transform: translateY(-1px);
+}
+
+.deploy-button-link img {
+	width: 320px;
+	height: auto;
+}
+
 .step-lede {
 	margin: 0.25rem 0 0;
 	font-size: 1.25rem;
