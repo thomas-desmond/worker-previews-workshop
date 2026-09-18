@@ -28,17 +28,26 @@ const pageTitle = title === SITE.title ? title : `${title} · ${SITE.title}`;
 		<link rel="icon" href="/favicon.ico" />
 		<title>{pageTitle}</title>
 	</head>
-	<body class="flex min-h-dvh flex-col">
+	<body class="page">
 		<slot name="hero" />
-		<slot name="nav" />
-		<main class="mx-auto w-full max-w-3xl flex-1 px-4 py-10 sm:px-6 sm:py-12">
-			<slot />
-		</main>
-		<footer class="border-t-2 border-kumo-line">
-			<div class="mx-auto max-w-3xl px-4 py-6 text-base font-medium text-kumo-default sm:px-6">
-				{SITE.title} · Built on Cloudflare Workers ·
+
+		<div class="page-shell">
+			<div class="page-rail-wrap">
+				<slot name="nav" />
+			</div>
+			<main class="page-main">
+				<slot />
+			</main>
+		</div>
+
+		<footer class="page-footer">
+			<div class="page-footer-inner">
+				<span>{SITE.title}</span>
+				<span class="page-footer-dot" aria-hidden="true">·</span>
+				<span>Built on Cloudflare Workers</span>
+				<span class="page-footer-dot" aria-hidden="true">·</span>
 				<a
-					class="font-bold underline underline-offset-2"
+					class="page-footer-link"
 					href="https://developers.cloudflare.com/workers/configuration/previews/"
 					>Workers Previews docs</a
 				>

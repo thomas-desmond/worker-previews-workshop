@@ -3,321 +3,385 @@ import Hero from "../components/Hero.astro";
 import { PromptBlock } from "../components/PromptBlock";
 import { StepNav } from "../components/StepNav";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { PROMPTS, REPO_URL, SITE } from "../lib/site";
+import { PROMPTS, REPO_URL, SITE, STEPS } from "../lib/site";
+
+const stepByIndex = (i: number) => STEPS[i];
 ---
 
 <BaseLayout>
 	<Hero slot="hero" />
 	<StepNav slot="nav" client:load />
 
-	<section class="mb-12 grid gap-4">
-		<p class="lede">
-			{SITE.description}
-		</p>
-		<p class="lede">
-			One prompt per step. Your agent writes the config and opens the pull request; you click the
-			buttons and watch the isolation happen.
-		</p>
-	</section>
-
-	{/* ─── Prereqs ─── */}
-	<section id="prereqs" class="step">
-		<header class="step-header">
-			<h2 class="step-title">Before you start</h2>
-		</header>
-
-		<div class="step-body">
-			<p>You need:</p>
-			<ul>
-				<li><strong class="text-kumo-default">Node.js</strong>, <code>git</code>, and a terminal</li>
-				<li>
-					<strong class="text-kumo-default">A coding agent</strong> — whatever you already use.{" "}
-					<a href="https://opencode.ai">OpenCode</a> works fine if you don't have one.
-				</li>
-				<li>
-					A <strong class="text-kumo-default">GitHub account</strong> — the deploy button creates a
-					repo in it.
-				</li>
-				<li>
-					A <strong class="text-kumo-default">free Cloudflare account</strong> — no credit card
-					required.{" "}
-					<a href="https://dash.cloudflare.com/sign-up">Sign up</a> now if you don't have one; it's
-					one less thing to do mid-step.
-				</li>
-				<li>
-					<strong class="text-kumo-default">Optional but helpful:</strong> the{" "}
-					<a href="https://cli.github.com/">GitHub CLI</a> (<code>gh</code>), authenticated — lets
-					your agent open the pull request for you in Step 3.
-				</li>
-			</ul>
-		</div>
-	</section>
-
-	{/* ─── Step 1 ─── */}
-	<section id="deploy" class="step">
-		<header class="step-header">
-			<h2 class="step-title"><span class="step-num-inline">1.</span>Deploy to Cloudflare</h2>
-			<p class="step-lede">
-				One click. A repo in your account, a database, and a production Worker — wired up for you.
-			</p>
-		</header>
-
-		<div class="step-body mb-6">
-			<p>Clicking the button below will:</p>
-			<ul>
-				<li>Create a copy of the app's repo in your own GitHub account</li>
-				<li>Provision a production D1 database</li>
-				<li>
-					Connect <strong class="text-kumo-default">Workers Builds</strong> (Cloudflare's own
-					CI/CD) to that repo
-				</li>
-				<li>Deploy the Worker</li>
-			</ul>
-			<p>No custom GitHub Actions to set up, no secrets to paste in — that part is automatic.</p>
-		</div>
-
-		<div class="mb-6 deploy-button-wrap">
-			<a
-				href={`https://deploy.workers.cloudflare.com/?url=${REPO_URL}`}
-				target="_blank"
-				rel="noopener noreferrer"
-				class="deploy-button-link"
-			>
-				<img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
-			</a>
-		</div>
-
-		<p class="checkpoint-line">
-			<span class="checkpoint-line-mark" aria-hidden="true">✓</span>
-			<span>
-				<strong>You should see:</strong> open the production URL Cloudflare gives you — an
-				Activity Log with three seeded entries. Remember what's in there; you'll compare it against
-				your Preview shortly.
-			</span>
-		</p>
-	</section>
-
-	{/* ─── Step 2 ─── */}
-	<section id="isolate" class="step">
-		<header class="step-header">
-			<h2 class="step-title"><span class="step-num-inline">2.</span>Isolate a resource</h2>
-			<p class="step-lede">Give your branch its own database, so its Preview has real data to show.</p>
-		</header>
-
-		<div class="step-body mb-4">
-			<p>First, get the repo onto your machine and make a branch — quick setup, nothing interesting yet:</p>
-		</div>
-
-		<div class="command-block">
-			<div class="command-block-bar">
-				<span class="command-block-label">Setup</span>
+	<section class="intro-card">
+		<h2 class="intro-title">What you'll learn</h2>
+		<p class="intro-body">{SITE.description}</p>
+		<div class="intro-legend">
+			<div class="legend-item">
+				<span class="legend-badge legend-badge--why">Why</span>
+				<span>The concept behind the step</span>
 			</div>
-			<pre><code>git clone https://github.com/&lt;you&gt;/d1-template-preview.git
+			<div class="legend-item">
+				<span class="legend-badge legend-badge--do">Do</span>
+				<span>The action you (or your agent) takes</span>
+			</div>
+			<div class="legend-item">
+				<span class="legend-badge legend-badge--verify">Verify</span>
+				<span>What success looks like</span>
+			</div>
+		</div>
+	</section>
+
+	{/* ─── Step 0: Prereqs ─── */}
+	<article id="prereqs" class="stepcard">
+		<div class="stepcard-head">
+			<div class="stepcard-badge">
+				<span class="stepcard-badge-num">{stepByIndex(0).num}</span>
+				<span class="stepcard-badge-time">{stepByIndex(0).time}</span>
+			</div>
+			<div class="stepcard-head-copy">
+				<h2 class="stepcard-title">{stepByIndex(0).label}</h2>
+				<p class="stepcard-lede">Gather these four things before you start. Nothing scary — most you probably already have.</p>
+			</div>
+		</div>
+
+		<div class="stepcard-body">
+			<div class="checklist">
+				<div class="checklist-item">
+					<span class="checklist-icon" aria-hidden="true">1</span>
+					<div>
+						<p class="checklist-title">Node.js, git, and a terminal</p>
+						<p class="checklist-note">Standard developer setup.</p>
+					</div>
+				</div>
+				<div class="checklist-item">
+					<span class="checklist-icon" aria-hidden="true">2</span>
+					<div>
+						<p class="checklist-title">A coding agent</p>
+						<p class="checklist-note">Whatever you already use. <a href="https://opencode.ai">OpenCode</a> works if you don't have one.</p>
+					</div>
+				</div>
+				<div class="checklist-item">
+					<span class="checklist-icon" aria-hidden="true">3</span>
+					<div>
+						<p class="checklist-title">A GitHub account</p>
+						<p class="checklist-note">The deploy button creates a repo in it.</p>
+					</div>
+				</div>
+				<div class="checklist-item">
+					<span class="checklist-icon" aria-hidden="true">4</span>
+					<div>
+						<p class="checklist-title">A free Cloudflare account</p>
+						<p class="checklist-note">No credit card required. <a href="https://dash.cloudflare.com/sign-up">Sign up</a> now — one less thing to do mid-step.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="tip">
+				<span class="tip-label">Optional</span>
+				<p><a href="https://cli.github.com/">GitHub CLI</a> (<code>gh</code>), authenticated — lets your agent open the pull request for you in Step 3.</p>
+			</div>
+		</div>
+	</article>
+
+	{/* ─── Step 1: Deploy ─── */}
+	<article id="deploy" class="stepcard">
+		<div class="stepcard-head">
+			<div class="stepcard-badge">
+				<span class="stepcard-badge-num">{stepByIndex(1).num}</span>
+				<span class="stepcard-badge-time">{stepByIndex(1).time}</span>
+			</div>
+			<div class="stepcard-head-copy">
+				<h2 class="stepcard-title">{stepByIndex(1).label}</h2>
+				<p class="stepcard-lede">One click. A repo in your account, a database, and a production Worker — wired up for you.</p>
+			</div>
+		</div>
+
+		<div class="stepcard-body">
+			<div class="phase">
+				<span class="phase-badge phase-badge--why">Why</span>
+				<div class="phase-content">
+					<p>You need a real, deployed app before you can create a Preview of it. The deploy button skips the manual setup.</p>
+				</div>
+			</div>
+
+			<div class="phase">
+				<span class="phase-badge phase-badge--do">Do</span>
+				<div class="phase-content">
+					<p>Clicking the button below will:</p>
+					<ul class="tight-list">
+						<li>Fork the app repo into your GitHub account</li>
+						<li>Provision a production D1 database</li>
+						<li>Connect <strong>Workers Builds</strong> (Cloudflare's CI/CD) to that repo</li>
+						<li>Deploy the Worker</li>
+					</ul>
+					<p class="phase-note">No custom GitHub Actions to set up, no secrets to paste — automatic.</p>
+
+					<div class="deploy-cta-wrap">
+						<a
+							href={`https://deploy.workers.cloudflare.com/?url=${REPO_URL}`}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="deploy-cta-link"
+						>
+							<img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="phase">
+				<span class="phase-badge phase-badge--verify">Verify</span>
+				<div class="phase-content">
+					<p>Open the production URL Cloudflare gives you. You should see an <strong>Activity Log</strong> with three seeded entries. Remember what's in there — you'll compare it against your Preview shortly.</p>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	{/* ─── Step 2: Isolate ─── */}
+	<article id="isolate" class="stepcard">
+		<div class="stepcard-head">
+			<div class="stepcard-badge">
+				<span class="stepcard-badge-num">{stepByIndex(2).num}</span>
+				<span class="stepcard-badge-time">{stepByIndex(2).time}</span>
+			</div>
+			<div class="stepcard-head-copy">
+				<h2 class="stepcard-title">{stepByIndex(2).label}</h2>
+				<p class="stepcard-lede">Give your branch its own database, so its Preview has real data to show.</p>
+			</div>
+		</div>
+
+		<div class="stepcard-body">
+			<div class="phase">
+				<span class="phase-badge phase-badge--do">Setup</span>
+				<div class="phase-content">
+					<p>First, get the repo onto your machine and make a branch:</p>
+					<div class="cmd">
+						<div class="cmd-bar"><span class="cmd-label">Terminal</span></div>
+						<pre><code>git clone https://github.com/&lt;you&gt;/d1-template-preview.git
 cd d1-template-preview
 git checkout -b isolate-preview-db</code></pre>
-		</div>
+					</div>
+				</div>
+			</div>
 
-		<div class="step-body mt-6 mb-6">
-			<p>
-				Now the actual point of this step. Previews inherit your <strong class="text-kumo-default"
-					>code</strong
-				> automatically — same branch, same routes. They do not inherit your{" "}
-				<strong class="text-kumo-default">configuration</strong> — variables, secrets, and bindings
-				like D1 come from a separate Previews configuration that starts <strong>empty</strong> unless
-				someone sets one. This template hasn't, so your branch's Preview has no database bound yet
-				at all.
-			</p>
-			<p>
-				D1, KV, R2, and most other resources all work the same way: each is bound by an ID or name,
-				and any two deployments pointing at the same ID share the same data — whether that's
-				production and a Preview, or two different Previews. To isolate one, you bind it to a{" "}
-				<em>different</em> resource. That's what you're about to do.
-			</p>
-		</div>
+			<div class="phase">
+				<span class="phase-badge phase-badge--why">Why</span>
+				<div class="phase-content">
+					<p>
+						Previews inherit your <strong>code</strong> automatically — same branch, same routes. They do <strong>not</strong> inherit your <strong>configuration</strong> — variables, secrets, and bindings like D1 come from a separate Previews config that starts <strong>empty</strong> unless someone sets one.
+					</p>
 
-		<div class="step-body mb-6">
-			<pre><code>{`{
+					<div class="concept-diagram">
+						<div class="concept-col">
+							<span class="concept-col-head concept-col-head--prod">Production</span>
+							<div class="concept-cell">code</div>
+							<div class="concept-cell concept-cell--bind">DB → prod-db</div>
+						</div>
+						<div class="concept-col">
+							<span class="concept-col-head concept-col-head--preview">Preview</span>
+							<div class="concept-cell concept-cell--inherit">code (inherited)</div>
+							<div class="concept-cell concept-cell--empty">DB → ??? (empty!)</div>
+						</div>
+					</div>
+
+					<p>D1, KV, R2, and most other resources bind by ID. Two deployments pointing at the same ID share the same data. To isolate one, bind it to a <em>different</em> resource. That's what you're about to do.</p>
+				</div>
+			</div>
+
+			<div class="phase">
+				<span class="phase-badge phase-badge--do">Do</span>
+				<div class="phase-content">
+					<p>The shape of the change you're making:</p>
+					<div class="cmd cmd--json">
+						<div class="cmd-bar"><span class="cmd-label">wrangler.json</span></div>
+						<pre><code>{`{
   "d1_databases": [
     { "binding": "DB", "database_name": "d1-template-database" } // production
   ],
   "previews": {
     "d1_databases": [
-      { "binding": "DB", "database_name": "workshop-preview-db" } // your branch's Preview
+      { "binding": "DB", "database_name": "workshop-preview-db" } // your branch
     ]
   }
 }`}</code></pre>
-		</div>
-
-		<div class="step-body mb-6">
-			<p>
-				Same binding name (<code>DB</code>), different database — that's the whole mechanism. You
-				could point future branches at this same database if you wanted them to share data, or give
-				each its own; this workshop gives yours its own. Ask your agent to create the database and
-				add that block:
-			</p>
-		</div>
-
-		<PromptBlock label="Step 2 · Isolate a resource" text={PROMPTS.isolateResource} />
-
-		<p class="checkpoint-line mt-5">
-			<span class="checkpoint-line-mark" aria-hidden="true">✓</span>
-			<span>
-				<strong>You should see:</strong> <code>wrangler.json</code> now has a{" "}
-				<code>previews.d1_databases</code> block pointing at a database that isn't the production
-				one, and the change is committed.
-			</span>
-		</p>
-
-		<details class="fallback mt-5">
-			<summary>Why doesn't this apply to Durable Objects?</summary>
-			<div class="fallback-body">
-				<p>
-					Durable Objects and Containers are the actual exception here. When the class lives in
-					the same Worker, each Preview gets its own namespace and storage automatically — no
-					override needed — because that state belongs to the Worker itself, not to an external
-					resource identified by an ID. D1, KV, and R2 are the norm, not the exception: bind by ID,
-					and anything sharing that ID shares the data.
-				</p>
+					</div>
+					<p class="phase-note">Same binding name (<code>DB</code>), different database — that's the whole mechanism.</p>
+					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.isolateResource} />
+				</div>
 			</div>
-		</details>
-	</section>
 
-	{/* ─── Step 3 ─── */}
-	<section id="preview" class="step">
-		<header class="step-header">
-			<h2 class="step-title"><span class="step-num-inline">3.</span>Open your Preview</h2>
-			<p class="step-lede">Push the branch, open a pull request, and Workers Builds does the rest.</p>
-		</header>
-
-		<div class="step-body mb-6">
-			<p>Ask your agent to push and open the PR:</p>
-		</div>
-
-		<PromptBlock label="Step 3 · Open a pull request" text={PROMPTS.openPullRequest} />
-
-		<p class="checkpoint-line mt-5">
-			<span class="checkpoint-line-mark" aria-hidden="true">✓</span>
-			<span>
-				<strong>You should see:</strong> open the Preview URL — an <strong>empty</strong> Activity
-				Log, no seeded rows. That's your new database, freshly created.
-			</span>
-		</p>
-
-		<p class="checkpoint-line mt-4">
-			<span class="checkpoint-line-mark" aria-hidden="true">→</span>
-			<span>
-				Keep this Preview tab open, along with your production tab from Step 1 — you'll flip
-				between the two in the next step.
-			</span>
-		</p>
-	</section>
-
-	{/* ─── Step 4 ─── */}
-	<section id="interact" class="step">
-		<header class="step-header">
-			<h2 class="step-title"><span class="step-num-inline">4.</span>Prove isolation</h2>
-			<p class="step-lede">Don't take the empty list on faith. Write to it, then check production.</p>
-		</header>
-
-		<div class="step-body mb-6">
-			<ol>
-				<li>
-					On your <strong>Preview</strong> tab, type something into <strong>Log an activity…</strong>{" "}
-					and click <strong>Add entry</strong>.
-				</li>
-				<li>Switch to your <strong>production</strong> tab from Step 1 and refresh it.</li>
-			</ol>
-		</div>
-
-		<p class="checkpoint-line">
-			<span class="checkpoint-line-mark" aria-hidden="true">✓</span>
-			<span>
-				<strong>You should see:</strong> production still shows only its original three rows — the
-				entry you just added is nowhere to be found there. Two deployments of the same code, two
-				separate databases.
-			</span>
-		</p>
-
-		<details class="fallback mt-5">
-			<summary>Why does this matter?</summary>
-			<div class="fallback-body">
-				<p>
-					This is what "isolated environment for every change" actually means in practice — not a
-					slide, a database you can watch stay separate while you poke at it.
-				</p>
+			<div class="phase">
+				<span class="phase-badge phase-badge--verify">Verify</span>
+				<div class="phase-content">
+					<p><code>wrangler.json</code> now has a <code>previews.d1_databases</code> block pointing at a database that isn't the production one, and the change is committed.</p>
+				</div>
 			</div>
-		</details>
-	</section>
 
-	{/* ─── Step 5 ─── */}
-	<section id="observability" class="step">
-		<header class="step-header">
-			<h2 class="step-title"><span class="step-num-inline">5.</span>Observability</h2>
-			<p class="step-lede">Your Preview has its own logs and traces too — not just its own database.</p>
-		</header>
-
-		<div class="step-body mb-6">
-			<p>In the Cloudflare dashboard:</p>
-			<ol>
-				<li>Go to <strong>Workers &amp; Pages</strong> → your Worker.</li>
-				<li>
-					Open the <strong>Observability</strong> tab while on the Worker's{" "}
-					<strong>production</strong> view, then switch to the <strong>Previews</strong> tab and
-					select your branch.
-				</li>
-				<li>Refresh your Preview URL a couple of times, then check the request list.</li>
-			</ol>
+			<details class="aside">
+				<summary>Why doesn't this apply to Durable Objects?</summary>
+				<div class="aside-body">
+					<p>
+						Durable Objects and Containers are the actual exception. When the class lives in the same Worker, each Preview gets its own namespace and storage automatically — no override needed — because that state belongs to the Worker itself, not to an external resource identified by an ID. D1, KV, and R2 are the norm, not the exception: bind by ID, and anything sharing that ID shares the data.
+					</p>
+				</div>
+			</details>
 		</div>
+	</article>
 
-		<p class="checkpoint-line">
-			<span class="checkpoint-line-mark" aria-hidden="true">✓</span>
-			<span>
-				<strong>You should see:</strong> requests and logs scoped to your branch's Preview —
-				separate from production's traffic, same as the database.
-			</span>
-		</p>
-	</section>
-
-	{/* ─── Step 6 ─── */}
-	<section id="final" class="step">
-		<header class="step-header">
-			<h2 class="step-title"><span class="step-num-inline">6.</span>TBD</h2>
-			<p class="step-lede">Pending a conversation with Yomna.</p>
-		</header>
-
-		<div class="callout callout--warn">
-			<span class="callout-icon" aria-hidden="true">?</span>
-			<div>
-				<p class="callout-title">Not decided yet</p>
-				<p class="callout-body">
-					This is a genuine placeholder, not a mistake — the final step of the workshop is still
-					being worked out with Yomna (PM). Don't build content into this slot until that's
-					settled.
-				</p>
+	{/* ─── Step 3: Preview ─── */}
+	<article id="preview" class="stepcard">
+		<div class="stepcard-head">
+			<div class="stepcard-badge">
+				<span class="stepcard-badge-num">{stepByIndex(3).num}</span>
+				<span class="stepcard-badge-time">{stepByIndex(3).time}</span>
+			</div>
+			<div class="stepcard-head-copy">
+				<h2 class="stepcard-title">{stepByIndex(3).label}</h2>
+				<p class="stepcard-lede">Push the branch, open a pull request, and Workers Builds does the rest.</p>
 			</div>
 		</div>
-	</section>
+
+		<div class="stepcard-body">
+			<div class="phase">
+				<span class="phase-badge phase-badge--do">Do</span>
+				<div class="phase-content">
+					<p>Ask your agent to push and open the PR:</p>
+					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.openPullRequest} />
+				</div>
+			</div>
+
+			<div class="phase">
+				<span class="phase-badge phase-badge--verify">Verify</span>
+				<div class="phase-content">
+					<p>Open the Preview URL from the PR — you should see an <strong>empty</strong> Activity Log, no seeded rows. That's your new database, freshly created.</p>
+					<div class="tip tip--pin">
+						<span class="tip-label">Keep both tabs open</span>
+						<p>Preview tab + production tab from Step 1. You'll flip between them in the next step.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	{/* ─── Step 4: Prove ─── */}
+	<article id="interact" class="stepcard">
+		<div class="stepcard-head">
+			<div class="stepcard-badge">
+				<span class="stepcard-badge-num">{stepByIndex(4).num}</span>
+				<span class="stepcard-badge-time">{stepByIndex(4).time}</span>
+			</div>
+			<div class="stepcard-head-copy">
+				<h2 class="stepcard-title">{stepByIndex(4).label}</h2>
+				<p class="stepcard-lede">Don't take the empty list on faith. Write to it, then check production.</p>
+			</div>
+		</div>
+
+		<div class="stepcard-body">
+			<div class="phase">
+				<span class="phase-badge phase-badge--do">Do</span>
+				<div class="phase-content">
+					<ol class="steps-inline">
+						<li>On your <strong>Preview</strong> tab, type something into <strong>Log an activity…</strong> and click <strong>Add entry</strong>.</li>
+						<li>Switch to your <strong>production</strong> tab from Step 1 and refresh it.</li>
+					</ol>
+				</div>
+			</div>
+
+			<div class="phase">
+				<span class="phase-badge phase-badge--verify">Verify</span>
+				<div class="phase-content">
+					<p>Production still shows only its original three rows. The entry you just added is nowhere to be found. Two deployments of the same code, two separate databases.</p>
+				</div>
+			</div>
+
+			<details class="aside">
+				<summary>Why does this matter?</summary>
+				<div class="aside-body">
+					<p>This is what "isolated environment for every change" actually means in practice — not a slide, a database you can watch stay separate while you poke at it.</p>
+				</div>
+			</details>
+		</div>
+	</article>
+
+	{/* ─── Step 5: Observability ─── */}
+	<article id="observability" class="stepcard">
+		<div class="stepcard-head">
+			<div class="stepcard-badge">
+				<span class="stepcard-badge-num">{stepByIndex(5).num}</span>
+				<span class="stepcard-badge-time">{stepByIndex(5).time}</span>
+			</div>
+			<div class="stepcard-head-copy">
+				<h2 class="stepcard-title">{stepByIndex(5).label}</h2>
+				<p class="stepcard-lede">Your Preview has its own logs and traces too — not just its own database.</p>
+			</div>
+		</div>
+
+		<div class="stepcard-body">
+			<div class="phase">
+				<span class="phase-badge phase-badge--do">Do</span>
+				<div class="phase-content">
+					<p>In the Cloudflare dashboard:</p>
+					<ol class="steps-inline">
+						<li>Go to <strong>Workers &amp; Pages</strong> → your Worker.</li>
+						<li>Open the <strong>Observability</strong> tab (production view), then switch to <strong>Previews</strong> and select your branch.</li>
+						<li>Refresh your Preview URL a couple of times, then check the request list.</li>
+					</ol>
+				</div>
+			</div>
+
+			<div class="phase">
+				<span class="phase-badge phase-badge--verify">Verify</span>
+				<div class="phase-content">
+					<p>Requests and logs scoped to your branch's Preview — separate from production's traffic, same as the database.</p>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	{/* ─── Step 6: TBD ─── */}
+	<article id="final" class="stepcard">
+		<div class="stepcard-head">
+			<div class="stepcard-badge">
+				<span class="stepcard-badge-num">{stepByIndex(6).num}</span>
+				<span class="stepcard-badge-time">{stepByIndex(6).time}</span>
+			</div>
+			<div class="stepcard-head-copy">
+				<h2 class="stepcard-title">{stepByIndex(6).label}</h2>
+				<p class="stepcard-lede">Pending a conversation with Yomna.</p>
+			</div>
+		</div>
+
+		<div class="stepcard-body">
+			<div class="tbd">
+				<span class="tbd-icon" aria-hidden="true">?</span>
+				<div>
+					<p class="tbd-title">Not decided yet</p>
+					<p>This is a genuine placeholder, not a mistake — the final step of the workshop is still being worked out with Yomna (PM). Don't build content into this slot until that's settled.</p>
+				</div>
+			</div>
+		</div>
+	</article>
 
 	{/* ─── Wrap-up ─── */}
-	<section id="wrap-up" class="step">
-		<header class="step-header">
-			<h2 class="step-title">Clean up</h2>
-		</header>
-
-		<div class="step-body">
-			<p>
-				Closing or merging your pull request deletes the Preview deployment automatically. It does{" "}
-				<strong class="text-kumo-default">not</strong> delete the D1 database you created in Step 2
-				— that's a standalone account resource that outlives the branch. Delete it yourself once
-				you're done:
-			</p>
-		</div>
-
-		<div class="command-block mt-5">
-			<div class="command-block-bar">
-				<span class="command-block-label">Cleanup</span>
+	<article id="wrap-up" class="stepcard stepcard--wrapup">
+		<div class="stepcard-head">
+			<div class="stepcard-badge stepcard-badge--wrapup">
+				<span class="stepcard-badge-num">✓</span>
 			</div>
-			<pre><code>npx wrangler d1 delete workshop-preview-db</code></pre>
+			<div class="stepcard-head-copy">
+				<h2 class="stepcard-title">Clean up</h2>
+				<p class="stepcard-lede">One command to tidy the D1 database you created.</p>
+			</div>
 		</div>
-	</section>
+
+		<div class="stepcard-body">
+			<p class="wrapup-p">Closing or merging your pull request deletes the Preview deployment automatically. It does <strong>not</strong> delete the D1 database you created in Step 2 — that's a standalone account resource that outlives the branch. Delete it yourself once you're done:</p>
+
+			<div class="cmd">
+				<div class="cmd-bar"><span class="cmd-label">Terminal</span></div>
+				<pre><code>npx wrangler d1 delete workshop-preview-db</code></pre>
+			</div>
+		</div>
+	</article>
 </BaseLayout>

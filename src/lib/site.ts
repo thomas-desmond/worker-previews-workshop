@@ -8,13 +8,55 @@ export const SITE = {
 } as const;
 
 export const STEPS = [
-	{ id: "prereqs", num: "0", label: "Before you start", short: "Prereqs" },
-	{ id: "deploy", num: "1", label: "Deploy to Cloudflare", short: "Deploy" },
-	{ id: "isolate", num: "2", label: "Isolate a resource", short: "Isolate" },
-	{ id: "preview", num: "3", label: "Open your Preview", short: "Preview" },
-	{ id: "interact", num: "4", label: "Prove isolation", short: "Prove it" },
-	{ id: "observability", num: "5", label: "Observability", short: "Observe" },
-	{ id: "final", num: "6", label: "TBD", short: "TBD" },
+	{
+		id: "prereqs",
+		num: "0",
+		label: "Before you start",
+		short: "Prereqs",
+		time: "2 min",
+	},
+	{
+		id: "deploy",
+		num: "1",
+		label: "Deploy to Cloudflare",
+		short: "Deploy",
+		time: "5 min",
+	},
+	{
+		id: "isolate",
+		num: "2",
+		label: "Isolate a resource",
+		short: "Isolate",
+		time: "8 min",
+	},
+	{
+		id: "preview",
+		num: "3",
+		label: "Open your Preview",
+		short: "Preview",
+		time: "5 min",
+	},
+	{
+		id: "interact",
+		num: "4",
+		label: "Prove isolation",
+		short: "Prove it",
+		time: "3 min",
+	},
+	{
+		id: "observability",
+		num: "5",
+		label: "Observability",
+		short: "Observe",
+		time: "5 min",
+	},
+	{
+		id: "final",
+		num: "6",
+		label: "TBD",
+		short: "TBD",
+		time: "—",
+	},
 ] as const;
 
 export type StepId = (typeof STEPS)[number]["id"];

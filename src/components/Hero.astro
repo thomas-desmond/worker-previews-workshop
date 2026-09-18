@@ -2,50 +2,71 @@
 import { SITE } from "../lib/site";
 ---
 
-<section class="home-hero">
-	<div class="home-hero-shapes" aria-hidden="true">
-		<span class="home-hero-shape home-hero-shape--1"></span>
-		<span class="home-hero-shape home-hero-shape--2"></span>
-		<span class="home-hero-shape home-hero-shape--3"></span>
-		<span class="home-hero-shape home-hero-shape--4"></span>
-	</div>
+<section class="hero">
+	<div class="hero-inner">
+		<div class="hero-copy">
+			<div class="hero-brand">
+				<div class="hero-brand-mark" aria-hidden="true">
+					<svg xmlns="http://www.w3.org/2000/svg" width="40" height="19" viewBox="0 0 66 30" fill="none">
+						<path
+							fill="currentColor"
+							d="M52.688 13.028c-.22 0-.437.008-.654.015a.3.3 0 0 0-.102.024.37.37 0 0 0-.236.255l-.93 3.249c-.401 1.397-.252 2.687.422 3.634.618.876 1.646 1.39 2.894 1.45l5.045.306a.45.45 0 0 1 .435.41.5.5 0 0 1-.025.223.64.64 0 0 1-.547.426l-5.242.306c-2.848.132-5.912 2.456-6.987 5.29l-.378 1a.28.28 0 0 0 .248.382h18.054a.48.48 0 0 0 .464-.35c.32-1.153.482-2.344.48-3.54 0-7.22-5.79-13.072-12.933-13.072M44.807 29.578l.334-1.175c.402-1.397.253-2.687-.42-3.634-.62-.876-1.647-1.39-2.896-1.45l-23.665-.306a.47.47 0 0 1-.374-.199.5.5 0 0 1-.052-.434.64.64 0 0 1 .552-.426l23.886-.306c2.836-.131 5.9-2.456 6.975-5.29l1.362-3.6a.9.9 0 0 0 .04-.477C48.997 5.259 42.789 0 35.367 0c-6.842 0-12.647 4.462-14.73 10.665a6.92 6.92 0 0 0-4.911-1.374c-3.28.33-5.92 3.002-6.246 6.318a7.2 7.2 0 0 0 .18 2.472C4.3 18.241 0 22.679 0 28.133q0 .74.106 1.453a.46.46 0 0 0 .457.402h43.704a.57.57 0 0 0 .54-.418"
+						></path>
+					</svg>
+				</div>
+				<span class="hero-brand-eyebrow">Cloudflare Workshop</span>
+			</div>
 
-	<div class="home-hero-inner">
-		<div class="home-hero-mark" aria-hidden="true">
-			<svg xmlns="http://www.w3.org/2000/svg" width="56" height="26" viewBox="0 0 66 30" fill="none">
-				<path
-					fill="currentColor"
-					d="M52.688 13.028c-.22 0-.437.008-.654.015a.3.3 0 0 0-.102.024.37.37 0 0 0-.236.255l-.93 3.249c-.401 1.397-.252 2.687.422 3.634.618.876 1.646 1.39 2.894 1.45l5.045.306a.45.45 0 0 1 .435.41.5.5 0 0 1-.025.223.64.64 0 0 1-.547.426l-5.242.306c-2.848.132-5.912 2.456-6.987 5.29l-.378 1a.28.28 0 0 0 .248.382h18.054a.48.48 0 0 0 .464-.35c.32-1.153.482-2.344.48-3.54 0-7.22-5.79-13.072-12.933-13.072M44.807 29.578l.334-1.175c.402-1.397.253-2.687-.42-3.634-.62-.876-1.647-1.39-2.896-1.45l-23.665-.306a.47.47 0 0 1-.374-.199.5.5 0 0 1-.052-.434.64.64 0 0 1 .552-.426l23.886-.306c2.836-.131 5.9-2.456 6.975-5.29l1.362-3.6a.9.9 0 0 0 .04-.477C48.997 5.259 42.789 0 35.367 0c-6.842 0-12.647 4.462-14.73 10.665a6.92 6.92 0 0 0-4.911-1.374c-3.28.33-5.92 3.002-6.246 6.318a7.2 7.2 0 0 0 .18 2.472C4.3 18.241 0 22.679 0 28.133q0 .74.106 1.453a.46.46 0 0 0 .457.402h43.704a.57.57 0 0 0 .54-.418"
-				></path>
-			</svg>
+			<h1 class="hero-title">{SITE.title}</h1>
+			<p class="hero-sub">{SITE.tagline}</p>
+
+			<div class="hero-facts">
+				<div class="hero-fact">
+					<span class="hero-fact-label">Time</span>
+					<span class="hero-fact-value">{SITE.duration}</span>
+				</div>
+				<div class="hero-fact">
+					<span class="hero-fact-label">Cost</span>
+					<span class="hero-fact-value">Free</span>
+				</div>
+				<div class="hero-fact">
+					<span class="hero-fact-label">Format</span>
+					<span class="hero-fact-value">Follow-along</span>
+				</div>
+				<div class="hero-fact">
+					<span class="hero-fact-label">Stack</span>
+					<span class="hero-fact-value">Workers · D1</span>
+				</div>
+			</div>
+
+			<a href="#prereqs" class="hero-cta">
+				Start the workshop
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M5 12h14M12 5l7 7-7 7"></path>
+				</svg>
+			</a>
 		</div>
 
-		<p class="home-hero-eyebrow">Developer follow-along</p>
-		<h1 class="home-hero-title">{SITE.title}</h1>
-		<p class="home-hero-sub">{SITE.tagline}</p>
-
-		<ul class="home-hero-meta">
-			<li>{SITE.duration}</li>
-			<li>Free Cloudflare account</li>
-			<li>Your agent wires it up</li>
-			<li>Workers · D1 · Previews</li>
-		</ul>
-
-		<a href="#prereqs" class="home-hero-cta">
-			Start the follow-along
-			<svg
-				width="14"
-				height="14"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2.5"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				aria-hidden="true"
-			>
-				<path d="M5 12h14M12 5l7 7-7 7"></path>
-			</svg>
-		</a>
+		<div class="hero-preview" aria-hidden="true">
+			<div class="hero-preview-title">You'll build this flow</div>
+			<div class="hero-preview-flow">
+				<div class="hero-flow-node hero-flow-node--prod">
+					<span class="hero-flow-tag">main</span>
+					<span class="hero-flow-name">Production</span>
+					<span class="hero-flow-db">DB: prod</span>
+				</div>
+				<div class="hero-flow-split">
+					<span class="hero-flow-line"></span>
+					<span class="hero-flow-branch">branch</span>
+					<span class="hero-flow-line"></span>
+				</div>
+				<div class="hero-flow-node hero-flow-node--preview">
+					<span class="hero-flow-tag">PR #42</span>
+					<span class="hero-flow-name">Preview</span>
+					<span class="hero-flow-db">DB: preview ✨</span>
+				</div>
+			</div>
+			<p class="hero-preview-cap">Same code, isolated data.</p>
+		</div>
 	</div>
 </section>
