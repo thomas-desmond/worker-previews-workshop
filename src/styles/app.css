@@ -31,6 +31,8 @@
 	--code-bg: #14161a;
 	--code-fg: #e8ecef;
 	--code-accent: #a7e57c;
+	--leader: #be123c;
+	--leader-tint: #fff1f3;
 }
 
 html {
@@ -674,6 +676,72 @@ html {
 	display: flex;
 	flex-direction: column;
 	gap: 1.5rem;
+}
+
+/* ─── LEADER NOTES (review-pass only, not a long-term feature) ── */
+.leader-toolbar {
+	display: flex;
+	justify-content: flex-end;
+	margin: 0 0 1.5rem;
+}
+
+.leader-toggle-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.55rem 0.9rem;
+	border-radius: 0.6rem;
+	border: 1px solid var(--leader);
+	background: var(--leader-tint);
+	color: var(--leader);
+	font-weight: 700;
+	font-size: 0.85rem;
+	cursor: pointer;
+	transition: background 0.15s ease;
+}
+
+.leader-toggle-btn:hover {
+	background: #ffe4e9;
+}
+
+.leader-card {
+	border: 2px dashed var(--leader);
+	background: var(--leader-tint);
+}
+
+.leader-card-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: 0.72rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	font-weight: 800;
+	color: var(--leader);
+	background: #ffe4e9;
+	border: 1px solid #fecdd6;
+	padding: 0.35rem 0.7rem;
+	border-radius: 0.5rem;
+	margin-bottom: 1.25rem;
+}
+
+.leader-card-list {
+	margin: 0;
+	padding-left: 1.25rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.65rem;
+	color: var(--ink);
+	font-size: 0.98rem;
+	line-height: 1.55;
+}
+
+.leader-card-list li::marker {
+	color: var(--leader);
+}
+
+body.leader-notes-hidden .leader-card {
+	display: none;
 }
 
 /* ─── NEXT STEP (forward affordance per card) ─────────────── */

@@ -4,7 +4,7 @@ import Hero from "../components/Hero.astro";
 import { PromptBlock } from "../components/PromptBlock";
 import { StepNav } from "../components/StepNav";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { PROMPTS, REPO_URL, SITE, STEPS } from "../lib/site";
+import { LEADER_NOTES, PROMPTS, REPO_URL, SITE, STEPS } from "../lib/site";
 
 const stepByIndex = (i: number) => STEPS[i];
 ---
@@ -12,6 +12,12 @@ const stepByIndex = (i: number) => STEPS[i];
 <BaseLayout>
 	<Hero slot="hero" />
 	<StepNav slot="nav" client:load />
+
+	<div class="leader-toolbar">
+		<button type="button" id="leader-toggle" class="leader-toggle-btn">
+			🎤 Hide leader notes
+		</button>
+	</div>
 
 	<section class="intro-card">
 		<h2 class="intro-title">What you'll learn</h2>
@@ -84,6 +90,13 @@ const stepByIndex = (i: number) => STEPS[i];
 		</div>
 	</article>
 
+	<article class="stepcard leader-card">
+		<span class="leader-card-badge">🎤 For the room lead</span>
+		<ul class="leader-card-list">
+			{LEADER_NOTES.prereqs?.map((note) => <li>{note}</li>)}
+		</ul>
+	</article>
+
 	{/* ─── Step 1: Deploy ─── */}
 	<article id="deploy" class="stepcard">
 		<div class="stepcard-head">
@@ -150,6 +163,13 @@ const stepByIndex = (i: number) => STEPS[i];
 				</a>
 			</div>
 		</div>
+	</article>
+
+	<article class="stepcard leader-card">
+		<span class="leader-card-badge">🎤 For the room lead</span>
+		<ul class="leader-card-list">
+			{LEADER_NOTES.deploy?.map((note) => <li>{note}</li>)}
+		</ul>
 	</article>
 
 	{/* ─── Step 2: Isolate ─── */}
@@ -251,6 +271,13 @@ git checkout -b isolate-preview-db</code></pre>
 		</div>
 	</article>
 
+	<article class="stepcard leader-card">
+		<span class="leader-card-badge">🎤 For the room lead</span>
+		<ul class="leader-card-list">
+			{LEADER_NOTES.isolate?.map((note) => <li>{note}</li>)}
+		</ul>
+	</article>
+
 	{/* ─── Step 3: Preview ─── */}
 	<article id="preview" class="stepcard">
 		<div class="stepcard-head">
@@ -305,6 +332,13 @@ git checkout -b isolate-preview-db</code></pre>
 		</div>
 	</article>
 
+	<article class="stepcard leader-card">
+		<span class="leader-card-badge">🎤 For the room lead</span>
+		<ul class="leader-card-list">
+			{LEADER_NOTES.preview?.map((note) => <li>{note}</li>)}
+		</ul>
+	</article>
+
 	{/* ─── Step 4: Prove ─── */}
 	<article id="interact" class="stepcard">
 		<div class="stepcard-head">
@@ -356,6 +390,13 @@ git checkout -b isolate-preview-db</code></pre>
 				</a>
 			</div>
 		</div>
+	</article>
+
+	<article class="stepcard leader-card">
+		<span class="leader-card-badge">🎤 For the room lead</span>
+		<ul class="leader-card-list">
+			{LEADER_NOTES.interact?.map((note) => <li>{note}</li>)}
+		</ul>
 	</article>
 
 	{/* ─── Step 5: Observability ─── */}
@@ -413,6 +454,13 @@ git checkout -b isolate-preview-db</code></pre>
 		</div>
 	</article>
 
+	<article class="stepcard leader-card">
+		<span class="leader-card-badge">🎤 For the room lead</span>
+		<ul class="leader-card-list">
+			{LEADER_NOTES.observability?.map((note) => <li>{note}</li>)}
+		</ul>
+	</article>
+
 	{/* ─── Step 6: TBD ─── */}
 	<article id="final" class="stepcard">
 		<div class="stepcard-head">
@@ -459,3 +507,12 @@ git checkout -b isolate-preview-db</code></pre>
 		</div>
 	</article>
 </BaseLayout>
+
+<script>
+	const leaderToggle = document.getElementById("leader-toggle");
+	leaderToggle?.addEventListener("click", () => {
+		document.body.classList.toggle("leader-notes-hidden");
+		const hidden = document.body.classList.contains("leader-notes-hidden");
+		leaderToggle.textContent = hidden ? "🎤 Show leader notes" : "🎤 Hide leader notes";
+	});
+</script>

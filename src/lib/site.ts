@@ -61,6 +61,50 @@ export const STEPS = [
 
 export type StepId = (typeof STEPS)[number]["id"];
 
+/**
+ * Talking points for whoever is leading the room — what to say during the
+ * dead time each step creates (a deploy running, a build finishing) and the
+ * narrative bridge to the next step. Review-pass content: not meant to be a
+ * permanent feature of the public site, just visible enough to sanity-check
+ * the script before Oct 1.
+ */
+export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
+	prereqs: [
+		"Frame the hour before anyone touches a laptop: \"Agents can ship code faster than we can review it. Previews gives every change its own throwaway environment — today you build one slice of that yourself.\"",
+		"Name it explicitly as one piece of the ADLC (Agent Development Lifecycle), not the whole thing.",
+		"While people check the four boxes, confirm room-wide out loud: agent installed, GitHub authed, Cloudflare account created. Don't move on until most hands are up.",
+	],
+	deploy: [
+		"There's a real wait after the click (provisioning + first build) — use it, don't just stand there.",
+		"Narrate exactly what the button did: forked the repo into their account, provisioned a production D1 database, wired up Workers Builds (Cloudflare's own CI/CD) to that repo, deployed the Worker.",
+		"Land the callback line: \"You have production deployed — no Preview yet. That's next, and it's where this gets interesting.\"",
+		"Point at the app while it loads: an Activity Log with three seeded rows — they'll compare this exact data against an isolated copy shortly.",
+		"Plant the seed: \"No GitHub Actions written, no secrets pasted — Workers Builds is already watching this repo. When you open a PR, it just reacts.\"",
+	],
+	isolate: [
+		"Slow down here — this is the conceptual heart of the hour, even though it's \"just editing JSON.\"",
+		"Say the inherits line out loud, it's the one-sentence summary of the whole workshop: \"Your Preview inherits your code automatically. It does not inherit your configuration — bindings like D1 start empty unless you tell it otherwise.\"",
+		"Frame the override block plainly: \"same binding name, pointed at a different database — that's the whole mechanism.\"",
+		"Someone will ask about Durable Objects — the page has the answer in the collapsed aside, use it rather than improvising.",
+	],
+	preview: [
+		"After push + PR, there's dead time while Workers Builds runs — use it.",
+		"Recap what's happening with zero manual steps: no one ran `wrangler preview`, no custom Action — Workers Builds saw the PR and is deploying a Preview on its own, then will comment the URL on the PR.",
+		"Close the loop from Step 1: \"This is the moment that fills the gap — production existed, now the branch gets its own live environment too.\"",
+		"Known flake: the bot comment has been slow/missing in dry runs — have a fallback ready (check the Workers Builds tab directly) rather than stalling the room.",
+	],
+	interact: [
+		"This is the payoff — let it land, don't rush it.",
+		"Narrate while they click: \"You're not being told it's isolated, you're about to watch it.\"",
+		"After they flip to production: ask the room \"who still sees only three rows?\" — get hands up, make it a shared moment, not just individual screens.",
+	],
+	observability: [
+		"Tie back to minute 0 explicitly: \"This is the other half of trust — not just isolated data, isolated logs and traces too.\"",
+		"Warn up front: the Previews tab in Observability is the one screen most people can't find unassisted — point at it before they go hunting.",
+		"If short on time, this is the step to compress; the isolation story already landed last step.",
+	],
+};
+
 export const REPO_URL = "https://github.com/thomas-desmond/d1-template-preview";
 
 export const PROMPTS = {
