@@ -73,5 +73,5 @@ export const PROMPTS = {
 
 Don't ask me questions — just do it.`,
 
-	openPullRequest: `Push this branch and open a pull request against main using the GitHub CLI (\`gh pr create\`). Give it a short, clear title. Print the PR URL when done.`,
+	openPullRequest: `Push this branch and open a pull request against main. If the GitHub CLI (\`gh\`) is installed and authenticated, use \`gh pr create\` with a short, clear title, and print the PR URL when done. If it isn't, just push the branch and print the "Create a pull request" link from the push output so I can open the PR in my browser.`,
 } as const;
