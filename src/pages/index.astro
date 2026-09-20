@@ -140,6 +140,7 @@ const stepByIndex = (i: number) => STEPS[i];
 							<img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
 						</a>
 					</div>
+					<p class="phase-note">If signing in drops you on the template picker, choose <strong>Clone a public repository via Git URL</strong> and enter <code>{REPO_URL}</code>.</p>
 				</div>
 			</div>
 
@@ -194,8 +195,12 @@ const stepByIndex = (i: number) => STEPS[i];
 						<div class="cmd-bar"><span class="cmd-label">Terminal</span></div>
 						<pre><code>git clone https://github.com/&lt;you&gt;/d1-template-preview.git
 cd d1-template-preview
+npm install
+npx wrangler login
+npx wrangler whoami
 git checkout -b isolate-preview-db</code></pre>
 					</div>
+					<p class="phase-note">Confirm <code>wrangler whoami</code> lists the Cloudflare account you used in Step 1. If it lists multiple accounts, set <code>CLOUDFLARE_ACCOUNT_ID</code> to that account's ID for the rest of this terminal session.</p>
 				</div>
 			</div>
 
@@ -294,6 +299,14 @@ git checkout -b isolate-preview-db</code></pre>
 
 		<div class="stepcard-body">
 			<div class="phase">
+				<span class="phase-badge phase-badge--do">Configure</span>
+				<div class="phase-content">
+					<p>In the Worker's <strong>Settings → Builds</strong> configuration, set the non-production branch/version command to <code>npx wrangler preview</code>. Keep the production deploy command unchanged.</p>
+					<p class="phase-note">Deploy to Cloudflare currently configures branch builds with <code>npx wrangler versions upload</code>, which creates a version but not a branch Preview.</p>
+				</div>
+			</div>
+
+			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
 					<p>Ask your agent to push and open the PR:</p>
@@ -304,6 +317,10 @@ git checkout -b isolate-preview-db</code></pre>
 						placeholderLabel="Placeholder — the Workers Builds bot comment on the PR, showing the Preview URL to click."
 						caption="Where the Preview URL shows up. Click it to open your Preview in a new tab."
 					/>
+					<div class="tip">
+						<span class="tip-label">Build or comment missing?</span>
+						<p>If Workers Builds fails with API code <code>10015</code>, or no bot comment appears, run <code>npx wrangler preview</code> from the branch and open the printed <strong>Preview URL</strong>. This uses your Wrangler login while preserving the same branch Preview workflow.</p>
+					</div>
 				</div>
 			</div>
 
@@ -429,6 +446,7 @@ git checkout -b isolate-preview-db</code></pre>
 					<ol class="steps-inline" start="3">
 						<li>Try Delete once more, then open the failed request in the log list.</li>
 					</ol>
+					<p class="phase-note">If your account does not show the Previews selector, continue by comparing the failing delete query in <code>src/index.ts</code> with <code>workshop/preview-schema.sql</code>. Preview log access is entitlement-dependent during the private beta.</p>
 				</div>
 			</div>
 
@@ -486,7 +504,7 @@ git checkout -b isolate-preview-db</code></pre>
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Wait for Workers Builds to update the same Preview URL. Add, refresh, and delete must all pass. Production should still show its original production rows.</p>
+					<p>Wait for Workers Builds to update the same Preview URL. If you used the local fallback, run <code>npx wrangler preview</code> again instead. Add, refresh, and delete must all pass. Production should still show its original production rows.</p>
 				</div>
 			</div>
 
@@ -513,6 +531,19 @@ git checkout -b isolate-preview-db</code></pre>
 
 		<div class="stepcard-body">
 			<p class="wrapup-p">The branch Preview can be removed after merge, but keep <code>workshop-preview-db</code>. Its binding is now part of <code>main</code> and it serves as the shared, production-safe database for future Previews. Those Previews are isolated from production but share this database with each other.</p>
+			<details class="aside">
+				<summary>Finished experimenting? Remove everything</summary>
+				<div class="aside-body">
+					<p>From the cloned repository, delete the Worker and both remote D1 databases, then optionally delete the GitHub repository:</p>
+					<div class="cmd">
+						<div class="cmd-bar"><span class="cmd-label">Terminal</span></div>
+						<pre><code>npx wrangler delete
+npx wrangler d1 delete workshop-preview-db
+npx wrangler d1 delete &lt;production-database-name-from-wrangler.json&gt;</code></pre>
+					</div>
+					<p>Confirm the Worker and databases are gone in the Cloudflare dashboard. Delete the branch Preview there if it is still listed.</p>
+				</div>
+			</details>
 		</div>
 	</article>
 </BaseLayout>
