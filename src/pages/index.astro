@@ -123,12 +123,12 @@ const stepByIndex = (i: number) => STEPS[i];
 				<div class="phase-content">
 					<p>Clicking the button below will:</p>
 					<ul class="tight-list">
-						<li>Fork the app repo into your GitHub account</li>
+						<li>Create a repo in your GitHub account</li>
 						<li>Provision a production D1 database</li>
 						<li>Connect <strong>Workers Builds</strong> (Cloudflare's CI/CD) to that repo</li>
 						<li>Deploy the Worker</li>
 					</ul>
-					<p class="phase-note">No custom GitHub Actions to set up, no secrets to paste — automatic.</p>
+					<p class="phase-note">The dashboard then asks you to pick a GitHub account and a D1 database. Create a <strong>new</strong> database — don't select an existing one. Leave Preview builds on. No custom GitHub Actions, no secrets to paste.</p>
 
 					<div class="deploy-cta-wrap">
 						<a
@@ -189,7 +189,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Setup</span>
 				<div class="phase-content">
-					<p>First, get the repo onto your machine and make a branch:</p>
+					<p>Clone the repo the button just created in your GitHub account, then make a branch. The name is usually <code>d1-template-preview</code> unless you changed it in the deploy form:</p>
 					<div class="cmd">
 						<div class="cmd-bar"><span class="cmd-label">Terminal</span></div>
 						<pre><code>git clone https://github.com/&lt;you&gt;/d1-template-preview.git
@@ -298,11 +298,11 @@ git checkout -b isolate-preview-db</code></pre>
 				<div class="phase-content">
 					<p>Ask your agent to push and open the PR:</p>
 					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.openPullRequest} />
-					<p class="phase-note">Within a minute or two, <strong>Workers Builds</strong> deploys the Preview and comments the URL directly on your pull request.</p>
+					<p class="phase-note">Within a minute or two, <strong>Workers Builds</strong> deploys the Preview and comments the URL on your pull request. If the comment still says the build is in progress and the URL cell is empty, open the <strong>Workers Builds</strong> check on the PR, or visit <code>https://&lt;branch&gt;-&lt;worker-name&gt;.&lt;your-subdomain&gt;.workers.dev</code> — for this workshop that's usually <code>isolate-preview-db-d1-template-preview.&lt;your-subdomain&gt;.workers.dev</code>.</p>
 					<Figure
 						alt="A GitHub pull request with a Cloudflare Workers and Pages bot comment containing the Preview deployment URL."
-						placeholderLabel="Placeholder — the Workers Builds bot comment on the PR, showing the Preview URL to click."
-						caption="Where the Preview URL shows up. Click it to open your Preview in a new tab."
+						placeholderLabel="Placeholder — the Workers Builds bot comment on the PR. If Status is still In progress and Deployment URL is empty, use the Workers Builds check instead."
+						caption="Where the Preview URL usually shows up. If the URL cell is empty, use the Workers Builds check on the PR."
 					/>
 				</div>
 			</div>
@@ -359,7 +359,7 @@ git checkout -b isolate-preview-db</code></pre>
 				<div class="phase-content">
 					<p>The SQL fixture lives outside <code>migrations/</code>, so production automation cannot discover it. Ask your agent to apply it to the Preview database by name:</p>
 					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.applyPreviewSchema} />
-					<p class="phase-note">Using the account-level database name rather than the <code>DB</code> binding is deliberate: the binding in top-level Wrangler configuration is production.</p>
+					<p class="phase-note">Using the account-level database name rather than the <code>DB</code> binding is deliberate: the binding in top-level Wrangler configuration is production. <code>--yes</code> skips Wrangler's "this may take some time" confirmation, which otherwise blocks a non-interactive agent.</p>
 				</div>
 			</div>
 
@@ -419,15 +419,16 @@ git checkout -b isolate-preview-db</code></pre>
 					<p>In the Cloudflare dashboard:</p>
 					<ol class="steps-inline">
 						<li>Go to <strong>Workers &amp; Pages</strong> → your Worker.</li>
-						<li>Open the <strong>Observability</strong> tab (production view), then switch to <strong>Previews</strong> and select your branch.</li>
+						<li>In the Worker header, open the environment dropdown (it currently says <strong>Production</strong>) and select your branch name — for this workshop, <code>isolate-preview-db</code>.</li>
+						<li>Open the <strong>Observability</strong> tab.</li>
 					</ol>
 					<Figure
-						alt="The Cloudflare dashboard Observability tab for the Worker, with the Previews view selected and the attendee's branch chosen from the selector."
-						placeholderLabel="Placeholder — the dashboard: Workers & Pages → your Worker → Observability tab, with the Previews view and your branch selected."
-						caption="The screen most people can't find on their own: switch from the production view to Previews, then pick your branch."
+						alt="The Cloudflare dashboard Worker header with the environment dropdown open, showing Production and the isolate-preview-db branch."
+						placeholderLabel="Placeholder — the Worker header environment dropdown: Production vs your branch name. There is no separate Previews tab."
+						caption="The screen most people can't find on their own: switch the Worker from Production to your branch, then open Observability. Production's log list will not show the delete errors."
 					/>
-					<ol class="steps-inline" start="3">
-						<li>Try Delete once more, then open the failed request in the log list.</li>
+					<ol class="steps-inline" start="4">
+						<li>Try Delete once more, then open a failed <code>DELETE</code> request in the log list.</li>
 					</ol>
 				</div>
 			</div>
@@ -513,6 +514,21 @@ git checkout -b isolate-preview-db</code></pre>
 
 		<div class="stepcard-body">
 			<p class="wrapup-p">The branch Preview can be removed after merge, but keep <code>workshop-preview-db</code>. Its binding is now part of <code>main</code> and it serves as the shared, production-safe database for future Previews. Those Previews are isolated from production but share this database with each other.</p>
+
+			<details class="aside">
+				<summary>Want these gone from your account?</summary>
+				<div class="aside-body">
+					<p>Optional. Closing the pull request deletes the Preview deployment, not the GitHub repo, Worker, or D1 databases. Those persist until you delete them.</p>
+					<div class="cmd">
+						<div class="cmd-bar"><span class="cmd-label">Terminal</span></div>
+						<pre><code>npx wrangler delete d1-template-preview
+npx wrangler d1 delete d1-template-database
+npx wrangler d1 delete workshop-preview-db
+gh repo delete &lt;you&gt;/d1-template-preview</code></pre>
+					</div>
+					<p>Use the names from your deploy form if you changed them. Confirm each <code>wrangler</code> / <code>gh</code> prompt. You can also delete the Worker and both databases from the Cloudflare dashboard, and the repo from GitHub → Settings → Delete repository.</p>
+				</div>
+			</details>
 		</div>
 	</article>
 </BaseLayout>

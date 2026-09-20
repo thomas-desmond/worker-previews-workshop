@@ -85,12 +85,13 @@ export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 		"Slow down here: production settings stay top-level and Preview settings belong in the previews block.",
 		"This database is isolated from production, but it becomes the shared Preview database after the PR merges.",
 		"Frame the override plainly: same DB binding name, different account-level resource.",
+		"Wrangler may offer to add the new D1 to wrangler.json itself — that writes a top-level binding. Attendees should decline and put it under previews instead.",
 	],
 	preview: [
 		"After push + PR, there's dead time while Workers Builds runs — use it.",
 		"Recap what's happening with zero manual deploy steps: Workers Builds runs `wrangler preview` for the branch and comments the stable URL on the PR.",
 		"Close the loop from Step 1: \"This is the moment that fills the gap — production existed, now the branch gets its own live environment too.\"",
-		"Known flake: the bot comment has been slow/missing in dry runs — have a fallback ready (check the Workers Builds tab directly) rather than stalling the room.",
+		"Known flake: the bot comment often posts while the build is still in progress, with an empty URL, and may not update. Fallback: the Workers Builds check on the PR, or `https://<branch>-<worker-name>.<subdomain>.workers.dev`.",
 	],
 	interact: [
 		"The SQL file is outside migrations on purpose. Applying it by Preview database name is the safety boundary.",
@@ -98,7 +99,8 @@ export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 		"The visible error is deliberate evidence, not workshop breakage.",
 	],
 	observability: [
-		"Use the Worker breadcrumb to select the branch Preview before opening Observability.",
+		"The control is the environment dropdown in the Worker header — it currently says Production. Pick the branch name, then open Observability. There is no separate Previews tab.",
+		"Production Observability will show zero errors. The delete failures only appear after you switch to the branch.",
 		"The structured activity_log.delete_failed event should contain the useful D1 error and entry ID.",
 		"Attendees can copy the error or let an Observability-enabled agent retrieve it.",
 	],
@@ -113,7 +115,7 @@ export const REPO_URL = "https://github.com/thomas-desmond/d1-template-preview";
 export const PROMPTS = {
 	isolateResource: `I'm on a new git branch off main in this repo. Configure a shared, production-safe D1 database for Worker Previews:
 
-1. Run \`npx wrangler d1 create workshop-preview-db\` to create a brand new D1 database — don't reuse the production one.
+1. Run \`npx wrangler d1 create workshop-preview-db\` to create a brand new D1 database — don't reuse the production one. If Wrangler asks to add the binding to wrangler.json for you, decline.
 2. In \`wrangler.json\`, add a \`previews.d1_databases\` block using binding name \`DB\` (same binding name as the top-level production entry) with the \`database_id\` and \`database_name\` from step 1.
 3. Add \`previews.observability\` with \`enabled: true\`.
 4. Do not modify the top-level production configuration.
@@ -123,7 +125,11 @@ Don't ask me questions — just do it.`,
 
 	openPullRequest: `Push this branch and open a pull request against main. If the GitHub CLI (\`gh\`) is installed and authenticated, use \`gh pr create\` with a short, clear title, and print the PR URL when done. If it isn't, just push the branch and print the "Create a pull request" link from the push output so I can open the PR in my browser.`,
 
-	applyPreviewSchema: `Apply the workshop schema fixture to the remote D1 database named \`workshop-preview-db\` using \`npx wrangler d1 execute\` and \`workshop/preview-schema.sql\`. Use the database name exactly as written. Do not run any command against the \`DB\` binding or the production database. Print the command result when complete.`,
+	applyPreviewSchema: `Apply the workshop schema fixture to the remote D1 database named \`workshop-preview-db\` with:
+
+\`npx wrangler d1 execute workshop-preview-db --remote --yes --file workshop/preview-schema.sql\`
+
+Use the database name exactly as written. Include \`--remote\` and \`--yes\`. Do not run any command against the \`DB\` binding or the production database. Print the command result when complete.`,
 
 	diagnoseAndFix: `Test this branch's deployed Preview as a user: add an entry, refresh and confirm it persists, then delete an entry. Diagnose the delete failure using the response, the repository, and the Preview's Observability logs if available.
 
