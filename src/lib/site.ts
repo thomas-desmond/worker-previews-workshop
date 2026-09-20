@@ -90,7 +90,7 @@ export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 		"After push + PR, there's dead time while Workers Builds runs — use it.",
 		"Recap what's happening with zero manual deploy steps: Workers Builds runs `wrangler preview` for the branch and comments the stable URL on the PR.",
 		"Close the loop from Step 1: \"This is the moment that fills the gap — production existed, now the branch gets its own live environment too.\"",
-		"Known flake: the bot comment has been slow/missing in dry runs — have a fallback ready (check the Workers Builds tab directly) rather than stalling the room.",
+		"Known blockers: the bot comment can be missing, and a Builds token without Preview entitlement fails with API code 10015. Use `npx wrangler preview` as the room fallback.",
 	],
 	interact: [
 		"The SQL file is outside migrations on purpose. Applying it by Preview database name is the safety boundary.",
@@ -100,7 +100,7 @@ export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 	observability: [
 		"Use the Worker breadcrumb to select the branch Preview before opening Observability.",
 		"The structured activity_log.delete_failed event should contain the useful D1 error and entry ID.",
-		"Attendees can copy the error or let an Observability-enabled agent retrieve it.",
+		"If the account has no Previews selector, have attendees compare the delete query with workshop/preview-schema.sql instead of stalling.",
 	],
 	final: [
 		"The repair must support production's id column and the Preview's activity_id column. Do not accept a Preview-only fix.",
@@ -123,7 +123,7 @@ Don't ask me questions — just do it.`,
 
 	openPullRequest: `Push this branch and open a pull request against main. If the GitHub CLI (\`gh\`) is installed and authenticated, use \`gh pr create\` with a short, clear title, and print the PR URL when done. If it isn't, just push the branch and print the "Create a pull request" link from the push output so I can open the PR in my browser.`,
 
-	applyPreviewSchema: `Apply the workshop schema fixture to the remote D1 database named \`workshop-preview-db\` using \`npx wrangler d1 execute\` and \`workshop/preview-schema.sql\`. Use the database name exactly as written. Do not run any command against the \`DB\` binding or the production database. Print the command result when complete.`,
+	applyPreviewSchema: `Apply the workshop schema fixture to the remote D1 database named \`workshop-preview-db\` using \`npx wrangler d1 execute workshop-preview-db --remote --file workshop/preview-schema.sql\`. Use the database name exactly as written. Do not run any command against the \`DB\` binding or the production database. Print the command result when complete.`,
 
 	diagnoseAndFix: `Test this branch's deployed Preview as a user: add an entry, refresh and confirm it persists, then delete an entry. Diagnose the delete failure using the response, the repository, and the Preview's Observability logs if available.
 
