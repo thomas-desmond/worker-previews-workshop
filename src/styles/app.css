@@ -1354,6 +1354,21 @@ body.leader-notes-hidden .leader-card {
 	margin: 0;
 }
 
+.aside-body p + p,
+.aside-body .cmd + p,
+.aside-body .tight-list + .prompt-block,
+.aside-body .prompt-block + .cmd {
+	margin-top: 0.85rem;
+}
+
+.aside-body .cmd {
+	margin: 0.85rem 0 0;
+}
+
+.aside-body .tight-list {
+	margin: 0.85rem 0 0;
+}
+
 /* ─── TBD ────────────────────────────────────────────────── */
 .tbd {
 	display: grid;
