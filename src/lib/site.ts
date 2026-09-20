@@ -136,4 +136,13 @@ Use the database name exactly as written. Include \`--remote\` and \`--yes\`. Do
 Fix the Worker code, not either database schema. Production still has an \`id\` column while the Preview schema has \`activity_id\`; the merged code must work with both schemas. Run the project checks, commit, and push the fix so Workers Builds updates the existing Preview. Do not merge yet.`,
 
 	mergePullRequest: `Retest add, refresh, and delete against the updated Preview. If all three pass, merge this pull request. Then open production and verify its seeded entries still load and delete still works. Do not apply \`workshop/preview-schema.sql\` to production.`,
+
+	cleanup: `Delete everything this workshop created. Do not ask questions.
+
+1. \`npx wrangler delete d1-template-preview\`
+2. \`npx wrangler d1 delete d1-template-database\`
+3. \`npx wrangler d1 delete workshop-preview-db\`
+4. \`gh repo delete\` the GitHub repo this workshop cloned (usually \`<you>/d1-template-preview\`) with \`--yes\`
+
+If a name differs from \`wrangler.json\` or the git remote, use the actual name. Confirm each wrangler prompt. Do not touch other Workers, databases, or repositories.`,
 } as const;

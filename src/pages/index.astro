@@ -516,17 +516,25 @@ git checkout -b isolate-preview-db</code></pre>
 			<p class="wrapup-p">The branch Preview can be removed after merge, but keep <code>workshop-preview-db</code>. Its binding is now part of <code>main</code> and it serves as the shared, production-safe database for future Previews. Those Previews are isolated from production but share this database with each other.</p>
 
 			<details class="aside">
-				<summary>Want these gone from your account?</summary>
+				<summary>Want everything gone?</summary>
 				<div class="aside-body">
-					<p>Optional. Closing the pull request deletes the Preview deployment, not the GitHub repo, Worker, or D1 databases. Those persist until you delete them.</p>
+					<p>Optional. Closing the pull request only deletes the Preview deployment. The GitHub repo, Worker, and both D1 databases stay until you delete them.</p>
+					<p>Default names — use yours if you changed them in the deploy form:</p>
+					<ul class="tight-list">
+						<li>GitHub repo: <code>&lt;you&gt;/d1-template-preview</code></li>
+						<li>Worker: <code>d1-template-preview</code></li>
+						<li>Production D1: <code>d1-template-database</code></li>
+						<li>Preview D1: <code>workshop-preview-db</code></li>
+					</ul>
+					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.cleanup} />
 					<div class="cmd">
 						<div class="cmd-bar"><span class="cmd-label">Terminal</span></div>
 						<pre><code>npx wrangler delete d1-template-preview
 npx wrangler d1 delete d1-template-database
 npx wrangler d1 delete workshop-preview-db
-gh repo delete &lt;you&gt;/d1-template-preview</code></pre>
+gh repo delete &lt;you&gt;/d1-template-preview --yes</code></pre>
 					</div>
-					<p>Use the names from your deploy form if you changed them. Confirm each <code>wrangler</code> / <code>gh</code> prompt. You can also delete the Worker and both databases from the Cloudflare dashboard, and the repo from GitHub → Settings → Delete repository.</p>
+					<p>Confirm each <code>wrangler</code> prompt. From the dashboard: Workers &amp; Pages → your Worker → Manage → Delete; D1 → each database → Delete; GitHub → Settings → Delete repository.</p>
 				</div>
 			</details>
 		</div>

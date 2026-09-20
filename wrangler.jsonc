@@ -4,5 +4,8 @@
 	"compatibility_date": "2026-08-07",
 	"assets": {
 		"directory": "./dist"
-	}
+	},
+	// Required so Workers Builds can run `npx wrangler preview` on PRs.
+	// This site is not the student Previews exercise; the block can stay empty.
+	"previews": {}
 }
