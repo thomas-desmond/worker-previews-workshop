@@ -181,7 +181,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(2).label}</h2>
-				<p class="stepcard-lede">Give your branch its own database, so its Preview has real data to show.</p>
+				<p class="stepcard-lede">Give every Preview a production-safe D1 binding and its own observability settings.</p>
 			</div>
 		</div>
 
@@ -203,7 +203,7 @@ git checkout -b isolate-preview-db</code></pre>
 				<span class="phase-badge phase-badge--why">Why</span>
 				<div class="phase-content">
 					<p>
-						Previews inherit your <strong>code</strong> automatically — same branch, same routes. They do <strong>not</strong> inherit your <strong>configuration</strong> — variables, secrets, and bindings like D1 come from a separate Previews config that starts <strong>empty</strong> unless someone sets one.
+						Previews inherit your <strong>code</strong> automatically. Their variables, secrets, bindings, and observability come from separate Preview configuration, so production resources are never used accidentally.
 					</p>
 
 					<div class="concept-diagram">
@@ -219,7 +219,7 @@ git checkout -b isolate-preview-db</code></pre>
 						</div>
 					</div>
 
-					<p>D1, KV, R2, and most other resources bind by ID. Two deployments pointing at the same ID share the same data. To isolate one, bind it to a <em>different</em> resource. That's what you're about to do.</p>
+					<p>D1, KV, R2, and most other resources bind by ID. You will create one D1 database that is isolated from production and retain it as this Worker's shared Preview database.</p>
 				</div>
 			</div>
 
@@ -235,12 +235,13 @@ git checkout -b isolate-preview-db</code></pre>
   ],
   "previews": {
     "d1_databases": [
-      { "binding": "DB", "database_name": "workshop-preview-db" } // your branch
-    ]
+      { "binding": "DB", "database_name": "workshop-preview-db" }
+    ],
+    "observability": { "enabled": true }
   }
 }`}</code></pre>
 					</div>
-					<p class="phase-note">Same binding name (<code>DB</code>), different database — that's the whole mechanism.</p>
+					<p class="phase-note">Same binding name (<code>DB</code>), different database. This block will remain on <code>main</code> after the PR merges.</p>
 					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.isolateResource} />
 				</div>
 			</div>
@@ -248,7 +249,7 @@ git checkout -b isolate-preview-db</code></pre>
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p><code>wrangler.json</code> now has a <code>previews.d1_databases</code> block pointing at a database that isn't the production one, and the change is committed.</p>
+					<p><code>wrangler.json</code> now points Previews at <code>workshop-preview-db</code>, enables Preview observability, leaves production untouched, and has the change committed.</p>
 				</div>
 			</div>
 
@@ -287,7 +288,7 @@ git checkout -b isolate-preview-db</code></pre>
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(3).label}</h2>
-				<p class="stepcard-lede">Push the branch, open a pull request, and Workers Builds does the rest.</p>
+				<p class="stepcard-lede">Push the branch, open a pull request, and let Workers Builds run <code>wrangler preview</code>.</p>
 			</div>
 		</div>
 
@@ -309,11 +310,11 @@ git checkout -b isolate-preview-db</code></pre>
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Open the Preview URL from the PR — you should see an <strong>empty</strong> Activity Log, no seeded rows. That's your new database, freshly created.</p>
+					<p>Open the Preview URL from the PR. The page should render successfully and explain that the D1 binding exists but its schema has not been applied.</p>
 					<Figure
-						src="/screenshots/app-preview-empty.png"
-						alt="The Preview Activity Log showing 'No entries yet.' — no seeded rows, because the Preview has its own fresh, empty database."
-						caption="Your Preview — same code, but its own empty database. No seeded rows."
+						alt="The Preview Activity Log explaining that its connected D1 database needs the workshop schema."
+						placeholderLabel="Preview setup state — the database is connected, but workshop/preview-schema.sql has not been applied."
+						caption="A missing schema is an expected setup state, not a broken page."
 					/>
 					<div class="tip tip--pin">
 						<span class="tip-label">Keep both tabs open</span>
@@ -325,7 +326,7 @@ git checkout -b isolate-preview-db</code></pre>
 			<div class="step-next">
 				<a href="#interact" class="step-next-link">
 					<span class="step-next-hint">Next</span>
-					Prove isolation
+					Apply the schema
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
 				</a>
 			</div>
@@ -348,7 +349,7 @@ git checkout -b isolate-preview-db</code></pre>
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(4).label}</h2>
-				<p class="stepcard-lede">Don't take the empty list on faith. Write to it, then check production.</p>
+				<p class="stepcard-lede">Apply a Preview-only candidate schema, then test the real user workflow.</p>
 			</div>
 		</div>
 
@@ -356,21 +357,20 @@ git checkout -b isolate-preview-db</code></pre>
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
-					<ol class="steps-inline">
-						<li>On your <strong>Preview</strong> tab, type something into <strong>Log an activity…</strong> and click <strong>Add entry</strong>.</li>
-						<li>Switch to your <strong>production</strong> tab from Step 1 and refresh it.</li>
-					</ol>
+					<p>The SQL fixture lives outside <code>migrations/</code>, so production automation cannot discover it. Ask your agent to apply it to the Preview database by name:</p>
+					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.applyPreviewSchema} />
+					<p class="phase-note">Using the account-level database name rather than the <code>DB</code> binding is deliberate: the binding in top-level Wrangler configuration is production.</p>
 				</div>
 			</div>
 
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Production still shows only its original three rows. The entry you just added is nowhere to be found. Two deployments of the same code, two separate databases.</p>
+					<p>Refresh the Preview. It now shows three rows containing the word <strong>Preview</strong>. Add an entry and refresh: it persists. Click <strong>Delete</strong>: it fails and the page displays an error while preserving the row.</p>
 					<Figure
-						src="/screenshots/app-preview-added-entry.png"
-						alt="The Preview Activity Log now showing a single entry the attendee just added, while production is unchanged."
-						caption="Your new entry lives only in the Preview. Flip to your production tab — still just the three seeded rows."
+						alt="The Preview Activity Log showing Preview-specific seed rows and a visible delete failure message."
+						placeholderLabel="Preview after setup — Preview seed rows load, add and refresh work, and delete shows an error."
+						caption="The candidate schema exposed a real compatibility bug without changing production."
 					/>
 				</div>
 			</div>
@@ -408,7 +408,7 @@ git checkout -b isolate-preview-db</code></pre>
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(5).label}</h2>
-				<p class="stepcard-lede">Your Preview has its own logs and traces too — not just its own database.</p>
+				<p class="stepcard-lede">Use the failed request's structured log to find the schema mismatch.</p>
 			</div>
 		</div>
 
@@ -427,7 +427,7 @@ git checkout -b isolate-preview-db</code></pre>
 						caption="The screen most people can't find on their own: switch from the production view to Previews, then pick your branch."
 					/>
 					<ol class="steps-inline" start="3">
-						<li>Refresh your Preview URL a couple of times, then check the request list.</li>
+						<li>Try Delete once more, then open the failed request in the log list.</li>
 					</ol>
 				</div>
 			</div>
@@ -435,7 +435,7 @@ git checkout -b isolate-preview-db</code></pre>
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Requests and logs scoped to your branch's Preview — separate from production's traffic, same as the database.</p>
+					<p>Find <code>activity_log.delete_failed</code>. Its D1 error should identify the old column reference. Copy the error for your agent, or let an agent with Observability MCP access retrieve it.</p>
 					<Figure
 						alt="The Observability request list scoped to the Preview branch, showing only the requests made to the Preview URL, separate from production traffic."
 						placeholderLabel="Placeholder — the per-branch request/log list, showing only your Preview's requests (not production's)."
@@ -447,7 +447,7 @@ git checkout -b isolate-preview-db</code></pre>
 			<div class="step-next">
 				<a href="#final" class="step-next-link">
 					<span class="step-next-hint">Next</span>
-					Final step
+					Fix and merge
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
 				</a>
 			</div>
@@ -461,7 +461,7 @@ git checkout -b isolate-preview-db</code></pre>
 		</ul>
 	</article>
 
-	{/* ─── Step 6: TBD ─── */}
+	{/* ─── Step 6: Fix and merge ─── */}
 	<article id="final" class="stepcard">
 		<div class="stepcard-head">
 			<div class="stepcard-badge">
@@ -470,16 +470,30 @@ git checkout -b isolate-preview-db</code></pre>
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(6).label}</h2>
-				<p class="stepcard-lede">Pending a conversation with Yomna.</p>
+				<p class="stepcard-lede">Repair the incompatibility, prove the Preview works, then promote only safe code.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
-			<div class="tbd">
-				<span class="tbd-icon" aria-hidden="true">?</span>
-				<div>
-					<p class="tbd-title">Not decided yet</p>
-					<p>This is a genuine placeholder, not a mistake — the final step of the workshop is still being worked out with Yomna (PM). Don't build content into this slot until that's settled.</p>
+			<div class="phase">
+				<span class="phase-badge phase-badge--do">Do</span>
+				<div class="phase-content">
+					<PromptBlock label="Give the error and this prompt to your agent" text={PROMPTS.diagnoseAndFix} />
+					<p class="phase-note">A change from <code>id</code> to <code>activity_id</code> would only fix the Preview. The repair must also work with production's unchanged schema.</p>
+				</div>
+			</div>
+
+			<div class="phase">
+				<span class="phase-badge phase-badge--verify">Verify</span>
+				<div class="phase-content">
+					<p>Wait for Workers Builds to update the same Preview URL. Add, refresh, and delete must all pass. Production should still show its original production rows.</p>
+				</div>
+			</div>
+
+			<div class="phase">
+				<span class="phase-badge phase-badge--do">Merge</span>
+				<div class="phase-content">
+					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.mergePullRequest} />
 				</div>
 			</div>
 		</div>
@@ -493,17 +507,12 @@ git checkout -b isolate-preview-db</code></pre>
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">Clean up</h2>
-				<p class="stepcard-lede">One command to tidy the D1 database you created.</p>
+				<p class="stepcard-lede">Know what persists after the pull request closes.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
-			<p class="wrapup-p">Closing or merging your pull request deletes the Preview deployment automatically. It does <strong>not</strong> delete the D1 database you created in Step 2 — that's a standalone account resource that outlives the branch. Delete it yourself once you're done:</p>
-
-			<div class="cmd">
-				<div class="cmd-bar"><span class="cmd-label">Terminal</span></div>
-				<pre><code>npx wrangler d1 delete workshop-preview-db</code></pre>
-			</div>
+			<p class="wrapup-p">The branch Preview can be removed after merge, but keep <code>workshop-preview-db</code>. Its binding is now part of <code>main</code> and it serves as the shared, production-safe database for future Previews. Those Previews are isolated from production but share this database with each other.</p>
 		</div>
 	</article>
 </BaseLayout>

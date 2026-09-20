@@ -2,8 +2,8 @@ export const SITE = {
 	title: "Worker Previews Workshop",
 	tagline: "Isolated environments for every change your agent makes.",
 	description:
-		"A follow-along: deploy a real app to Cloudflare, then give one branch its own isolated D1 database with a Preview deployment — and prove it never touches production.",
-	duration: "30–40 min",
+		"Deploy a production Worker, test a candidate D1 schema safely in a Preview, diagnose a real failure, and merge a fix without changing production data.",
+	duration: "40–50 min",
 	audience: "Developers",
 } as const;
 
@@ -25,8 +25,8 @@ export const STEPS = [
 	{
 		id: "isolate",
 		num: "2",
-		label: "Isolate a resource",
-		short: "Isolate",
+		label: "Configure Previews",
+		short: "Configure",
 		time: "8 min",
 	},
 	{
@@ -39,9 +39,9 @@ export const STEPS = [
 	{
 		id: "interact",
 		num: "4",
-		label: "Prove isolation",
-		short: "Prove it",
-		time: "3 min",
+		label: "Apply and test",
+		short: "Test",
+		time: "8 min",
 	},
 	{
 		id: "observability",
@@ -53,9 +53,9 @@ export const STEPS = [
 	{
 		id: "final",
 		num: "6",
-		label: "TBD",
-		short: "TBD",
-		time: "—",
+		label: "Fix and merge",
+		short: "Fix",
+		time: "10 min",
 	},
 ] as const;
 
@@ -82,40 +82,52 @@ export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 		"Plant the seed: \"No GitHub Actions written, no secrets pasted — Workers Builds is already watching this repo. When you open a PR, it just reacts.\"",
 	],
 	isolate: [
-		"Slow down here — this is the conceptual heart of the hour, even though it's \"just editing JSON.\"",
-		"Say the inherits line out loud, it's the one-sentence summary of the whole workshop: \"Your Preview inherits your code automatically. It does not inherit your configuration — bindings like D1 start empty unless you tell it otherwise.\"",
-		"Frame the override block plainly: \"same binding name, pointed at a different database — that's the whole mechanism.\"",
-		"Someone will ask about Durable Objects — the page has the answer in the collapsed aside, use it rather than improvising.",
+		"Slow down here: production settings stay top-level and Preview settings belong in the previews block.",
+		"This database is isolated from production, but it becomes the shared Preview database after the PR merges.",
+		"Frame the override plainly: same DB binding name, different account-level resource.",
 	],
 	preview: [
 		"After push + PR, there's dead time while Workers Builds runs — use it.",
-		"Recap what's happening with zero manual steps: no one ran `wrangler preview`, no custom Action — Workers Builds saw the PR and is deploying a Preview on its own, then will comment the URL on the PR.",
+		"Recap what's happening with zero manual deploy steps: Workers Builds runs `wrangler preview` for the branch and comments the stable URL on the PR.",
 		"Close the loop from Step 1: \"This is the moment that fills the gap — production existed, now the branch gets its own live environment too.\"",
 		"Known flake: the bot comment has been slow/missing in dry runs — have a fallback ready (check the Workers Builds tab directly) rather than stalling the room.",
 	],
 	interact: [
-		"This is the payoff — let it land, don't rush it.",
-		"Narrate while they click: \"You're not being told it's isolated, you're about to watch it.\"",
-		"After they flip to production: ask the room \"who still sees only three rows?\" — get hands up, make it a shared moment, not just individual screens.",
+		"The SQL file is outside migrations on purpose. Applying it by Preview database name is the safety boundary.",
+		"Have everyone test all three behaviors: add, refresh, delete. Delete is expected to fail.",
+		"The visible error is deliberate evidence, not workshop breakage.",
 	],
 	observability: [
-		"Tie back to minute 0 explicitly: \"This is the other half of trust — not just isolated data, isolated logs and traces too.\"",
-		"Warn up front: the Previews tab in Observability is the one screen most people can't find unassisted — point at it before they go hunting.",
-		"If short on time, this is the step to compress; the isolation story already landed last step.",
+		"Use the Worker breadcrumb to select the branch Preview before opening Observability.",
+		"The structured activity_log.delete_failed event should contain the useful D1 error and entry ID.",
+		"Attendees can copy the error or let an Observability-enabled agent retrieve it.",
+	],
+	final: [
+		"The repair must support production's id column and the Preview's activity_id column. Do not accept a Preview-only fix.",
+		"After the second Preview deployment passes, merge and verify production. No SQL from workshop/ is ever applied there.",
 	],
 };
 
 export const REPO_URL = "https://github.com/thomas-desmond/d1-template-preview";
 
 export const PROMPTS = {
-	isolateResource: `I'm on a new git branch off main in this repo. Give this branch its own isolated D1 database as a Preview override:
+	isolateResource: `I'm on a new git branch off main in this repo. Configure a shared, production-safe D1 database for Worker Previews:
 
 1. Run \`npx wrangler d1 create workshop-preview-db\` to create a brand new D1 database — don't reuse the production one.
 2. In \`wrangler.json\`, add a \`previews.d1_databases\` block using binding name \`DB\` (same binding name as the top-level production entry) with the \`database_id\` and \`database_name\` from step 1.
-3. Do not modify the top-level \`d1_databases\` entry — that's production, leave it alone.
-4. Commit the change.
+3. Add \`previews.observability\` with \`enabled: true\`.
+4. Do not modify the top-level production configuration.
+5. Commit the change. This Preview configuration is intended to remain when the branch merges.
 
 Don't ask me questions — just do it.`,
 
 	openPullRequest: `Push this branch and open a pull request against main. If the GitHub CLI (\`gh\`) is installed and authenticated, use \`gh pr create\` with a short, clear title, and print the PR URL when done. If it isn't, just push the branch and print the "Create a pull request" link from the push output so I can open the PR in my browser.`,
+
+	applyPreviewSchema: `Apply the workshop schema fixture to the remote D1 database named \`workshop-preview-db\` using \`npx wrangler d1 execute\` and \`workshop/preview-schema.sql\`. Use the database name exactly as written. Do not run any command against the \`DB\` binding or the production database. Print the command result when complete.`,
+
+	diagnoseAndFix: `Test this branch's deployed Preview as a user: add an entry, refresh and confirm it persists, then delete an entry. Diagnose the delete failure using the response, the repository, and the Preview's Observability logs if available.
+
+Fix the Worker code, not either database schema. Production still has an \`id\` column while the Preview schema has \`activity_id\`; the merged code must work with both schemas. Run the project checks, commit, and push the fix so Workers Builds updates the existing Preview. Do not merge yet.`,
+
+	mergePullRequest: `Retest add, refresh, and delete against the updated Preview. If all three pass, merge this pull request. Then open production and verify its seeded entries still load and delete still works. Do not apply \`workshop/preview-schema.sql\` to production.`,
 } as const;
