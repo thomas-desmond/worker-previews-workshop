@@ -47,7 +47,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(0).label}</h2>
-				<p class="stepcard-lede">Gather these four things before you start. Nothing scary — most you probably already have.</p>
+				<p class="stepcard-lede">Gather these four things before you start. Nothing scary, you probably have most of these already.</p>
 			</div>
 		</div>
 
@@ -78,7 +78,7 @@ const stepByIndex = (i: number) => STEPS[i];
 					<span class="checklist-icon" aria-hidden="true">4</span>
 					<div>
 						<p class="checklist-title">A free Cloudflare account</p>
-						<p class="checklist-note">No credit card required. <a href="https://dash.cloudflare.com/sign-up">Sign up</a> now — one less thing to do mid-step.</p>
+						<p class="checklist-note">No credit card required. <a href="https://dash.cloudflare.com/sign-up">Sign up</a> now, so it's one less thing to do mid-step.</p>
 					</div>
 				</div>
 			</div>
@@ -146,11 +146,11 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Open the production URL Cloudflare gives you. You should see an <strong>Activity Log</strong> with three seeded entries. Remember what's in there — you'll compare it against your Preview shortly.</p>
+					<p>Open the production URL Cloudflare gives you. You should see an <strong>Activity Log</strong> with three seeded entries. Remember what's in there. You'll compare it against your Preview shortly.</p>
 					<Figure
 						src="/screenshots/app-production-seeded.png"
 						alt="The production Activity Log showing three seeded entries: Wired up Workers Builds, Provisioned the D1 database, and Deployed the production Worker."
-						caption="Your production app — three seeded rows. This is the data your Preview will not have."
+						caption="Your production app: three seeded rows. This is the data your Preview will not have."
 					/>
 				</div>
 			</div>
@@ -257,7 +257,7 @@ git checkout -b isolate-preview-db</code></pre>
 				<summary>Why doesn't this apply to Durable Objects?</summary>
 				<div class="aside-body">
 					<p>
-						Durable Objects and Containers are the actual exception. When the class lives in the same Worker, each Preview gets its own namespace and storage automatically — no override needed — because that state belongs to the Worker itself, not to an external resource identified by an ID. D1, KV, and R2 are the norm, not the exception: bind by ID, and anything sharing that ID shares the data.
+						Durable Objects and Containers are the actual exception. When the class lives in the same Worker, each Preview gets its own namespace and storage automatically (no override needed) because that state belongs to the Worker itself, not to an external resource identified by an ID. D1, KV, and R2 are the norm, not the exception: bind by ID, and anything sharing that ID shares the data.
 					</p>
 				</div>
 			</details>
@@ -313,7 +313,7 @@ git checkout -b isolate-preview-db</code></pre>
 					<p>Open the Preview URL from the PR. The page should render successfully and explain that the D1 binding exists but its schema has not been applied.</p>
 					<Figure
 						alt="The Preview Activity Log explaining that its connected D1 database needs the workshop schema."
-						placeholderLabel="Preview setup state — the database is connected, but workshop/preview-schema.sql has not been applied."
+						placeholderLabel="Preview setup state: the database is connected, but workshop/preview-schema.sql has not been applied."
 						caption="A missing schema is an expected setup state, not a broken page."
 					/>
 					<div class="tip tip--pin">
@@ -369,7 +369,7 @@ git checkout -b isolate-preview-db</code></pre>
 					<p>Refresh the Preview. It now shows three rows containing the word <strong>Preview</strong>. Add an entry and refresh: it persists. Click <strong>Delete</strong>: it fails and the page displays an error while preserving the row.</p>
 					<Figure
 						alt="The Preview Activity Log showing Preview-specific seed rows and a visible delete failure message."
-						placeholderLabel="Preview after setup — Preview seed rows load, add and refresh work, and delete shows an error."
+						placeholderLabel="Preview after setup: Preview seed rows load, add and refresh work, and delete shows an error."
 						caption="The candidate schema exposed a real compatibility bug without changing production."
 					/>
 				</div>
@@ -378,7 +378,7 @@ git checkout -b isolate-preview-db</code></pre>
 			<details class="aside">
 				<summary>Why does this matter?</summary>
 				<div class="aside-body">
-					<p>This is what "isolated environment for every change" actually means in practice — not a slide, a database you can watch stay separate while you poke at it.</p>
+					<p>This is what "isolated environment for every change" actually means in practice: not a slide, but a database you can watch stay separate while you poke at it.</p>
 				</div>
 			</details>
 
@@ -419,12 +419,12 @@ git checkout -b isolate-preview-db</code></pre>
 					<p>In the Cloudflare dashboard:</p>
 					<ol class="steps-inline">
 						<li>Go to <strong>Workers &amp; Pages</strong> → your Worker.</li>
-						<li>In the Worker header, open the environment dropdown (it currently says <strong>Production</strong>) and select your branch name — for this workshop, <code>isolate-preview-db</code>.</li>
+						<li>In the Worker header, open the environment dropdown (it currently says <strong>Production</strong>) and select your branch name (for this workshop, <code>isolate-preview-db</code>).</li>
 						<li>Open the <strong>Observability</strong> tab.</li>
 					</ol>
 					<Figure
 						alt="The Cloudflare dashboard Worker header with the environment dropdown open, showing Production and the isolate-preview-db branch."
-						placeholderLabel="Placeholder — the Worker header environment dropdown: Production vs your branch name. There is no separate Previews tab."
+						placeholderLabel="Placeholder: the Worker header environment dropdown, Production vs your branch name. There is no separate Previews tab."
 						caption="The screen most people can't find on their own: switch the Worker from Production to your branch, then open Observability. Production's log list will not show the delete errors."
 					/>
 					<ol class="steps-inline" start="4">
@@ -439,8 +439,8 @@ git checkout -b isolate-preview-db</code></pre>
 					<p>Find <code>activity_log.delete_failed</code>. Its D1 error should identify the old column reference. Copy the error for your agent, or let an agent with Observability MCP access retrieve it.</p>
 					<Figure
 						alt="The Observability request list scoped to the Preview branch, showing only the requests made to the Preview URL, separate from production traffic."
-						placeholderLabel="Placeholder — the per-branch request/log list, showing only your Preview's requests (not production's)."
-						caption="Success looks like this: a request list scoped to your branch alone — separate logs and traces, same as the separate database."
+						placeholderLabel="Placeholder: the per-branch request/log list, showing only your Preview's requests (not production's)."
+						caption="Success looks like this: a request list scoped to your branch alone, with separate logs and traces, same as the separate database."
 					/>
 				</div>
 			</div>
@@ -519,7 +519,7 @@ git checkout -b isolate-preview-db</code></pre>
 				<summary>Want everything gone?</summary>
 				<div class="aside-body">
 					<p>Optional. Closing the pull request only deletes the Preview deployment. The GitHub repo, Worker, and both D1 databases stay until you delete them.</p>
-					<p>Default names — use yours if you changed them in the deploy form:</p>
+					<p>Default names (use yours if you changed them in the deploy form):</p>
 					<ul class="tight-list">
 						<li>GitHub repo: <code>&lt;you&gt;/d1-template-preview</code></li>
 						<li>Worker: <code>d1-template-preview</code></li>

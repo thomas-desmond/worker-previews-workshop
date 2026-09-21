@@ -62,7 +62,7 @@ export const STEPS = [
 export type StepId = (typeof STEPS)[number]["id"];
 
 /**
- * Talking points for whoever is leading the room — what to say during the
+ * Talking points for whoever is leading the room: what to say during the
  * dead time each step creates (a deploy running, a build finishing) and the
  * narrative bridge to the next step. Review-pass content: not meant to be a
  * permanent feature of the public site, just visible enough to sanity-check
@@ -70,27 +70,27 @@ export type StepId = (typeof STEPS)[number]["id"];
  */
 export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 	prereqs: [
-		"Frame the hour before anyone touches a laptop: \"Agents can ship code faster than we can review it. Previews gives every change its own throwaway environment — today you build one slice of that yourself.\"",
+		"Frame the hour before anyone touches a laptop: \"Agents can ship code faster than we can review it. Previews gives every change its own throwaway environment. Today you build one slice of that yourself.\"",
 		"Name it explicitly as one piece of the ADLC (Agent Development Lifecycle), not the whole thing.",
 		"While people check the four boxes, confirm room-wide out loud: agent installed, GitHub authed, Cloudflare account created. Don't move on until most hands are up.",
 	],
 	deploy: [
-		"There's a real wait after the click (provisioning + first build) — use it, don't just stand there.",
+		"There's a real wait after the click (provisioning + first build). Use it.",
 		"Narrate exactly what the button did: forked the repo into their account, provisioned a production D1 database, wired up Workers Builds (Cloudflare's own CI/CD) to that repo, deployed the Worker.",
-		"Land the callback line: \"You have production deployed — no Preview yet. That's next, and it's where this gets interesting.\"",
-		"Point at the app while it loads: an Activity Log with three seeded rows — they'll compare this exact data against an isolated copy shortly.",
-		"Plant the seed: \"No GitHub Actions written, no secrets pasted — Workers Builds is already watching this repo. When you open a PR, it just reacts.\"",
+		"Land the callback line: \"You have production deployed, but no Preview yet. That's next, and it's where this gets interesting.\"",
+		"Point at the app while it loads: an Activity Log with three seeded rows. They'll compare this exact data against an isolated copy shortly.",
+		"Plant the seed: \"No GitHub Actions written, no secrets pasted. Workers Builds is already watching this repo. When you open a PR, it just reacts.\"",
 	],
 	isolate: [
 		"Slow down here: production settings stay top-level and Preview settings belong in the previews block.",
 		"This database is isolated from production, but it becomes the shared Preview database after the PR merges.",
 		"Frame the override plainly: same DB binding name, different account-level resource.",
-		"Wrangler may offer to add the new D1 to wrangler.json itself — that writes a top-level binding. Attendees should decline and put it under previews instead.",
+		"Wrangler may offer to add the new D1 to wrangler.json itself, which writes a top-level binding. Attendees should decline and put it under previews instead.",
 	],
 	preview: [
-		"After push + PR, there's dead time while Workers Builds runs — use it.",
+		"After push + PR, there's dead time while Workers Builds runs. Use it.",
 		"Recap what's happening with zero manual deploy steps: Workers Builds runs `wrangler preview` for the branch and comments the stable URL on the PR.",
-		"Close the loop from Step 1: \"This is the moment that fills the gap — production existed, now the branch gets its own live environment too.\"",
+		"Close the loop from Step 1: \"This is the moment that fills the gap. Production existed; now the branch gets its own live environment too.\"",
 		"Known flake: the bot comment often posts while the build is still in progress, with an empty URL, and may not update. Fallback: the Workers Builds check on the PR, or `https://<branch>-<worker-name>.<subdomain>.workers.dev`.",
 	],
 	interact: [
@@ -99,7 +99,7 @@ export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 		"The visible error is deliberate evidence, not workshop breakage.",
 	],
 	observability: [
-		"The control is the environment dropdown in the Worker header — it currently says Production. Pick the branch name, then open Observability. There is no separate Previews tab.",
+		"The control is the environment dropdown in the Worker header (it currently says Production). Pick the branch name, then open Observability. There is no separate Previews tab.",
 		"Production Observability will show zero errors. The delete failures only appear after you switch to the branch.",
 		"The structured activity_log.delete_failed event should contain the useful D1 error and entry ID.",
 		"Attendees can copy the error or let an Observability-enabled agent retrieve it.",
@@ -115,13 +115,11 @@ export const REPO_URL = "https://github.com/thomas-desmond/d1-template-preview";
 export const PROMPTS = {
 	isolateResource: `I'm on a new git branch off main in this repo. Configure a shared, production-safe D1 database for Worker Previews:
 
-1. Run \`npx wrangler d1 create workshop-preview-db\` to create a brand new D1 database — don't reuse the production one. If Wrangler asks to add the binding to wrangler.json for you, decline.
+1. Run \`npx wrangler d1 create workshop-preview-db\` to create a brand new D1 database. Don't reuse the production one. If Wrangler asks to add the binding to wrangler.json for you, decline.
 2. In \`wrangler.json\`, add a \`previews.d1_databases\` block using binding name \`DB\` (same binding name as the top-level production entry) with the \`database_id\` and \`database_name\` from step 1.
 3. Add \`previews.observability\` with \`enabled: true\`.
 4. Do not modify the top-level production configuration.
-5. Commit the change. This Preview configuration is intended to remain when the branch merges.
-
-Don't ask me questions — just do it.`,
+5. Commit the change. This Preview configuration is intended to remain when the branch merges.`,
 
 	openPullRequest: `Push this branch and open a pull request against main. If the GitHub CLI (\`gh\`) is installed and authenticated, use \`gh pr create\` with a short, clear title, and print the PR URL when done. If it isn't, just push the branch and print the "Create a pull request" link from the push output so I can open the PR in my browser.`,
 
@@ -137,7 +135,7 @@ Fix the Worker code, not either database schema. Production still has an \`id\` 
 
 	mergePullRequest: `Retest add, refresh, and delete against the updated Preview. If all three pass, merge this pull request. Then open production and verify its seeded entries still load and delete still works. Do not apply \`workshop/preview-schema.sql\` to production.`,
 
-	cleanup: `Delete everything this workshop created. Do not ask questions.
+	cleanup: `Delete everything this workshop created.
 
 1. \`npx wrangler delete d1-template-preview\`
 2. \`npx wrangler d1 delete d1-template-database\`
