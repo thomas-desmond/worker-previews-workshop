@@ -106,7 +106,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(1).label}</h2>
-				<p class="stepcard-lede">One click. A repo in your account, a database, and a production Worker — wired up for you.</p>
+				<p class="stepcard-lede">One click. A repo in your account, a database, and a production Worker, wired up and ready to build your first Preview from.</p>
 			</div>
 		</div>
 
@@ -114,21 +114,21 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--why">Why</span>
 				<div class="phase-content">
-					<p>You need a real, deployed app before you can create a Preview of it. The deploy button skips the manual setup.</p>
+					<p>You need a real, deployed app before you can create a Preview of it. Clicking the button below creates that app: the production Worker you'll build your first Preview from in the next step.</p>
 				</div>
 			</div>
 
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
-					<p>Clicking the button below will:</p>
-					<ul class="tight-list">
-						<li>Create a repo in your GitHub account</li>
-						<li>Provision a production D1 database</li>
-						<li>Connect <strong>Workers Builds</strong> (Cloudflare's CI/CD) to that repo</li>
-						<li>Deploy the Worker</li>
-					</ul>
-					<p class="phase-note">The dashboard then asks you to pick a GitHub account and a D1 database. Create a <strong>new</strong> database — don't select an existing one. Leave Preview builds on. No custom GitHub Actions, no secrets to paste.</p>
+					<p>Clicking the button below starts a short guided flow on the Cloudflare dashboard:</p>
+					<ol class="steps-inline">
+						<li>Choose the GitHub account to fork the repo into.</li>
+						<li>Create a <strong>new</strong> D1 database, not an existing one.</li>
+						<li><strong>Workers Builds</strong> (Cloudflare's own CI/CD) connects to that repo automatically. Nothing to configure.</li>
+						<li>Before you finish, confirm <strong>Worker Previews</strong> is enabled.</li>
+					</ol>
+					<p class="phase-note">No custom GitHub Actions, no secrets to paste.</p>
 
 					<div class="deploy-cta-wrap">
 						<a
@@ -146,7 +146,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Open the production URL Cloudflare gives you. You should see an <strong>Activity Log</strong> with three seeded entries. Remember what's in there. You'll compare it against your Preview shortly.</p>
+					<p>Once the Worker's first build finishes, use the <strong>Visit</strong> button in the top right of its dashboard page to open the production URL. You should see an <strong>Activity Log</strong> with three seeded entries. Remember what's in there. You'll compare it against your Preview shortly.</p>
 					<Figure
 						src="/screenshots/app-production-seeded.png"
 						alt="The production Activity Log showing three seeded entries: Wired up Workers Builds, Provisioned the D1 database, and Deployed the production Worker."
