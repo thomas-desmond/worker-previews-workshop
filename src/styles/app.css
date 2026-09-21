@@ -394,7 +394,7 @@ html {
 	font-style: italic;
 }
 
-/* ─── RAIL (progress sidebar) ────────────────────────────── */
+/* ─── RAIL (step sidebar) ────────────────────────────────── */
 .rail {
 	background: var(--card);
 	border: 1px solid var(--line);
@@ -408,43 +408,6 @@ html {
 	.rail {
 		position: static;
 	}
-}
-
-.rail-header {
-	padding: 0.25rem 0.25rem 1rem;
-	border-bottom: 1px solid var(--line);
-	margin-bottom: 0.75rem;
-}
-
-.rail-progress-label {
-	display: flex;
-	justify-content: space-between;
-	font-size: 0.72rem;
-	letter-spacing: 0.14em;
-	text-transform: uppercase;
-	color: var(--ink-mute);
-	font-weight: 700;
-	margin-bottom: 0.5rem;
-}
-
-.rail-progress-count {
-	color: var(--ink);
-	font-variant-numeric: tabular-nums;
-}
-
-.rail-progress-bar {
-	width: 100%;
-	height: 0.4rem;
-	background: var(--line);
-	border-radius: 999px;
-	overflow: hidden;
-}
-
-.rail-progress-fill {
-	height: 100%;
-	background: linear-gradient(90deg, var(--brand) 0%, var(--brand-deep) 100%);
-	border-radius: 999px;
-	transition: width 0.3s ease;
 }
 
 .rail-list {
@@ -482,10 +445,6 @@ html {
 	z-index: 0;
 }
 
-.rail-item[data-done="true"] .rail-connector {
-	background: linear-gradient(180deg, var(--verify) 0%, var(--line) 100%);
-}
-
 .rail-check {
 	position: relative;
 	z-index: 1;
@@ -498,15 +457,7 @@ html {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	cursor: pointer;
-	padding: 0;
-	font-family: inherit;
 	transition: all 0.15s ease;
-}
-
-.rail-check:hover {
-	border-color: var(--ink);
-	color: var(--ink);
 }
 
 .rail-check-num {
@@ -515,13 +466,7 @@ html {
 	font-variant-numeric: tabular-nums;
 }
 
-.rail-item[data-done="true"] .rail-check {
-	background: var(--verify);
-	border-color: var(--verify);
-	color: #fff;
-}
-
-.rail-item[data-active="true"]:not([data-done="true"]) .rail-check {
+.rail-item[data-active="true"] .rail-check {
 	border-color: var(--brand);
 	color: var(--brand-deep);
 	background: var(--brand-tint);
@@ -545,13 +490,6 @@ html {
 .rail-item[data-active="true"] .rail-link-label {
 	color: var(--ink);
 	font-weight: 800;
-}
-
-.rail-item[data-done="true"] .rail-link-label {
-	color: var(--ink-mute);
-	text-decoration: line-through;
-	text-decoration-thickness: 1px;
-	text-decoration-color: rgba(0, 0, 0, 0.25);
 }
 
 .rail-link-label {
