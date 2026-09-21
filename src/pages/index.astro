@@ -504,6 +504,24 @@ const stepByIndex = (i: number) => STEPS[i];
 		</div>
 	</article>
 
+	{/* ─── Recap ─── */}
+	<article id="recap" class="stepcard stepcard--wrapup">
+		<div class="stepcard-head">
+			<div class="stepcard-badge stepcard-badge--wrapup">
+				<span class="stepcard-badge-num">✓</span>
+			</div>
+			<div class="stepcard-head-copy">
+				<h2 class="stepcard-title">What you just did</h2>
+				<p class="stepcard-lede">The same loop, start to finish: build, isolate, break, diagnose, fix, merge.</p>
+			</div>
+		</div>
+
+		<div class="stepcard-body">
+			<p class="wrapup-p">You deployed a real production Worker, then opened a branch and gave it its own Preview: isolated code, an isolated D1 database, and its own Observability. You applied a brand-new schema straight to that Preview and never to production, found a genuine compatibility bug by using the app yourself, diagnosed it from that Preview's own live logs, and fixed it, all without production ever being at risk.</p>
+			<p class="wrapup-p">That's what Worker Previews are for: every change, however small or risky, gets a full, disposable copy of production to prove itself in before it's allowed anywhere near the real thing. Merging promoted only the parts you verified. The database, the logs, and the failure all stayed in the Preview and are gone with it.</p>
+		</div>
+	</article>
+
 	{/* ─── Wrap-up ─── */}
 	<article id="wrap-up" class="stepcard stepcard--wrapup">
 		<div class="stepcard-head">
