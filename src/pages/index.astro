@@ -291,11 +291,11 @@ const stepByIndex = (i: number) => STEPS[i];
 				<div class="phase-content">
 					<p>Ask your agent to push and open the PR:</p>
 					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.openPullRequest} />
-					<p class="phase-note">Within a minute or two, <strong>Workers Builds</strong> deploys the Preview and comments the URL on your pull request. If the comment still says the build is in progress and the URL cell is empty, open the <strong>Workers Builds</strong> check on the PR, or visit <code>https://&lt;branch&gt;-&lt;worker-name&gt;.&lt;your-subdomain&gt;.workers.dev</code> — for this workshop that's usually <code>isolate-preview-db-d1-template-preview.&lt;your-subdomain&gt;.workers.dev</code>.</p>
+					<p class="phase-note">Within a minute or two, <strong>Workers Builds</strong> deploys the Preview and comments the URL on your pull request. You can also open the <strong>Workers Builds</strong> check on the PR, or go straight to <code>https://&lt;branch&gt;-&lt;worker-name&gt;.&lt;your-subdomain&gt;.workers.dev</code> (for this workshop: <code>isolate-preview-db-d1-template-preview.&lt;your-subdomain&gt;.workers.dev</code>).</p>
 					<Figure
 						alt="A GitHub pull request with a Cloudflare Workers and Pages bot comment containing the Preview deployment URL."
-						placeholderLabel="Placeholder — the Workers Builds bot comment on the PR. If Status is still In progress and Deployment URL is empty, use the Workers Builds check instead."
-						caption="Where the Preview URL usually shows up. If the URL cell is empty, use the Workers Builds check on the PR."
+						placeholderLabel="Placeholder: the Workers Builds bot comment on the PR with the Preview deployment URL."
+						caption="Where the Preview URL shows up. The Workers Builds check on the PR and the direct workers.dev URL both work too."
 					/>
 				</div>
 			</div>
