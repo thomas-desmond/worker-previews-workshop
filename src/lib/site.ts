@@ -135,11 +135,11 @@ export const PROMPTS = {
 
 Use the database name exactly as written. Include \`--remote\` and \`--yes\`. Do not run any command against the \`DB\` binding or the production database. Print the command result when complete.`,
 
-	diagnoseAndFix: `Test this branch's deployed Preview as a user: add an entry, refresh and confirm it persists, then delete an entry. Diagnose the delete failure using the response, the repository, and the Preview's Observability logs if available.
+	diagnoseAndFix: `I'm giving you the delete-failure error from this Preview's Observability logs above. Diagnose the cause from that error and the repository, not by re-testing from scratch.
 
-Fix the Worker code, not either database schema. Production still has an \`id\` column while the Preview schema has \`activity_id\`; the merged code must work with both schemas. Run the project checks, commit, and push the fix so Workers Builds updates the existing Preview. Do not merge yet.`,
+Fix the Worker code, not either database schema. Production still has an \`id\` column while the Preview schema has \`activity_id\`; the merged code must work with both schemas. Run the project checks, commit, and push the fix so Workers Builds redeploys the existing Preview. Once it's live, test add, refresh, and delete yourself to confirm the fix works. Do not merge yet.`,
 
-	mergePullRequest: `Retest add, refresh, and delete against the updated Preview. If all three pass, merge this pull request. Then open production and verify its seeded entries still load and delete still works. Do not apply \`workshop/preview-schema.sql\` to production.`,
+	mergePullRequest: `If you already confirmed add, refresh, and delete all pass against the updated Preview, merge this pull request now. If not, retest those three first, then merge once they pass. After merging, open production and verify its seeded entries still load and delete still works. Do not apply \`workshop/preview-schema.sql\` to production.`,
 
 	cleanup: `Delete everything this workshop created.
 
