@@ -113,6 +113,8 @@ export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 export const REPO_URL = "https://github.com/thomas-desmond/d1-template-preview";
 
 export const PROMPTS = {
+	cloneAndBranch: `Using the GitHub CLI (\`gh\`) if it's installed and authenticated, find the repository the Deploy to Cloudflare button just created in my account (named \`d1-template-preview\` unless I changed it in the deploy form), and clone it into the current directory. If \`gh\` isn't available, ask me for the repository URL first. Once cloned, create and check out a new branch named \`isolate-preview-db\` off \`main\`.`,
+
 	isolateResource: `I'm on a new git branch off main in this repo. Configure a shared, production-safe D1 database for Worker Previews:
 
 1. Run \`npx wrangler d1 create workshop-preview-db\` to create a brand new D1 database. Don't reuse the production one. If Wrangler asks to add the binding to wrangler.json for you, decline.

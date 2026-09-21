@@ -188,13 +188,8 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Setup</span>
 				<div class="phase-content">
-					<p>Clone the repo the button just created in your GitHub account, then make a branch. The name is usually <code>d1-template-preview</code> unless you changed it in the deploy form:</p>
-					<div class="cmd">
-						<div class="cmd-bar"><span class="cmd-label">Terminal</span></div>
-						<pre><code>git clone https://github.com/&lt;you&gt;/d1-template-preview.git
-cd d1-template-preview
-git checkout -b isolate-preview-db</code></pre>
-					</div>
+					<p>Ask your agent to clone the repo the button just created and start a working branch:</p>
+					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.cloneAndBranch} />
 				</div>
 			</div>
 
@@ -225,9 +220,9 @@ git checkout -b isolate-preview-db</code></pre>
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
-					<p>The shape of the change you're making:</p>
+					<p>This is the shape of the change your agent is about to make. It's here so you know what to expect, not something you need to edit by hand:</p>
 					<div class="cmd cmd--json">
-						<div class="cmd-bar"><span class="cmd-label">wrangler.json</span></div>
+						<div class="cmd-bar"><span class="cmd-label">wrangler.json (reference only)</span></div>
 						<pre><code>{`{
   "d1_databases": [
     { "binding": "DB", "database_name": "d1-template-database" } // production
