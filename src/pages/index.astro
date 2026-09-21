@@ -377,13 +377,9 @@ const stepByIndex = (i: number) => STEPS[i];
 					<details class="aside aside--spoiler">
 						<summary>Did something break?</summary>
 						<div class="aside-body">
-							<p>Delete fails. The page shows an error and the row stays put. That's a real, deliberate compatibility bug the new schema exposed, not workshop breakage. Leave it broken for now; you'll diagnose and fix it in the next two steps.</p>
+							<p>Delete fails. The page shows an error and the row stays put. That's a real, deliberate compatibility bug the new schema exposed, not workshop breakage. Good thing this is a Preview: production never saw it. That's exactly what Previews are for, let's debug it in the next two steps.</p>
 						</div>
 					</details>
-					<div class="tip">
-						<span class="tip-label">This is the point</span>
-						<p>Uh oh, looks like the new schema broke delete. Good thing this is a Preview: production never saw it. That's exactly what Previews are for, let's debug it now.</p>
-					</div>
 				</div>
 			</div>
 
@@ -440,7 +436,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Find <code>activity_log.delete_failed</code>. Its D1 error should identify the old column reference. Copy the error text and paste it into your agent.</p>
+					<p>Find <code>activity_log.delete_failed</code>. Its D1 error names the missing column, that's the diagnosis: the query still references production's old column name. Hold onto that error text, you'll hand it to your agent in the next step.</p>
 					<Figure
 						alt="The Observability request list scoped to the Preview branch, showing only the requests made to the Preview URL, separate from production traffic."
 						placeholderLabel="Placeholder: the per-branch request/log list, showing only your Preview's requests (not production's)."
@@ -482,6 +478,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
+					<p>Copy the error text from Observability, then give it to your agent together with this prompt:</p>
 					<PromptBlock client:load label="Give the error and this prompt to your agent" text={PROMPTS.diagnoseAndFix} />
 					<p class="phase-note">A change from <code>id</code> to <code>activity_id</code> would only fix the Preview. The repair must also work with production's unchanged schema.</p>
 				</div>
