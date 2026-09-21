@@ -293,6 +293,55 @@ html {
 	background: var(--brand-tint);
 }
 
+.hero-flow-node--merged {
+	border-color: #a6dfb4;
+	background: var(--verify-tint);
+}
+
+.hero-flow-node--merged .hero-flow-name {
+	font-size: 0.95rem;
+	color: var(--verify);
+}
+
+.hero-flow-arc {
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+	flex-wrap: wrap;
+	margin-top: 0.5rem;
+	padding-top: 0.5rem;
+	border-top: 1px dashed #f5c99a;
+}
+
+.hero-flow-arc-step {
+	font-size: 0.68rem;
+	letter-spacing: 0.03em;
+	font-weight: 700;
+	color: var(--ink-soft);
+	background: rgba(255, 255, 255, 0.7);
+	border: 1px solid var(--line-strong);
+	border-radius: 0.4rem;
+	padding: 0.2rem 0.45rem;
+	white-space: nowrap;
+}
+
+.hero-flow-arc-step--bug {
+	color: #b91c1c;
+	border-color: #f3b3b3;
+	background: #fef2f2;
+}
+
+.hero-flow-arc-step--fix {
+	color: var(--verify);
+	border-color: #a6dfb4;
+	background: var(--verify-tint);
+}
+
+.hero-flow-arc-arrow {
+	font-size: 0.7rem;
+	color: var(--ink-mute);
+}
+
 .hero-flow-tag {
 	font-size: 0.7rem;
 	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -529,12 +578,32 @@ html {
 	margin: 0 0 0.75rem;
 }
 
-.intro-body {
-	font-size: 1.1rem;
-	line-height: 1.6;
-	color: var(--ink);
+.intro-objectives {
+	display: grid;
+	gap: 0.6rem;
 	margin: 0 0 1.25rem;
+	padding: 0;
+	list-style: none;
+}
+
+.intro-objectives li {
+	font-size: 1.05rem;
+	line-height: 1.55;
+	color: var(--ink);
 	text-wrap: pretty;
+	padding-left: 1.4rem;
+	position: relative;
+}
+
+.intro-objectives li::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0.6em;
+	width: 0.5rem;
+	height: 0.5rem;
+	border-radius: 50%;
+	background: var(--brand);
 }
 
 .intro-legend {

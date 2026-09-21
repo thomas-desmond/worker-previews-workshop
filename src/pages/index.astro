@@ -4,7 +4,7 @@ import Hero from "../components/Hero.astro";
 import { PromptBlock } from "../components/PromptBlock";
 import { StepNav } from "../components/StepNav";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { LEADER_NOTES, PROMPTS, REPO_URL, SITE, STEPS } from "../lib/site";
+import { LEADER_NOTES, LEARNING_OBJECTIVES, PROMPTS, REPO_URL, SITE, STEPS } from "../lib/site";
 
 const stepByIndex = (i: number) => STEPS[i];
 ---
@@ -21,7 +21,9 @@ const stepByIndex = (i: number) => STEPS[i];
 
 	<section class="intro-card">
 		<h2 class="intro-title">What you'll learn</h2>
-		<p class="intro-body">{SITE.description}</p>
+		<ul class="intro-objectives">
+			{LEARNING_OBJECTIVES.map((objective) => <li>{objective}</li>)}
+		</ul>
 		<div class="intro-legend">
 			<div class="legend-item">
 				<span class="legend-badge legend-badge--why">Why</span>
@@ -56,7 +58,7 @@ const stepByIndex = (i: number) => STEPS[i];
 					<span class="checklist-icon" aria-hidden="true">1</span>
 					<div>
 						<p class="checklist-title">Node.js, git, and a terminal</p>
-						<p class="checklist-note">Standard developer setup.</p>
+						<p class="checklist-note">Standard developer setup. You don't need Wrangler installed globally; your agent runs it with <code>npx</code> as it goes.</p>
 					</div>
 				</div>
 				<div class="checklist-item">
@@ -84,7 +86,7 @@ const stepByIndex = (i: number) => STEPS[i];
 
 			<div class="tip">
 				<span class="tip-label">Recommended</span>
-				<p><a href="https://cli.github.com/">GitHub CLI</a> (<code>gh</code>), authenticated — your agent opens the pull request for you in Step 3. Without it, your agent will hand you a link to open the PR yourself. Install with <code>brew install gh</code>, then run <code>gh auth login</code>.</p>
+				<p><a href="https://cli.github.com/">GitHub CLI</a> (<code>gh</code>), authenticated. Your agent opens the pull request for you in Step 3; without it, your agent hands you a link to open the PR yourself instead. Install it for your OS from the <a href="https://github.com/cli/cli#installation">GitHub CLI install guide</a>, then run <code>gh auth login</code>.</p>
 			</div>
 		</div>
 	</article>

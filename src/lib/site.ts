@@ -7,6 +7,13 @@ export const SITE = {
 	audience: "Developers",
 } as const;
 
+export const LEARNING_OBJECTIVES = [
+	"How Worker Previews isolate a branch's code, secrets, bindings, and observability from production automatically.",
+	"How to safely override a shared resource like D1 so every Preview gets its own copy without ever touching production.",
+	"How to read a Preview's own Observability logs to diagnose a real, schema-driven failure.",
+	"How to verify a fix in Preview and promote only the safe, compatible parts of it to production.",
+] as const;
+
 export const STEPS = [
 	{
 		id: "prereqs",

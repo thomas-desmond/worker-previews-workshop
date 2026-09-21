@@ -56,18 +56,39 @@ import { SITE } from "../lib/site";
 					<span class="hero-flow-name">Production</span>
 					<span class="hero-flow-db">DB: prod</span>
 				</div>
+
 				<div class="hero-flow-split">
 					<span class="hero-flow-line"></span>
-					<span class="hero-flow-branch">branch</span>
+					<span class="hero-flow-branch">branch + PR</span>
 					<span class="hero-flow-line"></span>
 				</div>
+
 				<div class="hero-flow-node hero-flow-node--preview">
 					<span class="hero-flow-tag">PR #42</span>
 					<span class="hero-flow-name">Preview</span>
 					<span class="hero-flow-db">DB: preview ✨</span>
+					<div class="hero-flow-arc">
+						<span class="hero-flow-arc-step">Test</span>
+						<span class="hero-flow-arc-arrow">→</span>
+						<span class="hero-flow-arc-step hero-flow-arc-step--bug">Find a real bug</span>
+						<span class="hero-flow-arc-arrow">→</span>
+						<span class="hero-flow-arc-step hero-flow-arc-step--fix">Fix it</span>
+					</div>
+				</div>
+
+				<div class="hero-flow-split">
+					<span class="hero-flow-line"></span>
+					<span class="hero-flow-branch">merge, code only</span>
+					<span class="hero-flow-line"></span>
+				</div>
+
+				<div class="hero-flow-node hero-flow-node--merged">
+					<span class="hero-flow-tag">main</span>
+					<span class="hero-flow-name">Production, still healthy</span>
+					<span class="hero-flow-db">DB: prod, unchanged</span>
 				</div>
 			</div>
-			<p class="hero-preview-cap">Same code, isolated data.</p>
+			<p class="hero-preview-cap">Same code. Isolated data. A real bug, safely found and fixed.</p>
 		</div>
 	</div>
 </section>
