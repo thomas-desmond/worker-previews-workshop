@@ -421,11 +421,11 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
-					<p>In the Cloudflare dashboard:</p>
+					<p>You just saw the error on the page. Let's investigate it properly: open the Cloudflare dashboard and watch this Preview's own live logs.</p>
 					<ol class="steps-inline">
 						<li>Go to <strong>Workers &amp; Pages</strong> → your Worker.</li>
 						<li>In the Worker header, open the environment dropdown (it currently says <strong>Production</strong>) and select your branch name (for this workshop, <code>isolate-preview-db</code>).</li>
-						<li>Open the <strong>Observability</strong> tab.</li>
+						<li>Open the <strong>Observability</strong> tab and switch on <strong>Live</strong> so you can watch requests arrive in real time.</li>
 					</ol>
 					<Figure
 						alt="The Cloudflare dashboard Worker header with the environment dropdown open, showing Production and the isolate-preview-db branch."
@@ -433,7 +433,7 @@ const stepByIndex = (i: number) => STEPS[i];
 						caption="The screen most people can't find on their own: switch the Worker from Production to your branch, then open Observability. Production's log list will not show the delete errors."
 					/>
 					<ol class="steps-inline" start="4">
-						<li>Try Delete once more, then open a failed <code>DELETE</code> request in the log list.</li>
+						<li>Try Delete once more and watch the failed <code>DELETE</code> request land live, then open it in the log list.</li>
 					</ol>
 				</div>
 			</div>
@@ -441,7 +441,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Find <code>activity_log.delete_failed</code>. Its D1 error should identify the old column reference. Copy the error for your agent, or let an agent with Observability MCP access retrieve it.</p>
+					<p>Find <code>activity_log.delete_failed</code>. Its D1 error should identify the old column reference. Copy the error text and paste it into your agent.</p>
 					<Figure
 						alt="The Observability request list scoped to the Preview branch, showing only the requests made to the Preview URL, separate from production traffic."
 						placeholderLabel="Placeholder: the per-branch request/log list, showing only your Preview's requests (not production's)."

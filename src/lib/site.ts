@@ -104,7 +104,9 @@ export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 		"The control is the environment dropdown in the Worker header (it currently says Production). Pick the branch name, then open Observability. There is no separate Previews tab.",
 		"Production Observability will show zero errors. The delete failures only appear after you switch to the branch.",
 		"The structured activity_log.delete_failed event should contain the useful D1 error and entry ID.",
-		"Attendees can copy the error or let an Observability-enabled agent retrieve it.",
+		"Attendees copy the error and paste it into their agent by hand, that's the hands-on path.",
+		"Demo the frontier version yourself: an agent with Observability MCP access pulling that same log and proposing the fix without anyone copying anything.",
+		"Name the CI/CD extension explicitly: this observe-and-diagnose loop is exactly what a pipeline step could run automatically on every PR, with an agent triaging the failure before a human is looped in.",
 	],
 	final: [
 		"The repair must support production's id column and the Preview's activity_id column. Do not accept a Preview-only fix.",
