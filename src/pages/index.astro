@@ -347,23 +347,37 @@ const stepByIndex = (i: number) => STEPS[i];
 
 		<div class="stepcard-body">
 			<div class="phase">
+				<span class="phase-badge phase-badge--why">Why</span>
+				<div class="phase-content">
+					<p>Creating a D1 database doesn't seed it. The Preview you opened last step is connected to a real database that has no tables and no rows yet, nothing to test against.</p>
+					<p>What you're about to apply is a brand-new schema, one production doesn't have and never will. Testing a schema change directly in Preview, isolated from production, is exactly what this safety net is for.</p>
+				</div>
+			</div>
+
+			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
 					<p>The SQL fixture lives outside <code>migrations/</code>, so production automation cannot discover it. Ask your agent to apply it to the Preview database by name:</p>
 					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.applyPreviewSchema} />
-					<p class="phase-note">Using the account-level database name rather than the <code>DB</code> binding is deliberate: the binding in top-level Wrangler configuration is production. <code>--yes</code> skips Wrangler's "this may take some time" confirmation, which otherwise blocks a non-interactive agent.</p>
+					<p class="phase-note">Using the account-level database name rather than the <code>DB</code> binding is deliberate: the binding in top-level Wrangler configuration is production. <code>--yes</code> skips Wrangler's "this may take some time" confirmation, which otherwise blocks a non-interactive agent. This runs against the live remote database, so the change is immediate; no redeploy needed before you test.</p>
 				</div>
 			</div>
 
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Refresh the Preview. It now shows three rows containing the word <strong>Preview</strong>. Add an entry and refresh: it persists. Click <strong>Delete</strong>: it fails and the page displays an error while preserving the row.</p>
+					<p>Refresh the Preview. It now shows three rows containing the word <strong>Preview</strong>. Add an entry and refresh: it persists. Then click <strong>Delete</strong>.</p>
 					<Figure
 						alt="The Preview Activity Log showing Preview-specific seed rows and a visible delete failure message."
 						placeholderLabel="Preview after setup: Preview seed rows load, add and refresh work, and delete shows an error."
 						caption="The candidate schema exposed a real compatibility bug without changing production."
 					/>
+					<details class="aside aside--spoiler">
+						<summary>Did something break?</summary>
+						<div class="aside-body">
+							<p>Delete fails. The page shows an error and the row stays put. That's a real, deliberate compatibility bug the new schema exposed, not workshop breakage. Leave it broken for now; you'll diagnose and fix it in the next two steps.</p>
+						</div>
+					</details>
 				</div>
 			</div>
 

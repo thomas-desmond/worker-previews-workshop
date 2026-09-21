@@ -94,9 +94,11 @@ export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 		"Known flake: the bot comment often posts while the build is still in progress, with an empty URL, and may not update. Fallback: the Workers Builds check on the PR, or `https://<branch>-<worker-name>.<subdomain>.workers.dev`.",
 	],
 	interact: [
+		"Land the new beat before the schema goes in: creating a database is not the same as seeding it. Empty tables, no rows, nothing to test yet, until this step's schema lands.",
 		"The SQL file is outside migrations on purpose. Applying it by Preview database name is the safety boundary.",
 		"Have everyone test all three behaviors: add, refresh, delete. Delete is expected to fail.",
-		"The visible error is deliberate evidence, not workshop breakage.",
+		"The visible error is deliberate evidence, not workshop breakage. The spoiler section confirms it without doing the fix for them.",
+		"Name the CI/CD extension: this add/refresh/delete check is exactly the kind of thing a pipeline step could run automatically against every PR's Preview, with an agent reviewing the result, before a human ever looks at it.",
 	],
 	observability: [
 		"The control is the environment dropdown in the Worker header (it currently says Production). Pick the branch name, then open Observability. There is no separate Previews tab.",
