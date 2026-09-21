@@ -189,7 +189,7 @@ const stepByIndex = (i: number) => STEPS[i];
 				<span class="phase-badge phase-badge--do">Setup</span>
 				<div class="phase-content">
 					<p>Ask your agent to clone the repo the button just created and start a working branch:</p>
-					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.cloneAndBranch} />
+					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.cloneAndBranch} />
 				</div>
 			</div>
 
@@ -236,7 +236,7 @@ const stepByIndex = (i: number) => STEPS[i];
 }`}</code></pre>
 					</div>
 					<p class="phase-note">Same binding name (<code>DB</code>), different database. This block will remain on <code>main</code> after the PR merges.</p>
-					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.isolateResource} />
+					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.isolateResource} />
 				</div>
 			</div>
 
@@ -290,7 +290,7 @@ const stepByIndex = (i: number) => STEPS[i];
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
 					<p>Ask your agent to push and open the PR:</p>
-					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.openPullRequest} />
+					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.openPullRequest} />
 					<p class="phase-note">Within a minute or two, <strong>Workers Builds</strong> deploys the Preview and comments the URL on your pull request. You can also open the <strong>Workers Builds</strong> check on the PR, or go straight to <code>https://&lt;branch&gt;-&lt;worker-name&gt;.&lt;your-subdomain&gt;.workers.dev</code> (for this workshop: <code>isolate-preview-db-d1-template-preview.&lt;your-subdomain&gt;.workers.dev</code>).</p>
 					<Figure
 						alt="A GitHub pull request with a Cloudflare Workers and Pages bot comment containing the Preview deployment URL."
@@ -358,7 +358,7 @@ const stepByIndex = (i: number) => STEPS[i];
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
 					<p>The SQL fixture lives outside <code>migrations/</code>, so production automation cannot discover it. Ask your agent to apply it to the Preview database by name:</p>
-					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.applyPreviewSchema} />
+					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.applyPreviewSchema} />
 					<p class="phase-note">Using the account-level database name rather than the <code>DB</code> binding is deliberate: the binding in top-level Wrangler configuration is production. <code>--yes</code> skips Wrangler's "this may take some time" confirmation, which otherwise blocks a non-interactive agent. This runs against the live remote database, so the change is immediate; no redeploy needed before you test.</p>
 				</div>
 			</div>
@@ -483,7 +483,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
-					<PromptBlock label="Give the error and this prompt to your agent" text={PROMPTS.diagnoseAndFix} />
+					<PromptBlock client:load label="Give the error and this prompt to your agent" text={PROMPTS.diagnoseAndFix} />
 					<p class="phase-note">A change from <code>id</code> to <code>activity_id</code> would only fix the Preview. The repair must also work with production's unchanged schema.</p>
 				</div>
 			</div>
@@ -498,7 +498,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Merge</span>
 				<div class="phase-content">
-					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.mergePullRequest} />
+					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.mergePullRequest} />
 				</div>
 			</div>
 		</div>
@@ -548,7 +548,7 @@ const stepByIndex = (i: number) => STEPS[i];
 						<li>Production D1: <code>d1-template-database</code></li>
 						<li>Preview D1: <code>workshop-preview-db</code></li>
 					</ul>
-					<PromptBlock label="Copy this prompt into your agent" text={PROMPTS.cleanup} />
+					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.cleanup} />
 					<div class="cmd">
 						<div class="cmd-bar"><span class="cmd-label">Terminal</span></div>
 						<pre><code>npx wrangler delete d1-template-preview
