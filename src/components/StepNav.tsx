@@ -131,7 +131,6 @@ export function StepNav() {
 							</button>
 							<a href={`#${step.id}`} className="rail-link">
 								<span className="rail-link-label">{step.label}</span>
-								<span className="rail-link-time">{step.time}</span>
 							</a>
 						</li>
 					);

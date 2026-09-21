@@ -224,6 +224,12 @@ html {
 	color: var(--ink);
 }
 
+.hero-pace-note {
+	font-size: 0.85rem;
+	color: var(--ink-mute);
+	margin: -0.5rem 0 1.5rem;
+}
+
 .hero-cta {
 	display: inline-flex;
 	align-items: center;
@@ -505,14 +511,6 @@ html {
 	white-space: nowrap;
 }
 
-.rail-link-time {
-	font-size: 0.75rem;
-	color: var(--ink-mute);
-	font-weight: 600;
-	font-variant-numeric: tabular-nums;
-	flex-shrink: 0;
-}
-
 /* ─── INTRO CARD ─────────────────────────────────────────── */
 .intro-card {
 	background: var(--card);
@@ -633,15 +631,6 @@ html {
 	font-weight: 800;
 	line-height: 1;
 	font-variant-numeric: tabular-nums;
-}
-
-.stepcard-badge-time {
-	font-size: 0.6rem;
-	letter-spacing: 0.05em;
-	text-transform: uppercase;
-	font-weight: 700;
-	color: var(--brand-deep);
-	opacity: 0.85;
 }
 
 .stepcard-badge--wrapup {

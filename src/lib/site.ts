@@ -3,7 +3,7 @@ export const SITE = {
 	tagline: "Isolated environments for every change your agent makes.",
 	description:
 		"Deploy a production Worker, test a candidate D1 schema safely in a Preview, diagnose a real failure, and merge a fix without changing production data.",
-	duration: "40–50 min",
+	duration: "~40-50 min",
 	audience: "Developers",
 } as const;
 
@@ -13,49 +13,42 @@ export const STEPS = [
 		num: "0",
 		label: "Before you start",
 		short: "Prereqs",
-		time: "2 min",
 	},
 	{
 		id: "deploy",
 		num: "1",
 		label: "Deploy to Cloudflare",
 		short: "Deploy",
-		time: "5 min",
 	},
 	{
 		id: "isolate",
 		num: "2",
 		label: "Configure Previews",
 		short: "Configure",
-		time: "8 min",
 	},
 	{
 		id: "preview",
 		num: "3",
 		label: "Open your Preview",
 		short: "Preview",
-		time: "5 min",
 	},
 	{
 		id: "interact",
 		num: "4",
 		label: "Apply and test",
 		short: "Test",
-		time: "8 min",
 	},
 	{
 		id: "observability",
 		num: "5",
 		label: "Observability",
 		short: "Observe",
-		time: "5 min",
 	},
 	{
 		id: "final",
 		num: "6",
 		label: "Fix and merge",
 		short: "Fix",
-		time: "10 min",
 	},
 ] as const;
 
