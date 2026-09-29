@@ -81,7 +81,7 @@ export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 	],
 	deploy: [
 		"There's a real wait after the click (provisioning + first build). Use it.",
-		"Narrate exactly what the button did: forked the repo into their account, provisioned a production D1 database, wired up Workers Builds (Cloudflare's own CI/CD) to that repo, deployed the Worker.",
+		"Narrate exactly what the button did: created a copy of the repo in their GitHub account, provisioned a production D1 database, wired up Workers Builds (Cloudflare's own CI/CD) to that repo, deployed the Worker.",
 		"Land the callback line: \"You have production deployed, but no Preview yet. That's next, and it's where this gets interesting.\"",
 		"Point at the app while it loads: an Activity Log with three seeded rows. They'll compare this exact data against an isolated copy shortly.",
 		"Plant the seed: \"No GitHub Actions written, no secrets pasted. Workers Builds is already watching this repo. When you open a PR, it just reacts.\"",

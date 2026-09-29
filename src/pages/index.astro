@@ -14,9 +14,10 @@ const stepByIndex = (i: number) => STEPS[i];
 	<StepNav slot="nav" client:load />
 
 	<div class="leader-toolbar">
-		<button type="button" id="leader-toggle" class="leader-toggle-btn">
-			🎤 Hide leader notes
+		<button type="button" id="leader-toggle" class="leader-toggle-btn" title="Presenter notes. Removed before launch.">
+			🎤 Hide room lead notes
 		</button>
+		<span class="leader-toggle-hint">For the presenter · removed before launch</span>
 	</div>
 
 	<section class="intro-card">
@@ -139,6 +140,32 @@ const stepByIndex = (i: number) => STEPS[i];
 					</ol>
 					<p class="phase-note">No custom GitHub Actions, no secrets to paste.</p>
 
+					<details class="aside">
+						<summary>Show me each screen of the deploy flow</summary>
+						<div class="aside-body">
+							<Figure
+								alt="The Deploy to Cloudflare flow asking which GitHub account to create the repo in, with the Cloudflare GitHub app install prompt."
+								placeholderLabel="Placeholder: choosing the GitHub account and installing the Cloudflare GitHub app."
+								caption="Pick your personal GitHub account. Work organizations with SSO can block the Cloudflare GitHub app install."
+							/>
+							<Figure
+								alt="The deploy form with the default project name worker-previews-starter and a new D1 database named activity-log-db."
+								placeholderLabel="Placeholder: deploy form with default names and a new D1 database."
+								caption="Keep the default names and create a new database."
+							/>
+							<Figure
+								alt="Build settings showing Worker Previews enabled and the default Build, Deploy, and Preview commands."
+								placeholderLabel="Placeholder: build settings, Previews enabled, default commands."
+								caption="Check that Worker Previews is enabled. Leave the commands as they are."
+							/>
+							<Figure
+								alt="The Worker dashboard after the first build finishes, with the Visit button in the top right."
+								placeholderLabel="Placeholder: finished deploy with the Visit button."
+								caption="When the first build finishes, Visit opens your production app."
+							/>
+						</div>
+					</details>
+
 					<div class="deploy-cta-wrap">
 						<a
 							href={`https://deploy.workers.cloudflare.com/?url=${REPO_URL}`}
@@ -167,7 +194,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="step-next">
 				<a href="#isolate" class="step-next-link">
 					<span class="step-next-hint">Next</span>
-					Isolate a resource
+					Configure Previews
 					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
 				</a>
 			</div>
@@ -576,6 +603,6 @@ gh repo delete &lt;you&gt;/worker-previews-starter --yes</code></pre>
 	leaderToggle?.addEventListener("click", () => {
 		document.body.classList.toggle("leader-notes-hidden");
 		const hidden = document.body.classList.contains("leader-notes-hidden");
-		leaderToggle.textContent = hidden ? "🎤 Show leader notes" : "🎤 Hide leader notes";
+		leaderToggle.textContent = hidden ? "🎤 Show room lead notes" : "🎤 Hide room lead notes";
 	});
 </script>

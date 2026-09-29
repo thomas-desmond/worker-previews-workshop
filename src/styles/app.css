@@ -682,8 +682,15 @@ html {
 /* ─── LEADER NOTES (review-pass only, not a long-term feature) ── */
 .leader-toolbar {
 	display: flex;
-	justify-content: flex-end;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 0.3rem;
 	margin: 0 0 1.5rem;
+}
+
+.leader-toggle-hint {
+	font-size: 0.75rem;
+	color: var(--ink-mute);
 }
 
 .leader-toggle-btn {
