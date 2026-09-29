@@ -49,7 +49,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(0).label}</h2>
-				<p class="stepcard-lede">Gather these five things before you start. You probably have most of them already.</p>
+				<p class="stepcard-lede">Have these ready before you start.</p>
 			</div>
 		</div>
 
@@ -59,14 +59,14 @@ const stepByIndex = (i: number) => STEPS[i];
 					<span class="checklist-icon" aria-hidden="true">1</span>
 					<div>
 						<p class="checklist-title">Node.js, git, and a terminal</p>
-						<p class="checklist-note">Standard developer setup. You don't need Wrangler installed globally; your agent runs it with <code>npx</code> as it goes.</p>
+						<p class="checklist-note">No global Wrangler install needed; your agent runs it with <code>npx</code>.</p>
 					</div>
 				</div>
 				<div class="checklist-item">
 					<span class="checklist-icon" aria-hidden="true">2</span>
 					<div>
 						<p class="checklist-title">A coding agent</p>
-						<p class="checklist-note">Whatever you already use. <a href="https://opencode.ai">OpenCode</a> works if you don't have one.</p>
+						<p class="checklist-note">Any agent works. No agent? Try <a href="https://opencode.ai">OpenCode</a>.</p>
 					</div>
 				</div>
 				<div class="checklist-item">
@@ -80,21 +80,21 @@ const stepByIndex = (i: number) => STEPS[i];
 					<span class="checklist-icon" aria-hidden="true">4</span>
 					<div>
 						<p class="checklist-title">A free Cloudflare account</p>
-						<p class="checklist-note">No credit card required. <a href="https://dash.cloudflare.com/sign-up">Sign up</a> now, so it's one less thing to do mid-step.</p>
+						<p class="checklist-note">No credit card required. <a href="https://dash.cloudflare.com/sign-up">Sign up</a>.</p>
 					</div>
 				</div>
 				<div class="checklist-item">
 					<span class="checklist-icon" aria-hidden="true">5</span>
 					<div>
 						<p class="checklist-title">Wrangler logged in to that account</p>
-						<p class="checklist-note">Your agent runs Wrangler commands for you, and it can't finish a browser login on your behalf. Do it now: run <code>npx wrangler login</code>, then <code>npx wrangler whoami</code> to confirm the right account. If you have access to more than one Cloudflare account, set <code>CLOUDFLARE_ACCOUNT_ID</code> to the one you're using (the ID is in the <code>whoami</code> output) so Wrangler doesn't stop to ask.</p>
+						<p class="checklist-note">Your agent can't complete a browser login. Run <code>npx wrangler login</code>, then <code>npx wrangler whoami</code>. More than one account? Set <code>CLOUDFLARE_ACCOUNT_ID</code> (from the <code>whoami</code> output).</p>
 					</div>
 				</div>
 			</div>
 
 			<div class="tip">
 				<span class="tip-label">Recommended</span>
-				<p><a href="https://cli.github.com/">GitHub CLI</a> (<code>gh</code>), authenticated. Your agent opens the pull request for you in Step 3; without it, your agent hands you a link to open the PR yourself instead. Install it for your OS from the <a href="https://github.com/cli/cli#installation">GitHub CLI install guide</a>, then run <code>gh auth login</code>.</p>
+				<p><a href="https://github.com/cli/cli#installation">GitHub CLI</a> (<code>gh</code>), then <code>gh auth login</code>. Your agent uses it to open the PR in Step 3; without it, you open the PR from a link.</p>
 			</div>
 		</div>
 	</article>
@@ -114,32 +114,21 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(1).label}</h2>
-				<p class="stepcard-lede">One click. A repo in your account, a database, and a production Worker, wired up and ready to build your first Preview from.</p>
+				<p class="stepcard-lede">One click creates a repo in your account, a D1 database, and a production Worker to branch from.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
 			<div class="phase">
-				<span class="phase-badge phase-badge--why">Why</span>
-				<div class="phase-content">
-					<p>You need a real, deployed app before you can create a Preview of it. Clicking the button below creates that app: the production Worker you'll build your first Preview from in the next step.</p>
-				</div>
-			</div>
-
-			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
-					<p>Clicking the button below starts a short guided flow on the Cloudflare dashboard:</p>
+					<p>Click the button below, then in the deploy form:</p>
 					<ol class="steps-inline">
-						<li>Choose the GitHub account where the button should create your copy of the repo.</li>
-						<li><strong>Keep the default names</strong> for the project and database. The prompts, URLs, and cleanup steps later in this guide use them.</li>
-						<li>Create a <strong>new</strong> D1 database, not an existing one.</li>
-						<li>Leave <strong>ENVIRONMENT</strong> set to <code>production</code>. It drives the badge at the top of the app.</li>
-						<li><strong>Workers Builds</strong> (Cloudflare's own CI/CD) connects to that repo automatically. Nothing to configure.</li>
-						<li>Before you finish, confirm <strong>Worker Previews</strong> is enabled.</li>
-						<li>Leave the <strong>Build</strong>, <strong>Deploy</strong>, and <strong>Preview</strong> commands as the defaults it pre-fills. You don't need to touch them.</li>
+						<li>Pick the GitHub account for your copy of the repo.</li>
+						<li><strong>Keep the default names</strong> and create a <strong>new</strong> D1 database. Later steps use these names.</li>
+						<li>Leave <strong>ENVIRONMENT</strong> (<code>production</code>) and the <strong>Build</strong>, <strong>Deploy</strong>, and <strong>Preview</strong> commands as they are.</li>
+						<li>Check that <strong>Enable Preview builds</strong> is on, then click <strong>Deploy</strong>.</li>
 					</ol>
-					<p class="phase-note">No custom GitHub Actions, no secrets to paste.</p>
 
 					<details class="aside">
 						<summary>Show me each screen of the deploy flow</summary>
@@ -196,15 +185,15 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>When the build log says <strong>Success</strong>, refresh the page. The dashboard doesn't update on its own after the first build, so the <strong>Visit</strong> button (top right) and the Domains toggles can look missing or off until you refresh. Then use <strong>Visit</strong> to open the production URL. (The <code>workers.dev</code> URL at the bottom of the build log works too.)</p>
-					<p>You should see an <strong>Activity Log</strong> with a green <strong>Production</strong> badge and three seeded entries. Try adding an entry and deleting one, get a feel for the app before you branch it. Remember what's in there. You'll compare it against your Preview shortly.</p>
+					<p>When the build says <strong>Success</strong>, <strong>refresh the page</strong> (the dashboard doesn't update on its own), then click <strong>Visit</strong> in the top right.</p>
+					<p>You should see a <strong>Production</strong> badge and three entries. Add and delete one to try it out. You'll compare this against your Preview later.</p>
 					<Figure
 						src="/screenshots/app-production-seeded.png"
 						width={960}
 						height={716}
 						size="narrow"
 						alt="The production Activity Log with a green Production badge and three seeded entries: Wired up Workers Builds, Provisioned the D1 database, and Deployed the production Worker."
-						caption="Your production app: three seeded rows. This is the data your Preview will not have."
+						caption="Production: three seeded rows your Preview won't have."
 					/>
 				</div>
 			</div>
@@ -234,7 +223,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(2).label}</h2>
-				<p class="stepcard-lede">Give every Preview a production-safe D1 binding and its own observability settings.</p>
+				<p class="stepcard-lede">Give Previews their own D1 database and Observability settings.</p>
 			</div>
 		</div>
 
@@ -250,9 +239,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--why">Why</span>
 				<div class="phase-content">
-					<p>
-						Previews inherit your <strong>code</strong> automatically. Their variables, secrets, bindings, and observability come from separate Preview configuration, so production resources are never used accidentally.
-					</p>
+					<p>Previews inherit your <strong>code</strong>, not your bindings. A Preview gets no database unless you give it one.</p>
 
 					<div class="concept-diagram">
 						<div class="concept-col">
@@ -267,14 +254,13 @@ const stepByIndex = (i: number) => STEPS[i];
 						</div>
 					</div>
 
-					<p>D1, KV, R2, and most other resources bind by ID. You will create one D1 database that is isolated from production and retain it as this Worker's shared Preview database.</p>
 				</div>
 			</div>
 
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
-					<p>Your repo already has a <code>previews</code> block. It sets one variable, <code>ENVIRONMENT = "preview"</code>, which is why the app's badge will say <strong>Preview</strong> instead of <strong>Production</strong>. Your agent adds a D1 database to that block. This is the shape of the change, shown so you know what to expect. You don't need to edit it by hand:</p>
+					<p>Your repo already has a <code>previews</code> block that sets <code>ENVIRONMENT = "preview"</code> (that's what drives the badge). Your agent adds a D1 database to it. The change looks like this; you don't edit it by hand:</p>
 					<div class="cmd cmd--json">
 						<div class="cmd-bar"><span class="cmd-label">wrangler.json (reference only)</span></div>
 						<pre><code>{`{
@@ -291,7 +277,7 @@ const stepByIndex = (i: number) => STEPS[i];
   }
 }`}</code></pre>
 					</div>
-					<p class="phase-note">Same binding name (<code>DB</code>), different database. This block will remain on <code>main</code> after the PR merges. See <a href={LINKS.configDocs}>Previews configuration</a> for everything the block can hold.</p>
+					<p class="phase-note">Same binding name (<code>DB</code>), different database. More in <a href={LINKS.configDocs}>Previews configuration</a>.</p>
 					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.isolateResource} />
 				</div>
 			</div>
@@ -299,7 +285,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p><code>wrangler.json</code> now points Previews at <code>workshop-preview-db</code>, enables Preview observability, leaves production untouched, and has the change committed.</p>
+					<p>The change is committed: <code>previews</code> points at <code>workshop-preview-db</code> and enables Observability. Top-level production settings are unchanged.</p>
 				</div>
 			</div>
 
@@ -307,7 +293,7 @@ const stepByIndex = (i: number) => STEPS[i];
 				<summary>Why doesn't this apply to Durable Objects?</summary>
 				<div class="aside-body">
 					<p>
-						Durable Objects and Containers are the actual exception. When the class lives in the same Worker, each Preview gets its own namespace and storage automatically (no override needed) because that state belongs to the Worker itself, not to an external resource identified by an ID. D1, KV, and R2 are the norm, not the exception: bind by ID, and anything sharing that ID shares the data.
+						Durable Objects and Containers in the same Worker get new storage for each Preview automatically, because that state belongs to the Worker. D1, KV, and R2 are separate resources bound by ID: anything bound to the same ID shares the data.
 					</p>
 				</div>
 			</details>
@@ -347,14 +333,13 @@ const stepByIndex = (i: number) => STEPS[i];
 				<div class="phase-content">
 					<p>Ask your agent to push and open the PR:</p>
 					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.openPullRequest} />
-					<p class="phase-note">Then check it yourself: open GitHub, find the repository the Deploy to Cloudflare button created in your account, and open the pull request your agent just made.</p>
-					<p class="phase-note">Within a minute or two, <strong>Workers Builds</strong> deploys the Preview and comments the URL on your pull request. You can also open the <strong>Workers Builds</strong> check on the PR, or go straight to <code>https://&lt;branch&gt;-&lt;worker-name&gt;.&lt;your-subdomain&gt;.workers.dev</code> (for this workshop: <code>isolate-preview-db-worker-previews-starter.&lt;your-subdomain&gt;.workers.dev</code>).</p>
+					<p class="phase-note">Open the PR on GitHub. Within a minute or two, <strong>Workers Builds</strong> deploys the Preview and comments its URL. The URL is also <code>isolate-preview-db-worker-previews-starter.&lt;your-subdomain&gt;.workers.dev</code>.</p>
 					<Figure
 						src="/screenshots/pr-bot-comment.png"
 						width={1400}
 						height={910}
 						alt="The cloudflare-workers-and-pages bot comment on the pull request, showing the Preview URL and a table of Preview deployments by commit with build and deployment status."
-						caption="Where the Preview URL shows up. The Workers Builds check on the PR and the direct workers.dev URL both work too."
+						caption="The Preview URL, commented on your PR."
 					/>
 				</div>
 			</div>
@@ -362,17 +347,17 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Open the Preview URL from the PR. The badge now says <strong>Preview</strong>, and the page explains that the D1 database is connected but has no schema yet.</p>
+					<p>Open the Preview URL. The badge says <strong>Preview</strong>, and the page says the database is connected but has no schema yet.</p>
 					<Figure
 						src="/screenshots/app-preview-needs-schema.png"
 						width={960}
 						height={360}
 						alt="The Preview Activity Log with an orange Preview badge, explaining that its database is connected but doesn't have the workshop schema yet."
-						caption="A missing schema is an expected setup state, not a broken page."
+						caption="Expected: the new database is empty."
 					/>
 					<div class="tip tip--pin">
 						<span class="tip-label">Keep both tabs open</span>
-						<p>Preview tab + production tab from Step 1. You'll flip between them in the next step.</p>
+						<p>Preview and production. You'll compare them next.</p>
 					</div>
 				</div>
 			</div>
@@ -402,7 +387,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(4).label}</h2>
-				<p class="stepcard-lede">Apply a Preview-only candidate schema, then test the real user workflow.</p>
+				<p class="stepcard-lede">Apply a Preview-only schema, then test the app.</p>
 			</div>
 		</div>
 
@@ -410,36 +395,33 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--why">Why</span>
 				<div class="phase-content">
-					<p>Creating a D1 database doesn't seed it. The Preview you opened last step is connected to a real database that has no tables and no rows yet, nothing to test against.</p>
-					<p>What you're about to apply is a brand-new schema, one production doesn't have and never will. Testing a schema change directly in Preview, isolated from production, is exactly what this safety net is for.</p>
+					<p>You're testing a schema change that production doesn't have, in a database production can't see.</p>
 				</div>
 			</div>
 
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
-					<p>The SQL fixture lives outside <code>migrations/</code>, so production automation cannot discover it. Ask your agent to apply it to the Preview database by name:</p>
+					<p>The schema file lives outside <code>migrations/</code>, so production deploys never apply it. Ask your agent to apply it to the Preview database:</p>
 					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.applyPreviewSchema} />
-					<p class="phase-note">Using the account-level database name rather than the <code>DB</code> binding is deliberate: the binding in top-level Wrangler configuration is production. <code>--yes</code> skips Wrangler's "this may take some time" confirmation, which otherwise blocks a non-interactive agent. This runs against the live remote database, so the change is immediate; no redeploy needed before you test.</p>
 				</div>
 			</div>
 
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Refresh the Preview. It now shows three rows containing the word <strong>Preview</strong>. Add an entry and refresh: it persists. Then click <strong>Delete</strong>.</p>
+					<p>Refresh the Preview: three rows mentioning <strong>Preview</strong>. Add an entry and refresh; it stays. Then click <strong>Delete</strong>.</p>
 					<Figure
 						src="/screenshots/app-preview-delete-error.png"
 						width={960}
 						height={828}
 						size="narrow"
 						alt="The Preview Activity Log with three Preview seed rows and a red error: Delete failed. Your data is unchanged. Check this Preview's Observability logs."
-						caption="The candidate schema exposed a real compatibility bug without changing production."
 					/>
 					<details class="aside aside--spoiler">
 						<summary>Did something break?</summary>
 						<div class="aside-body">
-							<p>Delete fails. The page shows an error and the row stays put. That's a real, deliberate compatibility bug the new schema exposed, not workshop breakage. Good thing this is a Preview: production never saw it. That's exactly what Previews are for, let's debug it in the next two steps.</p>
+							<p>Delete fails and the row stays. That's intentional: the new schema broke a query, and only the Preview is affected. You'll diagnose it next.</p>
 						</div>
 					</details>
 				</div>
@@ -470,7 +452,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(5).label}</h2>
-				<p class="stepcard-lede">Use the failed request's structured log to find the schema mismatch.</p>
+				<p class="stepcard-lede">Find the cause in your Preview's own logs.</p>
 			</div>
 		</div>
 
@@ -478,21 +460,20 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
-					<p>You just saw the error on the page. Let's investigate it properly: open the Cloudflare dashboard and watch this Preview's own live logs.</p>
 					<ol class="steps-inline">
 						<li>Go to <strong>Workers &amp; Pages</strong> → your Worker.</li>
-						<li>In the Worker header, open the environment dropdown (it currently says <strong>Production</strong>) and select your branch name (for this workshop, <code>isolate-preview-db</code>).</li>
-						<li>Open the <strong>Observability</strong> tab and switch on <strong>Live</strong> so you can watch requests arrive in real time.</li>
+						<li>In the Worker header, open the dropdown that says <strong>Production</strong> and pick <code>isolate-preview-db</code>.</li>
+						<li>Open <strong>Observability</strong> and switch on <strong>Live</strong>.</li>
 					</ol>
 					<Figure
 						src="/screenshots/dash-env-dropdown.png"
 						width={1400}
 						height={456}
 						alt="The Cloudflare dashboard Worker header with the environment dropdown open, showing Production and the isolate-preview-db branch."
-						caption="The screen most people can't find on their own: switch the Worker from Production to your branch, then open Observability. Production's log list will not show the delete errors."
+						caption="Switch from Production to your branch. Production's logs won't show these errors."
 					/>
 					<ol class="steps-inline" start="4">
-						<li>Try Delete once more and watch the failed <code>DELETE</code> request land live, then open it in the log list.</li>
+						<li>Click Delete again and open the failed <code>DELETE</code> request.</li>
 					</ol>
 				</div>
 			</div>
@@ -500,13 +481,13 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Find <code>activity_log.delete_failed</code>. Its D1 error names the missing column, that's the diagnosis: the query still references production's old column name. Hold onto that error text, you'll hand it to your agent in the next step.</p>
+					<p>Find <code>activity_log.delete_failed</code>. Its D1 error names the missing column. Copy the error text for the next step.</p>
 					<Figure
 						src="/screenshots/dash-observability-delete-failed.png"
 						width={1400}
 						height={540}
 						alt="The Observability tab with isolate-preview-db selected in the Worker header, listing error-level events for DELETE requests to the Preview URL."
-						caption="Your branch's own live events: the failed DELETE requests show up here, not in Production. Click one to open activity_log.delete_failed and its D1 error."
+						caption="Your branch's live events. Click one to see the D1 error."
 					/>
 				</div>
 			</div>
@@ -536,7 +517,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(6).label}</h2>
-				<p class="stepcard-lede">Repair the incompatibility using the error you found, confirm the fix, then merge only the safe change.</p>
+				<p class="stepcard-lede">Fix the bug, verify it in the Preview, then merge.</p>
 			</div>
 		</div>
 
@@ -544,16 +525,15 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
-					<p>Copy the error text from Observability, then give it to your agent together with this prompt:</p>
+					<p>Paste the error into your agent with this prompt:</p>
 					<PromptBlock client:load label="Give the error and this prompt to your agent" text={PROMPTS.diagnoseAndFix} />
-					<p class="phase-note">A change from <code>id</code> to <code>activity_id</code> would only fix the Preview. The repair must also work with production's unchanged schema.</p>
 				</div>
 			</div>
 
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Wait for Workers Builds to redeploy the same Preview URL. Your agent should have already confirmed add, refresh, and delete pass as part of the fix. Production should still show its original, untouched rows.</p>
+					<p>Workers Builds redeploys the same Preview URL and your agent retests it. Delete now works in the Preview, and production still shows its original rows.</p>
 				</div>
 			</div>
 
@@ -561,7 +541,6 @@ const stepByIndex = (i: number) => STEPS[i];
 				<span class="phase-badge phase-badge--do">Merge</span>
 				<div class="phase-content">
 					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.mergePullRequest} />
-					<p class="phase-note"><code>workshop-preview-db</code> doesn't disappear when you merge. It becomes this Worker's shared Preview database for every future branch. Want an isolated database per branch instead? Apply migrations and seed data separately for each one, rather than pointing every Preview at the same database.</p>
 				</div>
 			</div>
 		</div>
@@ -575,14 +554,18 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">What you just did</h2>
-				<p class="stepcard-lede">The same loop, start to finish: build, isolate, break, diagnose, fix, merge.</p>
+				<p class="stepcard-lede">Deploy, isolate, break, diagnose, fix, merge.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
-			<p class="wrapup-p">You deployed a real production Worker, then opened a branch and gave it its own Preview: isolated code, an isolated D1 database, and its own Observability. You applied a brand-new schema straight to that Preview and never to production, found a genuine compatibility bug by using the app yourself, diagnosed it from that Preview's own live logs, and fixed it, all without production ever being at risk.</p>
-			<p class="wrapup-p">That's what Worker Previews are for: every change, however small or risky, gets its own live environment with its own URL, settings, and logs, where it can prove itself before it gets anywhere near production. Merging promoted only the code you verified. The Preview-only schema never reached production, and <code>workshop-preview-db</code> stays behind as the shared database for this Worker's future Previews.</p>
-			<p class="wrapup-p">Keep going: read the <a href={LINKS.blog}>Worker Previews announcement</a>, or dig into the <a href={LINKS.docs}>Previews docs</a> for custom domains, secrets, and per-branch resources.</p>
+			<ul class="wrapup-list">
+				<li>Your branch got its own Preview: its own URL, D1 database, and Observability.</li>
+				<li>You tested a schema change there that production never saw.</li>
+				<li>You found the bug by using the app and diagnosed it from the Preview's logs.</li>
+				<li>You merged only the verified fix. Production's data never changed.</li>
+			</ul>
+			<p class="wrapup-p">Keep going: the <a href={LINKS.blog}>Worker Previews announcement</a> and the <a href={LINKS.docs}>Previews docs</a> (custom domains, secrets, per-branch resources).</p>
 		</div>
 	</article>
 
@@ -594,18 +577,17 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">Clean up</h2>
-				<p class="stepcard-lede">Know what persists after the pull request closes.</p>
+				<p class="stepcard-lede">What stays after the PR closes.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
-			<p class="wrapup-p">The branch Preview can be removed after merge, but keep <code>workshop-preview-db</code>. Its binding is now part of <code>main</code> and it serves as the shared, production-safe database for future Previews. Those Previews are isolated from production but share this database with each other.</p>
+			<p class="wrapup-p">Keep <code>workshop-preview-db</code>. Its binding is now on <code>main</code>, so every future Preview of this Worker uses it: isolated from production, shared between Previews. For a separate database per branch, give that branch its own binding and apply the schema to it.</p>
 
 			<details class="aside">
 				<summary>Want everything gone?</summary>
 				<div class="aside-body">
-					<p>Optional. Closing the pull request only deletes the Preview deployment. The GitHub repo, Worker, and both D1 databases stay until you delete them.</p>
-					<p>Default names (use yours if you changed them in the deploy form):</p>
+					<p>Closing the PR only removes the Preview. The repo, Worker, and both databases stay until you delete them. Default names:</p>
 					<ul class="tight-list">
 						<li>GitHub repo: <code>&lt;you&gt;/worker-previews-starter</code></li>
 						<li>Worker: <code>worker-previews-starter</code></li>
@@ -620,7 +602,7 @@ npx wrangler d1 delete activity-log-db
 npx wrangler d1 delete workshop-preview-db
 gh repo delete &lt;you&gt;/worker-previews-starter --yes</code></pre>
 					</div>
-					<p>Confirm each <code>wrangler</code> prompt. From the dashboard: Workers &amp; Pages → your Worker → Manage → Delete; D1 → each database → Delete; GitHub → Settings → Delete repository.</p>
+					<p>You can also delete the Worker and both databases from the Cloudflare dashboard.</p>
 				</div>
 			</details>
 		</div>

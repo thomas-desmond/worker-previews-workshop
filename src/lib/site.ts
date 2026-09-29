@@ -13,10 +13,10 @@ export const LINKS = {
 } as const;
 
 export const LEARNING_OBJECTIVES = [
-	"How Worker Previews give a branch its own live URL and logs, and why its variables and bindings come from a separate previews configuration instead of production's.",
-	"How to point Previews at their own D1 database so testing a change never touches production data.",
-	"How to read a Preview's own Observability logs to diagnose a real, schema-driven failure.",
-	"How to verify a fix in Preview and promote only the safe, compatible parts of it to production.",
+	"What a Preview inherits from production (code) and what it doesn't (variables and bindings).",
+	"How to give Previews their own D1 database.",
+	"How to debug a Preview from its own Observability logs.",
+	"How to verify a fix in a Preview before merging.",
 ] as const;
 
 export const STEPS = [

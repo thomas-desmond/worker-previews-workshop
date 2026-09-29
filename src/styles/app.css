@@ -1450,6 +1450,18 @@ body.leader-notes-hidden .leader-card {
 }
 
 /* ─── WRAP-UP ────────────────────────────────────────────── */
+.stepcard--wrapup .wrapup-list {
+	margin: 0 0 1rem;
+	padding-left: 1.2rem;
+	font-size: 1.02rem;
+	line-height: 1.62;
+	color: var(--ink);
+}
+
+.stepcard--wrapup .wrapup-list li + li {
+	margin-top: 0.35rem;
+}
+
 .stepcard--wrapup .wrapup-p {
 	font-size: 1.02rem;
 	line-height: 1.62;
