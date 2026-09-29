@@ -1,0 +1,21 @@
+package-lock.json
+  s_ae6403be27ae41::t_fcec8976f2aaa9 22,893-895,909-911,926-928,943-945,960-962,977-979,4528-4530,4536-4537,4546-4548,6029-6031,6042-6046,6050-6052,6057,6060,6063,6077
+package.json
+  s_ae6403be27ae41::t_923817b23e5b30 28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "de7225b671addf7b424cbc490178188053bb468f",
+  "prompts": {},
+  "sessions": {
+    "s_ae6403be27ae41": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f162a3301ffe7Ge1KW5gof13Hs",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Thomas Desmond <24610108+thomas-desmond@users.noreply.github.com>"
+    }
+  }
+}
