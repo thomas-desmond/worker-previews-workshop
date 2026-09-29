@@ -1,6 +1,6 @@
 ---
 import "../styles/app.css";
-import { SITE } from "../lib/site";
+import { LINKS, SITE } from "../lib/site";
 
 interface Props {
 	title?: string;
@@ -46,11 +46,9 @@ const pageTitle = title === SITE.title ? title : `${title} · ${SITE.title}`;
 				<span class="page-footer-dot" aria-hidden="true">·</span>
 				<span>Built on Cloudflare Workers</span>
 				<span class="page-footer-dot" aria-hidden="true">·</span>
-				<a
-					class="page-footer-link"
-					href="https://developers.cloudflare.com/workers/configuration/previews/"
-					>Workers Previews docs</a
-				>
+				<a class="page-footer-link" href={LINKS.docs}>Worker Previews docs</a>
+				<span class="page-footer-dot" aria-hidden="true">·</span>
+				<a class="page-footer-link" href={LINKS.blog}>Announcement post</a>
 			</div>
 		</footer>
 	</body>

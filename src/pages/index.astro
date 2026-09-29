@@ -4,7 +4,7 @@ import Hero from "../components/Hero.astro";
 import { PromptBlock } from "../components/PromptBlock";
 import { StepNav } from "../components/StepNav";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { LEADER_NOTES, LEARNING_OBJECTIVES, PROMPTS, REPO_URL, SITE, STEPS } from "../lib/site";
+import { LEADER_NOTES, LEARNING_OBJECTIVES, LINKS, PROMPTS, REPO_URL, STEPS } from "../lib/site";
 
 const stepByIndex = (i: number) => STEPS[i];
 ---
@@ -48,7 +48,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(0).label}</h2>
-				<p class="stepcard-lede">Gather these four things before you start. Nothing scary, you probably have most of these already.</p>
+				<p class="stepcard-lede">Gather these five things before you start. You probably have most of them already.</p>
 			</div>
 		</div>
 
@@ -80,6 +80,13 @@ const stepByIndex = (i: number) => STEPS[i];
 					<div>
 						<p class="checklist-title">A free Cloudflare account</p>
 						<p class="checklist-note">No credit card required. <a href="https://dash.cloudflare.com/sign-up">Sign up</a> now, so it's one less thing to do mid-step.</p>
+					</div>
+				</div>
+				<div class="checklist-item">
+					<span class="checklist-icon" aria-hidden="true">5</span>
+					<div>
+						<p class="checklist-title">Wrangler logged in to that account</p>
+						<p class="checklist-note">Your agent runs Wrangler commands for you, and it can't finish a browser login on your behalf. Do it now: run <code>npx wrangler login</code>, then <code>npx wrangler whoami</code> to confirm the right account. If you have access to more than one Cloudflare account, set <code>CLOUDFLARE_ACCOUNT_ID</code> to the one you're using (the ID is in the <code>whoami</code> output) so Wrangler doesn't stop to ask.</p>
 					</div>
 				</div>
 			</div>
@@ -123,7 +130,8 @@ const stepByIndex = (i: number) => STEPS[i];
 				<div class="phase-content">
 					<p>Clicking the button below starts a short guided flow on the Cloudflare dashboard:</p>
 					<ol class="steps-inline">
-						<li>Choose the GitHub account to fork the repo into.</li>
+						<li>Choose the GitHub account where the button should create your copy of the repo.</li>
+						<li><strong>Keep the default names</strong> for the project and database. The prompts, URLs, and cleanup steps later in this guide use them.</li>
 						<li>Create a <strong>new</strong> D1 database, not an existing one.</li>
 						<li><strong>Workers Builds</strong> (Cloudflare's own CI/CD) connects to that repo automatically. Nothing to configure.</li>
 						<li>Before you finish, confirm <strong>Worker Previews</strong> is enabled.</li>
@@ -147,7 +155,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Once the Worker's first build finishes, use the <strong>Visit</strong> button in the top right of its dashboard page to open the production URL. You should see an <strong>Activity Log</strong> with three seeded entries. Try adding an entry and deleting one, get a feel for the app before you branch it. Remember what's in there. You'll compare it against your Preview shortly.</p>
+					<p>Once the Worker's first build finishes, use the <strong>Visit</strong> button in the top right of its dashboard page to open the production URL. You should see an <strong>Activity Log</strong> with a green <strong>Production</strong> badge and three seeded entries. Try adding an entry and deleting one, get a feel for the app before you branch it. Remember what's in there. You'll compare it against your Preview shortly.</p>
 					<Figure
 						src="/screenshots/app-production-seeded.png"
 						alt="The production Activity Log showing three seeded entries: Wired up Workers Builds, Provisioned the D1 database, and Deployed the production Worker."
@@ -238,7 +246,7 @@ const stepByIndex = (i: number) => STEPS[i];
   }
 }`}</code></pre>
 					</div>
-					<p class="phase-note">Same binding name (<code>DB</code>), different database. This block will remain on <code>main</code> after the PR merges. See <a href="https://developers.cloudflare.com/workers/previews/configuration/">Previews configuration</a> for everything the block can hold.</p>
+					<p class="phase-note">Same binding name (<code>DB</code>), different database. This block will remain on <code>main</code> after the PR merges. See <a href={LINKS.configDocs}>Previews configuration</a> for everything the block can hold.</p>
 					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.isolateResource} />
 				</div>
 			</div>
@@ -307,7 +315,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Open the Preview URL from the PR. The page should render successfully and explain that the D1 binding exists but its schema has not been applied.</p>
+					<p>Open the Preview URL from the PR. The badge now says <strong>Preview</strong>, and the page explains that the D1 database is connected but has no schema yet.</p>
 					<Figure
 						alt="The Preview Activity Log explaining that its connected D1 database needs the workshop schema."
 						placeholderLabel="Preview setup state: the database is connected, but workshop/preview-schema.sql has not been applied."
@@ -517,7 +525,8 @@ const stepByIndex = (i: number) => STEPS[i];
 
 		<div class="stepcard-body">
 			<p class="wrapup-p">You deployed a real production Worker, then opened a branch and gave it its own Preview: isolated code, an isolated D1 database, and its own Observability. You applied a brand-new schema straight to that Preview and never to production, found a genuine compatibility bug by using the app yourself, diagnosed it from that Preview's own live logs, and fixed it, all without production ever being at risk.</p>
-			<p class="wrapup-p">That's what Worker Previews are for: every change, however small or risky, gets a full, disposable copy of production to prove itself in before it's allowed anywhere near the real thing. Merging promoted only the parts you verified. The database, the logs, and the failure all stayed in the Preview and are gone with it.</p>
+			<p class="wrapup-p">That's what Worker Previews are for: every change, however small or risky, gets its own live environment with its own URL, settings, and logs, where it can prove itself before it gets anywhere near production. Merging promoted only the code you verified. The Preview-only schema never reached production, and <code>workshop-preview-db</code> stays behind as the shared database for this Worker's future Previews.</p>
+			<p class="wrapup-p">Keep going: read the <a href={LINKS.blog}>Worker Previews announcement</a>, or dig into the <a href={LINKS.docs}>Previews docs</a> for custom domains, secrets, and per-branch resources.</p>
 		</div>
 	</article>
 

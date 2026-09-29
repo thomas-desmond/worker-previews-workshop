@@ -3,13 +3,18 @@ export const SITE = {
 	tagline: "Isolated environments for every change your agent makes.",
 	description:
 		"Deploy a production Worker, test a candidate D1 schema safely in a Preview, diagnose a real failure, and merge a fix without changing production data.",
-	duration: "~40-50 min",
 	audience: "Developers",
 } as const;
 
+export const LINKS = {
+	blog: "https://blog.cloudflare.com/worker-previews/",
+	docs: "https://developers.cloudflare.com/workers/previews/",
+	configDocs: "https://developers.cloudflare.com/workers/previews/configuration/",
+} as const;
+
 export const LEARNING_OBJECTIVES = [
-	"How Worker Previews isolate a branch's code, secrets, bindings, and observability from production automatically.",
-	"How to safely override a shared resource like D1 so every Preview gets its own copy without ever touching production.",
+	"How Worker Previews give a branch its own live URL and logs, and why its variables and bindings come from a separate previews configuration instead of production's.",
+	"How to point Previews at their own D1 database so testing a change never touches production data.",
 	"How to read a Preview's own Observability logs to diagnose a real, schema-driven failure.",
 	"How to verify a fix in Preview and promote only the safe, compatible parts of it to production.",
 ] as const;
@@ -72,7 +77,7 @@ export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 	prereqs: [
 		"Frame the hour before anyone touches a laptop: \"Agents can ship code faster than we can review it. Previews gives every change its own throwaway environment. Today you build one slice of that yourself.\"",
 		"Name it explicitly as one piece of the ADLC (Agent Development Lifecycle), not the whole thing.",
-		"While people check the four boxes, confirm room-wide out loud: agent installed, GitHub authed, Cloudflare account created. Don't move on until most hands are up.",
+		"While people check the five boxes, confirm room-wide out loud: agent installed, GitHub authed, Cloudflare account created, `npx wrangler whoami` shows the right account. Don't move on until most hands are up.",
 	],
 	deploy: [
 		"There's a real wait after the click (provisioning + first build). Use it.",
@@ -91,7 +96,7 @@ export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 		"After push + PR, there's dead time while Workers Builds runs. Use it.",
 		"Recap what's happening with zero manual deploy steps: Workers Builds runs `wrangler preview` for the branch and comments the stable URL on the PR.",
 		"Close the loop from Step 1: \"This is the moment that fills the gap. Production existed; now the branch gets its own live environment too.\"",
-		"Known flake: the bot comment often posts while the build is still in progress, with an empty URL, and may not update. Fallback: the Workers Builds check on the PR, or `https://<branch>-<worker-name>.<subdomain>.workers.dev`.",
+		"Point out the Preview badge on the page: it comes from previews.vars, which the starter already had. Previews don't inherit production vars.",
 	],
 	interact: [
 		"Land the new beat before the schema goes in: creating a database is not the same as seeding it. Empty tables, no rows, nothing to test yet, until this step's schema lands.",
