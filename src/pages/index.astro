@@ -145,24 +145,37 @@ const stepByIndex = (i: number) => STEPS[i];
 						<summary>Show me each screen of the deploy flow</summary>
 						<div class="aside-body">
 							<Figure
-								alt="The Deploy to Cloudflare flow asking which GitHub account to create the repo in, with the Cloudflare GitHub app install prompt."
-								placeholderLabel="Placeholder: choosing the GitHub account and installing the Cloudflare GitHub app."
-								caption="Pick your personal GitHub account. Work organizations with SSO can block the Cloudflare GitHub app install."
+								src="/screenshots/deploy-01-github.png"
+								width={1400}
+								height={647}
+								alt="The Git account dropdown in the deploy form, listing connected GitHub and GitLab accounts and options to add a new connection."
+								caption="1. Pick the Git account for your copy of the repo. Use a personal GitHub account; work organizations with SSO can block the Cloudflare GitHub app install."
 							/>
 							<Figure
-								alt="The deploy form with the default project name worker-previews-starter and a new D1 database named activity-log-db."
-								placeholderLabel="Placeholder: deploy form with default names and a new D1 database."
-								caption="Keep the default names and create a new database."
+								src="/screenshots/deploy-02-form.png"
+								width={1400}
+								height={639}
+								alt="The deploy form with project name worker-previews-starter, Create new selected for the D1 database, and the database named activity-log-db."
+								caption="2. Keep the default project name, choose Create new, and keep the database name activity-log-db."
 							/>
 							<Figure
-								alt="Build settings showing Worker Previews enabled and the default Build, Deploy, and Preview commands."
-								placeholderLabel="Placeholder: build settings, Previews enabled, default commands."
-								caption="Check that Worker Previews is enabled. Leave the commands as they are."
+								src="/screenshots/deploy-03-build-settings.png"
+								width={1400}
+								height={642}
+								alt="The deploy form showing ENVIRONMENT set to production, an empty build command, deploy command npm run deploy, and preview command npx wrangler preview."
+								caption="3. Leave ENVIRONMENT as production and the commands as they are."
 							/>
 							<Figure
-								alt="The Worker dashboard after the first build finishes, with the Visit button in the top right."
-								placeholderLabel="Placeholder: finished deploy with the Visit button."
-								caption="When the first build finishes, Visit opens your production app."
+								src="/screenshots/deploy-04-preview-settings.png"
+								width={1400}
+								height={646}
+								alt="The bottom of the deploy form with Enable Preview builds switched on and Protect with Cloudflare Access switched off, next to the Deploy button."
+								caption="4. Check that Enable Preview builds is on, then click Deploy."
+							/>
+							<Figure
+								alt="The Worker dashboard after refreshing, with the Visit button in the top right."
+								placeholderLabel="Placeholder: after the first build succeeds and you refresh, the Visit button in the top right."
+								caption="5. When the build log says Success, refresh the page. Visit opens your production app."
 							/>
 						</div>
 					</details>
@@ -183,10 +196,14 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Once the Worker's first build finishes, use the <strong>Visit</strong> button in the top right of its dashboard page to open the production URL. You should see an <strong>Activity Log</strong> with a green <strong>Production</strong> badge and three seeded entries. Try adding an entry and deleting one, get a feel for the app before you branch it. Remember what's in there. You'll compare it against your Preview shortly.</p>
+					<p>When the build log says <strong>Success</strong>, refresh the page. The dashboard doesn't update on its own after the first build, so the <strong>Visit</strong> button (top right) and the Domains toggles can look missing or off until you refresh. Then use <strong>Visit</strong> to open the production URL. (The <code>workers.dev</code> URL at the bottom of the build log works too.)</p>
+					<p>You should see an <strong>Activity Log</strong> with a green <strong>Production</strong> badge and three seeded entries. Try adding an entry and deleting one, get a feel for the app before you branch it. Remember what's in there. You'll compare it against your Preview shortly.</p>
 					<Figure
 						src="/screenshots/app-production-seeded.png"
-						alt="The production Activity Log showing three seeded entries: Wired up Workers Builds, Provisioned the D1 database, and Deployed the production Worker."
+						width={960}
+						height={992}
+						size="narrow"
+						alt="The production Activity Log with a green Production badge and three seeded entries: Wired up Workers Builds, Provisioned the D1 database, and Deployed the production Worker."
 						caption="Your production app: three seeded rows. This is the data your Preview will not have."
 					/>
 				</div>
@@ -333,8 +350,10 @@ const stepByIndex = (i: number) => STEPS[i];
 					<p class="phase-note">Then check it yourself: open GitHub, find the repository the Deploy to Cloudflare button created in your account, and open the pull request your agent just made.</p>
 					<p class="phase-note">Within a minute or two, <strong>Workers Builds</strong> deploys the Preview and comments the URL on your pull request. You can also open the <strong>Workers Builds</strong> check on the PR, or go straight to <code>https://&lt;branch&gt;-&lt;worker-name&gt;.&lt;your-subdomain&gt;.workers.dev</code> (for this workshop: <code>isolate-preview-db-worker-previews-starter.&lt;your-subdomain&gt;.workers.dev</code>).</p>
 					<Figure
-						alt="A GitHub pull request with a Cloudflare Workers and Pages bot comment containing the Preview deployment URL."
-						placeholderLabel="Placeholder: the Workers Builds bot comment on the PR with the Preview deployment URL."
+						src="/screenshots/pr-bot-comment.png"
+						width={1400}
+						height={910}
+						alt="The cloudflare-workers-and-pages bot comment on the pull request, showing the Preview URL and a table of Preview deployments by commit with build and deployment status."
 						caption="Where the Preview URL shows up. The Workers Builds check on the PR and the direct workers.dev URL both work too."
 					/>
 				</div>
@@ -345,8 +364,11 @@ const stepByIndex = (i: number) => STEPS[i];
 				<div class="phase-content">
 					<p>Open the Preview URL from the PR. The badge now says <strong>Preview</strong>, and the page explains that the D1 database is connected but has no schema yet.</p>
 					<Figure
-						alt="The Preview Activity Log explaining that its connected D1 database needs the workshop schema."
-						placeholderLabel="Preview setup state: the database is connected, but workshop/preview-schema.sql has not been applied."
+						src="/screenshots/app-preview-needs-schema.png"
+						width={960}
+						height={771}
+						size="narrow"
+						alt="The Preview Activity Log with an orange Preview badge, explaining that its database is connected but doesn't have the workshop schema yet."
 						caption="A missing schema is an expected setup state, not a broken page."
 					/>
 					<div class="tip tip--pin">
@@ -408,8 +430,11 @@ const stepByIndex = (i: number) => STEPS[i];
 				<div class="phase-content">
 					<p>Refresh the Preview. It now shows three rows containing the word <strong>Preview</strong>. Add an entry and refresh: it persists. Then click <strong>Delete</strong>.</p>
 					<Figure
-						alt="The Preview Activity Log showing Preview-specific seed rows and a visible delete failure message."
-						placeholderLabel="Preview after setup: Preview seed rows load, add and refresh work, and delete shows an error."
+						src="/screenshots/app-preview-delete-error.png"
+						width={960}
+						height={1098}
+						size="narrow"
+						alt="The Preview Activity Log with three Preview seed rows and a red error: Delete failed. Your data is unchanged. Check this Preview's Observability logs."
 						caption="The candidate schema exposed a real compatibility bug without changing production."
 					/>
 					<details class="aside aside--spoiler">
@@ -461,8 +486,10 @@ const stepByIndex = (i: number) => STEPS[i];
 						<li>Open the <strong>Observability</strong> tab and switch on <strong>Live</strong> so you can watch requests arrive in real time.</li>
 					</ol>
 					<Figure
+						src="/screenshots/dash-env-dropdown.png"
+						width={1400}
+						height={456}
 						alt="The Cloudflare dashboard Worker header with the environment dropdown open, showing Production and the isolate-preview-db branch."
-						placeholderLabel="Placeholder: the Worker header environment dropdown, Production vs your branch name. There is no separate Previews tab."
 						caption="The screen most people can't find on their own: switch the Worker from Production to your branch, then open Observability. Production's log list will not show the delete errors."
 					/>
 					<ol class="steps-inline" start="4">
@@ -476,9 +503,11 @@ const stepByIndex = (i: number) => STEPS[i];
 				<div class="phase-content">
 					<p>Find <code>activity_log.delete_failed</code>. Its D1 error names the missing column, that's the diagnosis: the query still references production's old column name. Hold onto that error text, you'll hand it to your agent in the next step.</p>
 					<Figure
-						alt="The Observability request list scoped to the Preview branch, showing only the requests made to the Preview URL, separate from production traffic."
-						placeholderLabel="Placeholder: the per-branch request/log list, showing only your Preview's requests (not production's)."
-						caption="Success looks like this: a request list scoped to your branch alone, with separate logs and traces, same as the separate database."
+						src="/screenshots/dash-observability-delete-failed.png"
+						width={1400}
+						height={540}
+						alt="The Observability tab with isolate-preview-db selected in the Worker header, listing error-level events for DELETE requests to the Preview URL."
+						caption="Your branch's own live events: the failed DELETE requests show up here, not in Production. Click one to open activity_log.delete_failed and its D1 error."
 					/>
 				</div>
 			</div>

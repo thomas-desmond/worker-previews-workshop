@@ -8,6 +8,8 @@
  *  - Image (`src` given): a lazy-loaded <img> with the same caption.
  *
  * Pass `width`/`height` when you know them to avoid layout shift.
+ * Use `size="narrow"` for tall, app-style screenshots so they don't
+ * dominate the column.
  */
 interface Props {
 	src?: string;
@@ -17,12 +19,13 @@ interface Props {
 	placeholderLabel?: string;
 	width?: number;
 	height?: number;
+	size?: "full" | "narrow";
 }
 
-const { src, alt, caption, placeholderLabel, width, height } = Astro.props;
+const { src, alt, caption, placeholderLabel, width, height, size = "full" } = Astro.props;
 ---
 
-<figure class="figure">
+<figure class:list={["figure", { "figure--narrow": size === "narrow" }]}>
 	{
 		src ? (
 			<div class="figure-frame">

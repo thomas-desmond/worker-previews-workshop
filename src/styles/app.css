@@ -1139,6 +1139,20 @@ body.leader-notes-hidden .leader-card {
 	height: auto;
 }
 
+.figure--narrow {
+	max-width: 22rem;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.figure--narrow .figure-cap {
+	text-align: center;
+}
+
+.aside-body .figure + .figure {
+	margin-top: 1.25rem;
+}
+
 .figure-placeholder {
 	display: flex;
 	flex-direction: column;

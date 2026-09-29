@@ -81,6 +81,7 @@ export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 	],
 	deploy: [
 		"There's a real wait after the click (provisioning + first build). Use it.",
+		"Expect \"there's no Visit button\": the dashboard doesn't update after the first build. Answer: refresh the page (or use the workers.dev URL at the bottom of the build log).",
 		"Narrate exactly what the button did: created a copy of the repo in their GitHub account, provisioned a production D1 database, wired up Workers Builds (Cloudflare's own CI/CD) to that repo, deployed the Worker.",
 		"Land the callback line: \"You have production deployed, but no Preview yet. That's next, and it's where this gets interesting.\"",
 		"Point at the app while it loads: an Activity Log with three seeded rows. They'll compare this exact data against an isolated copy shortly.",
