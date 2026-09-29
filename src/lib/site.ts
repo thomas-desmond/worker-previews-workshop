@@ -114,16 +114,16 @@ export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 	],
 };
 
-export const REPO_URL = "https://github.com/thomas-desmond/d1-template-preview";
+export const REPO_URL = "https://github.com/thomas-desmond/worker-previews-starter";
 
 export const PROMPTS = {
-	cloneAndBranch: `Using the GitHub CLI (\`gh\`) if it's installed and authenticated, find the repository the Deploy to Cloudflare button just created in my account (named \`d1-template-preview\` unless I changed it in the deploy form), and clone it into the current directory. If \`gh\` isn't available, ask me for the repository URL first. Once cloned, create and check out a new branch named \`isolate-preview-db\` off \`main\`.`,
+	cloneAndBranch: `Using the GitHub CLI (\`gh\`) if it's installed and authenticated, find the repository the Deploy to Cloudflare button just created in my account (named \`worker-previews-starter\` unless I changed it in the deploy form), and clone it into the current directory. If \`gh\` isn't available, ask me for the repository URL first. Once cloned, create and check out a new branch named \`isolate-preview-db\` off \`main\`.`,
 
 	isolateResource: `I'm on a new git branch off main in this repo. Configure a shared, production-safe D1 database for Worker Previews:
 
 1. Run \`npx wrangler d1 create workshop-preview-db\` to create a brand new D1 database. Don't reuse the production one. If Wrangler asks to add the binding to wrangler.json for you, decline.
-2. In \`wrangler.json\`, add a \`previews.d1_databases\` block using binding name \`DB\` (same binding name as the top-level production entry) with the \`database_id\` and \`database_name\` from step 1.
-3. Add \`previews.observability\` with \`enabled: true\`.
+2. \`wrangler.json\` already has a \`previews\` block (it holds \`vars.ENVIRONMENT = "preview"\`). Inside that existing block, add a \`d1_databases\` entry using binding name \`DB\` (same binding name as the top-level production entry) with the \`database_id\` and \`database_name\` from step 1. Keep the existing \`vars\`.
+3. In the same \`previews\` block, add \`observability\` with \`enabled: true\`.
 4. Do not modify the top-level production configuration.
 5. Commit the change. This Preview configuration is intended to remain when the branch merges.`,
 
@@ -143,10 +143,10 @@ Fix the Worker code, not either database schema. Production still has an \`id\` 
 
 	cleanup: `Delete everything this workshop created.
 
-1. \`npx wrangler delete d1-template-preview\`
-2. \`npx wrangler d1 delete d1-template-database\`
+1. \`npx wrangler delete worker-previews-starter\`
+2. \`npx wrangler d1 delete activity-log-db\`
 3. \`npx wrangler d1 delete workshop-preview-db\`
-4. \`gh repo delete\` the GitHub repo this workshop cloned (usually \`<you>/d1-template-preview\`) with \`--yes\`
+4. \`gh repo delete\` the GitHub repo this workshop cloned (usually \`<you>/worker-previews-starter\`) with \`--yes\`
 
 If a name differs from \`wrangler.json\` or the git remote, use the actual name. Confirm each wrangler prompt. Do not touch other Workers, databases, or repositories.`,
 } as const;

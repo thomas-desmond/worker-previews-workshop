@@ -221,22 +221,24 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
-					<p>This is the shape of the change your agent is about to make. It's here so you know what to expect, not something you need to edit by hand:</p>
+					<p>Your repo already has a <code>previews</code> block. It sets one variable, <code>ENVIRONMENT = "preview"</code>, which is why the app's badge will say <strong>Preview</strong> instead of <strong>Production</strong>. Your agent adds a D1 database to that block. This is the shape of the change, shown so you know what to expect. You don't need to edit it by hand:</p>
 					<div class="cmd cmd--json">
 						<div class="cmd-bar"><span class="cmd-label">wrangler.json (reference only)</span></div>
 						<pre><code>{`{
+  "vars": { "ENVIRONMENT": "production" },
   "d1_databases": [
-    { "binding": "DB", "database_name": "d1-template-database" } // production
+    { "binding": "DB", "database_name": "activity-log-db" } // production
   ],
   "previews": {
-    "d1_databases": [
+    "vars": { "ENVIRONMENT": "preview" },        // already there
+    "d1_databases": [                             // new
       { "binding": "DB", "database_name": "workshop-preview-db" }
     ],
-    "observability": { "enabled": true }
+    "observability": { "enabled": true }          // new
   }
 }`}</code></pre>
 					</div>
-					<p class="phase-note">Same binding name (<code>DB</code>), different database. This block will remain on <code>main</code> after the PR merges.</p>
+					<p class="phase-note">Same binding name (<code>DB</code>), different database. This block will remain on <code>main</code> after the PR merges. See <a href="https://developers.cloudflare.com/workers/previews/configuration/">Previews configuration</a> for everything the block can hold.</p>
 					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.isolateResource} />
 				</div>
 			</div>
@@ -293,7 +295,7 @@ const stepByIndex = (i: number) => STEPS[i];
 					<p>Ask your agent to push and open the PR:</p>
 					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.openPullRequest} />
 					<p class="phase-note">Then check it yourself: open GitHub, find the repository the Deploy to Cloudflare button created in your account, and open the pull request your agent just made.</p>
-					<p class="phase-note">Within a minute or two, <strong>Workers Builds</strong> deploys the Preview and comments the URL on your pull request. You can also open the <strong>Workers Builds</strong> check on the PR, or go straight to <code>https://&lt;branch&gt;-&lt;worker-name&gt;.&lt;your-subdomain&gt;.workers.dev</code> (for this workshop: <code>isolate-preview-db-d1-template-preview.&lt;your-subdomain&gt;.workers.dev</code>).</p>
+					<p class="phase-note">Within a minute or two, <strong>Workers Builds</strong> deploys the Preview and comments the URL on your pull request. You can also open the <strong>Workers Builds</strong> check on the PR, or go straight to <code>https://&lt;branch&gt;-&lt;worker-name&gt;.&lt;your-subdomain&gt;.workers.dev</code> (for this workshop: <code>isolate-preview-db-worker-previews-starter.&lt;your-subdomain&gt;.workers.dev</code>).</p>
 					<Figure
 						alt="A GitHub pull request with a Cloudflare Workers and Pages bot comment containing the Preview deployment URL."
 						placeholderLabel="Placeholder: the Workers Builds bot comment on the PR with the Preview deployment URL."
@@ -540,18 +542,18 @@ const stepByIndex = (i: number) => STEPS[i];
 					<p>Optional. Closing the pull request only deletes the Preview deployment. The GitHub repo, Worker, and both D1 databases stay until you delete them.</p>
 					<p>Default names (use yours if you changed them in the deploy form):</p>
 					<ul class="tight-list">
-						<li>GitHub repo: <code>&lt;you&gt;/d1-template-preview</code></li>
-						<li>Worker: <code>d1-template-preview</code></li>
-						<li>Production D1: <code>d1-template-database</code></li>
+						<li>GitHub repo: <code>&lt;you&gt;/worker-previews-starter</code></li>
+						<li>Worker: <code>worker-previews-starter</code></li>
+						<li>Production D1: <code>activity-log-db</code></li>
 						<li>Preview D1: <code>workshop-preview-db</code></li>
 					</ul>
 					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.cleanup} />
 					<div class="cmd">
 						<div class="cmd-bar"><span class="cmd-label">Terminal</span></div>
-						<pre><code>npx wrangler delete d1-template-preview
-npx wrangler d1 delete d1-template-database
+						<pre><code>npx wrangler delete worker-previews-starter
+npx wrangler d1 delete activity-log-db
 npx wrangler d1 delete workshop-preview-db
-gh repo delete &lt;you&gt;/d1-template-preview --yes</code></pre>
+gh repo delete &lt;you&gt;/worker-previews-starter --yes</code></pre>
 					</div>
 					<p>Confirm each <code>wrangler</code> prompt. From the dashboard: Workers &amp; Pages → your Worker → Manage → Delete; D1 → each database → Delete; GitHub → Settings → Delete repository.</p>
 				</div>
