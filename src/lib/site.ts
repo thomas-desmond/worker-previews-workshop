@@ -140,7 +140,11 @@ export const REPO_URL = "https://github.com/thomas-desmond/worker-previews-start
 
 /** Deterministic steps: the primary path is a command the attendee runs. */
 export const COMMANDS = {
-	setupCheck: `node -v && git --version && gh auth status && npx wrangler whoami`,
+	// One command per line, no `&&`: Windows PowerShell 5.1 doesn't support `&&`.
+	setupCheck: `node -v
+git --version
+gh auth status
+npx wrangler whoami`,
 
 	cloneAndBranch: `gh repo clone worker-previews-starter
 cd worker-previews-starter

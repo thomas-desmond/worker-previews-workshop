@@ -96,7 +96,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Check</span>
 				<div class="phase-content">
-					<p>Run this. Every command should succeed, <code>gh</code> should show you as logged in, and <code>whoami</code> should show the right Cloudflare account.</p>
+					<p>Paste these into your terminal (macOS, Linux, or Windows). Each should print a version or account: <code>gh</code> should show you as logged in, and <code>whoami</code> should show the right Cloudflare account.</p>
 					<CommandBlock client:load label="Setup check" text={COMMANDS.setupCheck} />
 				</div>
 			</div>
@@ -345,9 +345,22 @@ const stepByIndex = (i: number) => STEPS[i];
 						alt="The cloudflare-workers-and-pages bot comment on the pull request, showing the Preview URL and a table of Preview deployments by commit with build and deployment status."
 						caption="The Preview URL, commented on your PR."
 					/>
-					<div class="tip">
-						<span class="tip-label">Two kinds of URL</span>
-						<p>The <strong>Preview URL</strong> belongs to the branch, always serves its latest deploy, and never changes: <code>isolate-preview-db-worker-previews-starter.&lt;subdomain&gt;.workers.dev</code>. Each push also gets a <strong>deployment URL</strong> (the rows in the table) that is pinned to that exact deploy. Share the Preview URL; link a deployment URL to point at one specific version.</p>
+					<div class="url-compare">
+						<p class="url-compare-title">Your PR has two kinds of URL</p>
+						<div class="url-compare-grid">
+							<div class="url-compare-col">
+								<span class="url-compare-name">Preview URL<small>One per branch</small></span>
+								<p>Stays the same and always serves the branch's latest deploy.</p>
+								<code>isolate-preview-db-worker-previews-starter.&lt;subdomain&gt;.workers.dev</code>
+								<p class="url-compare-use"><strong>Use it to</strong> share with your team.</p>
+							</div>
+							<div class="url-compare-col">
+								<span class="url-compare-name">Deployment URL<small>One per push</small></span>
+								<p>Pinned to one exact deploy. These are the rows in the bot's table.</p>
+								<code>&lt;deployment-id&gt;-worker-previews-starter.&lt;subdomain&gt;.workers.dev</code>
+								<p class="url-compare-use"><strong>Use it to</strong> point at one specific version.</p>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
