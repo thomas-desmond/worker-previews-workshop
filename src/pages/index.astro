@@ -1,10 +1,11 @@
 ---
+import { CommandBlock } from "../components/CommandBlock";
 import Figure from "../components/Figure.astro";
 import Hero from "../components/Hero.astro";
 import { PromptBlock } from "../components/PromptBlock";
 import { StepNav } from "../components/StepNav";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { LEADER_NOTES, LEARNING_OBJECTIVES, LINKS, PROMPTS, REPO_URL, STEPS } from "../lib/site";
+import { COMMANDS, LEADER_NOTES, LEARNING_OBJECTIVES, LINKS, PREVIEWS_BLOCK, PROMPTS, REPO_URL, STEPS } from "../lib/site";
 
 const stepByIndex = (i: number) => STEPS[i];
 ---
@@ -32,7 +33,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="legend-item">
 				<span class="legend-badge legend-badge--do">Do</span>
-				<span>The action you (or your agent) takes</span>
+				<span>The action: run it yourself, or hand it to your agent</span>
 			</div>
 			<div class="legend-item">
 				<span class="legend-badge legend-badge--verify">Verify</span>
@@ -59,21 +60,21 @@ const stepByIndex = (i: number) => STEPS[i];
 					<span class="checklist-icon" aria-hidden="true">1</span>
 					<div>
 						<p class="checklist-title">Node.js, git, and a terminal</p>
-						<p class="checklist-note">No global Wrangler install needed; your agent runs it with <code>npx</code>.</p>
+						<p class="checklist-note">No global Wrangler install needed; every command uses <code>npx</code>.</p>
 					</div>
 				</div>
 				<div class="checklist-item">
 					<span class="checklist-icon" aria-hidden="true">2</span>
 					<div>
 						<p class="checklist-title">A coding agent</p>
-						<p class="checklist-note">Any agent works. No agent? Try <a href="https://opencode.ai">OpenCode</a>.</p>
+						<p class="checklist-note">Any agent works. You'll use it to diagnose and fix a bug, and optionally for the routine steps. No agent? Try <a href="https://opencode.ai">OpenCode</a>.</p>
 					</div>
 				</div>
 				<div class="checklist-item">
 					<span class="checklist-icon" aria-hidden="true">3</span>
 					<div>
-						<p class="checklist-title">A GitHub account</p>
-						<p class="checklist-note">The deploy button creates a repo in it.</p>
+						<p class="checklist-title">A GitHub account and the GitHub CLI</p>
+						<p class="checklist-note">The deploy button creates a repo in your account. Install <a href="https://github.com/cli/cli#installation"><code>gh</code></a> and run <code>gh auth login</code>; you'll use it to clone, open, and merge the PR.</p>
 					</div>
 				</div>
 				<div class="checklist-item">
@@ -87,14 +88,17 @@ const stepByIndex = (i: number) => STEPS[i];
 					<span class="checklist-icon" aria-hidden="true">5</span>
 					<div>
 						<p class="checklist-title">Wrangler logged in to that account</p>
-						<p class="checklist-note">Your agent can't complete a browser login. Run <code>npx wrangler login</code>, then <code>npx wrangler whoami</code>. More than one account? Set <code>CLOUDFLARE_ACCOUNT_ID</code> (from the <code>whoami</code> output).</p>
+						<p class="checklist-note">Run <code>npx wrangler login</code> yourself (it opens a browser, so an agent can't do it). More than one account? Set <code>CLOUDFLARE_ACCOUNT_ID</code> (from the <code>whoami</code> output).</p>
 					</div>
 				</div>
 			</div>
 
-			<div class="tip">
-				<span class="tip-label">Recommended</span>
-				<p><a href="https://github.com/cli/cli#installation">GitHub CLI</a> (<code>gh</code>), then <code>gh auth login</code>. Your agent uses it to open the PR in Step 3; without it, you open the PR from a link.</p>
+			<div class="phase">
+				<span class="phase-badge phase-badge--verify">Check</span>
+				<div class="phase-content">
+					<p>Run this. Every command should succeed, <code>gh</code> should show you as logged in, and <code>whoami</code> should show the right Cloudflare account.</p>
+					<CommandBlock client:load label="Setup check" text={COMMANDS.setupCheck} />
+				</div>
 			</div>
 		</div>
 	</article>
@@ -198,13 +202,6 @@ const stepByIndex = (i: number) => STEPS[i];
 				</div>
 			</div>
 
-			<div class="step-next">
-				<a href="#isolate" class="step-next-link">
-					<span class="step-next-hint">Next</span>
-					Configure Previews
-					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
-				</a>
-			</div>
 		</div>
 	</article>
 
@@ -231,63 +228,71 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Setup</span>
 				<div class="phase-content">
-					<p>Ask your agent to clone the repo the button just created and start a working branch:</p>
-					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.cloneAndBranch} />
+					<p>Clone the repo the deploy button created in your account and start a working branch:</p>
+					<CommandBlock client:load text={COMMANDS.cloneAndBranch} />
+					<p class="phase-note">Changed the repo name in the deploy form? Use that name instead. Open the <code>worker-previews-starter</code> folder in your editor and your agent.</p>
 				</div>
 			</div>
 
 			<div class="phase">
 				<span class="phase-badge phase-badge--why">Why</span>
 				<div class="phase-content">
-					<p>Previews inherit your <strong>code</strong>, not your bindings. A Preview gets no database unless you give it one.</p>
+					<p>Previews inherit your <strong>code</strong>, not your settings. They never fall back to production's variables or bindings, so a Preview can't touch production data by accident. Without its own binding, <code>env.DB</code> is undefined in the Preview, and <code>wrangler preview</code> warns that bindings are missing.</p>
 
 					<div class="concept-diagram">
 						<div class="concept-col">
 							<span class="concept-col-head concept-col-head--prod">Production</span>
 							<div class="concept-cell">code</div>
-							<div class="concept-cell concept-cell--bind">DB → prod-db</div>
+							<div class="concept-cell concept-cell--bind">DB → activity-log-db</div>
 						</div>
 						<div class="concept-col">
 							<span class="concept-col-head concept-col-head--preview">Preview</span>
 							<div class="concept-cell concept-cell--inherit">code (inherited)</div>
-							<div class="concept-cell concept-cell--empty">DB → ??? (empty!)</div>
+							<div class="concept-cell concept-cell--empty">DB → nothing until you add it</div>
 						</div>
 					</div>
-
+					<p class="phase-note">From the docs: "Previews do not inherit production settings." More in <a href={LINKS.configDocs}>Previews configuration</a>.</p>
 				</div>
 			</div>
 
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
-					<p>Your repo already has a <code>previews</code> block that sets <code>ENVIRONMENT = "preview"</code> (that's what drives the badge). Your agent adds a D1 database to it. The change looks like this; you don't edit it by hand:</p>
-					<div class="cmd cmd--json">
-						<div class="cmd-bar"><span class="cmd-label">wrangler.json (reference only)</span></div>
-						<pre><code>{`{
-  "vars": { "ENVIRONMENT": "production" },
-  "d1_databases": [
-    { "binding": "DB", "database_name": "activity-log-db" } // production
-  ],
-  "previews": {
-    "vars": { "ENVIRONMENT": "preview" },        // already there
-    "d1_databases": [                             // new
-      { "binding": "DB", "database_name": "workshop-preview-db" }
-    ],
-    "observability": { "enabled": true }          // new
-  }
-}`}</code></pre>
-					</div>
-					<p class="phase-note">Same binding name (<code>DB</code>), different database. More in <a href={LINKS.configDocs}>Previews configuration</a>.</p>
-					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.isolateResource} />
+					<ol class="steps-inline">
+						<li>Create a new D1 database for Previews. If Wrangler offers to add the binding to <code>wrangler.json</code> for you, say <strong>no</strong>: it would add it to production's config.</li>
+					</ol>
+					<CommandBlock client:load text={COMMANDS.createPreviewDb} />
+					<ol class="steps-inline" start="2">
+						<li>Open <code>wrangler.json</code>. It already has a <code>previews</code> block with <code>ENVIRONMENT = "preview"</code> (that's what drives the badge). Replace that block with this one, pasting in the <code>database_id</code> from the output above:</li>
+					</ol>
+					<CommandBlock client:load label="wrangler.json · previews block" text={PREVIEWS_BLOCK} />
+					<ol class="steps-inline" start="3">
+						<li>Commit it. This config stays when the branch merges, so future Previews use it too.</li>
+					</ol>
+					<CommandBlock client:load text={COMMANDS.commitConfig} />
+					<details class="aside aside--agent">
+						<summary>Or ask your agent to do steps 1–3</summary>
+						<div class="aside-body">
+							<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.isolateResource} />
+						</div>
+					</details>
 				</div>
 			</div>
 
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>The change is committed: <code>previews</code> points at <code>workshop-preview-db</code> and enables Observability. Top-level production settings are unchanged.</p>
+					<p><code>git show</code> shows a change only inside <code>previews</code>: a <code>DB</code> binding pointing at <code>workshop-preview-db</code>, plus Observability. Production still binds the same name, <code>DB</code>, to <code>activity-log-db</code>, and the top level is unchanged.</p>
 				</div>
 			</div>
+
+			<details class="aside">
+				<summary>Prefer the dashboard? What about secrets?</summary>
+				<div class="aside-body">
+					<p>In the dashboard, your Worker's <strong>Settings</strong> has a <strong>Production</strong> / <strong>Previews Base</strong> toggle for variables, bindings, and Observability. It generates the same <code>previews</code> config, which you then copy into <code>wrangler.json</code>.</p>
+					<p>Secrets can't go in the config file. Set them once for all new Previews with <code>npx wrangler preview base-config secret put NAME</code>. See <a href={LINKS.configDocs}>Previews configuration</a>.</p>
+				</div>
+			</details>
 
 			<details class="aside">
 				<summary>Why doesn't this apply to Durable Objects?</summary>
@@ -298,13 +303,6 @@ const stepByIndex = (i: number) => STEPS[i];
 				</div>
 			</details>
 
-			<div class="step-next">
-				<a href="#preview" class="step-next-link">
-					<span class="step-next-hint">Next</span>
-					Open your Preview
-					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
-				</a>
-			</div>
 		</div>
 	</article>
 
@@ -331,9 +329,15 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
-					<p>Ask your agent to push and open the PR:</p>
-					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.openPullRequest} />
-					<p class="phase-note">Open the PR on GitHub. Within a minute or two, <strong>Workers Builds</strong> deploys the Preview and comments its URL. The URL is also <code>isolate-preview-db-worker-previews-starter.&lt;your-subdomain&gt;.workers.dev</code>.</p>
+					<p>Push the branch and open a pull request:</p>
+					<CommandBlock client:load text={COMMANDS.openPullRequest} />
+					<details class="aside aside--agent">
+						<summary>Or ask your agent</summary>
+						<div class="aside-body">
+							<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.openPullRequest} />
+						</div>
+					</details>
+					<p>Open the PR on GitHub. Within a minute or two, <strong>Workers Builds</strong> deploys the Preview and comments its URL.</p>
 					<Figure
 						src="/screenshots/pr-bot-comment.png"
 						width={1400}
@@ -341,6 +345,10 @@ const stepByIndex = (i: number) => STEPS[i];
 						alt="The cloudflare-workers-and-pages bot comment on the pull request, showing the Preview URL and a table of Preview deployments by commit with build and deployment status."
 						caption="The Preview URL, commented on your PR."
 					/>
+					<div class="tip">
+						<span class="tip-label">Two kinds of URL</span>
+						<p>The <strong>Preview URL</strong> belongs to the branch, always serves its latest deploy, and never changes: <code>isolate-preview-db-worker-previews-starter.&lt;subdomain&gt;.workers.dev</code>. Each push also gets a <strong>deployment URL</strong> (the rows in the table) that is pinned to that exact deploy. Share the Preview URL; link a deployment URL to point at one specific version.</p>
+					</div>
 				</div>
 			</div>
 
@@ -362,13 +370,6 @@ const stepByIndex = (i: number) => STEPS[i];
 				</div>
 			</div>
 
-			<div class="step-next">
-				<a href="#interact" class="step-next-link">
-					<span class="step-next-hint">Next</span>
-					Apply the schema
-					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
-				</a>
-			</div>
 		</div>
 	</article>
 
@@ -402,8 +403,14 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
-					<p>The schema file lives outside <code>migrations/</code>, so production deploys never apply it. Ask your agent to apply it to the Preview database:</p>
-					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.applyPreviewSchema} />
+					<p>The schema file lives outside <code>migrations/</code>, so production deploys never apply it. Apply it to the Preview database by name:</p>
+					<CommandBlock client:load text={COMMANDS.applyPreviewSchema} />
+					<details class="aside aside--agent">
+						<summary>Or ask your agent</summary>
+						<div class="aside-body">
+							<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.applyPreviewSchema} />
+						</div>
+					</details>
 				</div>
 			</div>
 
@@ -427,13 +434,6 @@ const stepByIndex = (i: number) => STEPS[i];
 				</div>
 			</div>
 
-			<div class="step-next">
-				<a href="#observability" class="step-next-link">
-					<span class="step-next-hint">Next</span>
-					Observability
-					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
-				</a>
-			</div>
 		</div>
 	</article>
 
@@ -492,13 +492,6 @@ const stepByIndex = (i: number) => STEPS[i];
 				</div>
 			</div>
 
-			<div class="step-next">
-				<a href="#final" class="step-next-link">
-					<span class="step-next-hint">Next</span>
-					Fix and merge
-					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
-				</a>
-			</div>
 		</div>
 	</article>
 
@@ -533,14 +526,67 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Workers Builds redeploys the same Preview URL and your agent retests it. Delete now works in the Preview, and production still shows its original rows.</p>
+					<p>Your agent's push triggers a new build. On the PR, the bot comment now has a <strong>second deployment row</strong> with its own deployment URL, but the <strong>Preview URL is the same</strong>. Refresh your Preview tab: delete now works. Production still shows its original rows.</p>
 				</div>
 			</div>
 
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Merge</span>
 				<div class="phase-content">
-					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.mergePullRequest} />
+					<p>Once delete passes in the Preview, merge:</p>
+					<CommandBlock client:load text={COMMANDS.mergePullRequest} />
+					<details class="aside aside--agent">
+						<summary>Or ask your agent</summary>
+						<div class="aside-body">
+							<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.mergePullRequest} />
+						</div>
+					</details>
+					<p>Workers Builds deploys <code>main</code> to production. Production keeps its seeded rows and delete still works there. Nothing from <code>workshop/</code> touched it.</p>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	<article class="stepcard leader-card">
+		<span class="leader-card-badge">🎤 For the room lead</span>
+		<ul class="leader-card-list">
+			{LEADER_NOTES.final?.map((note) => <li>{note}</li>)}
+		</ul>
+	</article>
+
+	{/* ─── Step 7: Your turn ─── */}
+	<article id="your-turn" class="stepcard">
+		<div class="stepcard-head">
+			<div class="stepcard-badge">
+				<span class="stepcard-badge-num">{stepByIndex(7).num}</span>
+			</div>
+			<div class="stepcard-head-copy">
+				<h2 class="stepcard-title">{stepByIndex(7).label}</h2>
+				<p class="stepcard-lede">One sentence to your agent, one new Preview.</p>
+			</div>
+		</div>
+
+		<div class="stepcard-body">
+			<div class="phase">
+				<span class="phase-badge phase-badge--why">Why</span>
+				<div class="phase-content">
+					<p>You configured Previews once. Now every branch gets one automatically, including branches your agent creates.</p>
+				</div>
+			</div>
+
+			<div class="phase">
+				<span class="phase-badge phase-badge--do">Do</span>
+				<div class="phase-content">
+					<p>Hand your agent a small feature and let it take it all the way to a PR. Swap in your own idea:</p>
+					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.yourTurn} />
+				</div>
+			</div>
+
+			<div class="phase">
+				<span class="phase-badge phase-badge--verify">Verify</span>
+				<div class="phase-content">
+					<p>The new PR gets its own bot comment and a <strong>new Preview URL</strong> named after the new branch. Your change is live there, and production and your first Preview are unchanged.</p>
+					<p class="phase-note">The new Preview uses <code>workshop-preview-db</code> too: its binding is on <code>main</code> now. Isolated from production, shared between Previews.</p>
 				</div>
 			</div>
 		</div>
@@ -554,7 +600,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">What you just did</h2>
-				<p class="stepcard-lede">Deploy, isolate, break, diagnose, fix, merge.</p>
+				<p class="stepcard-lede">Deploy, isolate, break, diagnose, fix, merge, repeat.</p>
 			</div>
 		</div>
 
@@ -563,7 +609,8 @@ const stepByIndex = (i: number) => STEPS[i];
 				<li>Your branch got its own Preview: its own URL, D1 database, and Observability.</li>
 				<li>You tested a schema change there that production never saw.</li>
 				<li>You found the bug by using the app and diagnosed it from the Preview's logs.</li>
-				<li>You merged only the verified fix. Production's data never changed.</li>
+				<li>Your fix landed on the same Preview URL as a new deployment, and you merged only once it was verified. Production's data never changed.</li>
+				<li>Every new branch, yours or your agent's, gets its own Preview automatically.</li>
 			</ul>
 			<p class="wrapup-p">Keep going: the <a href={LINKS.blog}>Worker Previews announcement</a> and the <a href={LINKS.docs}>Previews docs</a> (custom domains, secrets, per-branch resources).</p>
 		</div>
@@ -594,14 +641,14 @@ const stepByIndex = (i: number) => STEPS[i];
 						<li>Production D1: <code>activity-log-db</code></li>
 						<li>Preview D1: <code>workshop-preview-db</code></li>
 					</ul>
-					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.cleanup} />
-					<div class="cmd">
-						<div class="cmd-bar"><span class="cmd-label">Terminal</span></div>
-						<pre><code>npx wrangler delete worker-previews-starter
-npx wrangler d1 delete activity-log-db
-npx wrangler d1 delete workshop-preview-db
-gh repo delete &lt;you&gt;/worker-previews-starter --yes</code></pre>
-					</div>
+					<CommandBlock client:load text={COMMANDS.cleanup} />
+					<p class="phase-note"><code>gh repo delete</code> needs the <code>delete_repo</code> scope. If it complains, run <code>gh auth refresh -s delete_repo</code>.</p>
+					<details class="aside aside--agent">
+						<summary>Or ask your agent</summary>
+						<div class="aside-body">
+							<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.cleanup} />
+						</div>
+					</details>
 					<p>You can also delete the Worker and both databases from the Cloudflare dashboard.</p>
 				</div>
 			</details>

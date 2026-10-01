@@ -752,50 +752,6 @@ body.leader-notes-hidden .leader-card {
 	display: none;
 }
 
-/* ─── NEXT STEP (forward affordance per card) ─────────────── */
-.step-next {
-	margin-top: 0.25rem;
-	padding-top: 1.25rem;
-	border-top: 1px dashed var(--line);
-	display: flex;
-	justify-content: flex-end;
-}
-
-.step-next-link {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.6rem;
-	padding: 0.6rem 0.9rem 0.6rem 1rem;
-	border-radius: 0.6rem;
-	background: var(--brand-tint);
-	border: 1px solid #f4d6bd;
-	color: var(--brand-deep);
-	font-weight: 700;
-	font-size: 0.92rem;
-	text-decoration: none;
-	transition:
-		transform 0.15s ease,
-		background 0.15s ease;
-}
-
-.step-next-link:hover {
-	transform: translateY(-1px);
-	background: #ffe9d5;
-}
-
-.step-next-link svg {
-	flex-shrink: 0;
-}
-
-.step-next-hint {
-	font-weight: 600;
-	color: var(--ink-mute);
-	font-size: 0.72rem;
-	letter-spacing: 0.06em;
-	text-transform: uppercase;
-	margin-right: 0.1rem;
-}
-
 /* ─── PHASE (Why/Do/Verify blocks) ───────────────────────── */
 .phase {
 	display: grid;
@@ -896,6 +852,11 @@ body.leader-notes-hidden .leader-card {
 
 .tight-list {
 	list-style: disc;
+	padding-left: 1.25rem;
+}
+
+.tight-list li + li {
+	margin-top: 0.3rem;
 }
 
 .steps-inline {
@@ -1090,6 +1051,32 @@ body.leader-notes-hidden .leader-card {
 	background: transparent;
 	padding: 0;
 	border: 0;
+}
+
+.cmd-copy {
+	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--code-fg);
+	background: transparent;
+	border: 1px solid #3a3f47;
+	border-radius: 0.4rem;
+	padding: 0.25rem 0.6rem;
+	cursor: pointer;
+	transition:
+		background 0.15s ease,
+		border-color 0.15s ease;
+}
+
+.cmd-copy:hover {
+	background: #2a2e35;
+}
+
+.cmd-copy[data-copied="true"] {
+	color: var(--code-accent);
+	border-color: var(--code-accent);
 }
 
 /* ─── DEPLOY CTA ────────────────────────────────────────── */
@@ -1410,6 +1397,15 @@ body.leader-notes-hidden .leader-card {
 	margin: 0.85rem 0 0;
 }
 
+.aside-body .phase-note,
+.aside-body .cmd + .phase-note {
+	margin-top: 0.6rem;
+}
+
+.aside-body .phase-note + .aside {
+	margin-top: 0.85rem;
+}
+
 /* ─── TBD ────────────────────────────────────────────────── */
 .tbd {
 	display: grid;
@@ -1467,6 +1463,20 @@ body.leader-notes-hidden .leader-card {
 	line-height: 1.62;
 	color: var(--ink);
 	margin: 0 0 1rem;
+}
+
+.stepcard--wrapup .wrapup-p a,
+.aside-body a {
+	color: var(--brand-deep);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	text-decoration-thickness: 1.5px;
+	font-weight: 600;
+}
+
+.stepcard--wrapup .wrapup-p a:hover,
+.aside-body a:hover {
+	color: #7c2d12;
 }
 
 .stepcard--wrapup .wrapup-p code {
