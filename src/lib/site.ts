@@ -148,6 +148,48 @@ export const REPO_URL = "https://github.com/thomas-desmond/worker-previews-start
 /** Remote Workers Observability MCP server. The starter repo ships config for it. */
 export const OBSERVABILITY_MCP_URL = "https://observability.mcp.cloudflare.com/mcp";
 
+/**
+ * How to sign in to the Observability MCP server, per agent (Step 3).
+ * Backticks in steps render as inline code. `command` renders as a copyable terminal block.
+ */
+export type McpAgent = { id: string; name: string; steps: string[]; command?: string };
+
+export const MCP_AGENTS: McpAgent[] = [
+	{
+		id: "claude-code",
+		name: "Claude Code",
+		steps: ["Approve the project's MCP server when asked.", "Run `/mcp`, pick `cloudflare-observability`, and authenticate."],
+	},
+	{
+		id: "cursor",
+		name: "Cursor",
+		steps: ["Open **Cursor Settings → MCP**.", "Enable `cloudflare-observability` and click **Connect**."],
+	},
+	{
+		id: "vscode",
+		name: "VS Code",
+		steps: ["Open `.vscode/mcp.json` and click **Start** above the server.", "Sign in with Cloudflare.", "Use Copilot Chat in **Agent** mode."],
+	},
+	{
+		id: "opencode",
+		name: "OpenCode",
+		steps: ["Run this in the repo folder, then sign in with Cloudflare:"],
+		command: "opencode mcp auth cloudflare-observability",
+	},
+	{
+		id: "codex",
+		name: "Codex",
+		steps: ["Trust the project when asked.", "Run this, then sign in with Cloudflare:"],
+		command: "codex mcp login cloudflare-observability",
+	},
+	{
+		id: "other",
+		name: "Other",
+		steps: ["Add a remote MCP server with this URL, then sign in with Cloudflare:"],
+		command: OBSERVABILITY_MCP_URL,
+	},
+];
+
 /** Deterministic steps: the primary path is a command the attendee runs. */
 export const COMMANDS = {
 	// One command per line, no `&&`: Windows PowerShell 5.1 doesn't support `&&`.
