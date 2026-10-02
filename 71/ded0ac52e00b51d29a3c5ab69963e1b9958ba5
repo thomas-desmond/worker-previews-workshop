@@ -1,0 +1,23 @@
+src/lib/site.ts
+  s_c967a0e4e32f01::t_2f3489c61ce829 151-192
+src/pages/index.astro
+  s_c967a0e4e32f01::t_6b30875588cf28 2,9,375-376
+src/styles/app.css
+  s_c967a0e4e32f01::t_901caf9156cf20 1575-1625
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "71ded0ac52e00b51d29a3c5ab69963e1b9958ba5",
+  "prompts": {},
+  "sessions": {
+    "s_c967a0e4e32f01": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f026bb4e9ffeZILQt3tOuQ1yBL",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Thomas Desmond <24610108+thomas-desmond@users.noreply.github.com>"
+    }
+  }
+}
