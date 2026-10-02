@@ -1572,3 +1572,54 @@ body.leader-notes-hidden .leader-card {
 	font-size: 0.9em;
 	font-weight: 600;
 }
+
+/* Agent picker (Step 3 MCP sign-in) */
+.agent-picker {
+	border: 1px solid var(--line);
+	border-radius: 0.7rem;
+	background: var(--paper);
+	overflow: hidden;
+}
+
+.agent-picker-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35rem;
+	padding: 0.6rem;
+	border-bottom: 1px solid var(--line);
+	background: var(--card);
+}
+
+.agent-picker-tab {
+	padding: 0.35rem 0.65rem;
+	border: 1px solid var(--line-strong);
+	border-radius: 999px;
+	background: var(--card);
+	color: var(--ink-soft);
+	font: inherit;
+	font-size: 0.84rem;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.agent-picker-tab:hover {
+	border-color: var(--do);
+	color: var(--do);
+}
+
+.agent-picker-tab[aria-selected="true"] {
+	background: var(--do);
+	border-color: var(--do);
+	color: #fff;
+}
+
+.agent-picker-tab:focus-visible {
+	outline: 2px solid var(--do);
+	outline-offset: 2px;
+}
+
+.agent-picker-panel {
+	padding: 0.9rem 1.1rem 1rem;
+	display: grid;
+	gap: 0.75rem;
+}
