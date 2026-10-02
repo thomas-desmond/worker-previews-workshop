@@ -225,6 +225,13 @@ const stepByIndex = (i: number) => STEPS[i];
 				<div class="phase-content">
 					<p>Clone the repo the deploy button created in your account and start a working branch:</p>
 					<CommandBlock client:load text={COMMANDS.cloneAndBranch} />
+					<details class="aside aside--agent">
+						<summary>Or ask your agent</summary>
+						<div class="aside-body">
+							<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.cloneAndBranch} />
+							<p class="phase-note">When it's done, restart your agent inside the folder it cloned. An agent started elsewhere hasn't read the repo's <code>AGENTS.md</code> or MCP config.</p>
+						</div>
+					</details>
 					<p class="phase-note">Changed the repo name in the deploy form? Use that name instead. Start your agent <strong>inside</strong> the <code>worker-previews-starter</code> folder, so it reads the repo's <code>AGENTS.md</code> and MCP config.</p>
 				</div>
 			</div>

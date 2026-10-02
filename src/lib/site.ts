@@ -194,6 +194,8 @@ export const PREVIEWS_BLOCK = `"previews": {
 }`;
 
 export const PROMPTS = {
+	cloneAndBranch: `Clone my copy of the workshop repo with \`gh repo clone worker-previews-starter\`. If that repo doesn't exist, I changed its name in the deploy form: ask me for it. Then, inside the cloned folder, run \`npm install\` and \`git checkout -b isolate-preview-db\`. Tell me the full path of the folder when you're done.`,
+
 	isolateResource: `In this repo, give Worker Previews their own D1 database:
 
 1. Run \`npx wrangler d1 create workshop-preview-db\`. If Wrangler offers to add the binding to wrangler.json, decline.
