@@ -5,7 +5,7 @@ import Hero from "../components/Hero.astro";
 import { PromptBlock } from "../components/PromptBlock";
 import { StepNav } from "../components/StepNav";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { COMMANDS, LEADER_NOTES, LEARNING_OBJECTIVES, LINKS, PREVIEWS_BLOCK, PROMPTS, REPO_URL, STEPS } from "../lib/site";
+import { COMMANDS, LEADER_NOTES, LEARNING_OBJECTIVES, LINKS, OBSERVABILITY_MCP_URL, PREVIEWS_BLOCK, PROMPTS, REPO_URL, STEPS } from "../lib/site";
 
 const stepByIndex = (i: number) => STEPS[i];
 ---
@@ -67,7 +67,7 @@ const stepByIndex = (i: number) => STEPS[i];
 					<span class="checklist-icon" aria-hidden="true">2</span>
 					<div>
 						<p class="checklist-title">A coding agent</p>
-						<p class="checklist-note">Any agent works. You'll use it to diagnose and fix a bug, and optionally for the routine steps. No agent? Try <a href="https://opencode.ai">OpenCode</a>.</p>
+						<p class="checklist-note">Your agent tests your Preview, reads its logs, and fixes a bug. It needs to run terminal commands and connect to a remote MCP server. Claude Code, Cursor, VS Code with Copilot, Codex, and OpenCode work out of the box: the starter repo ships config for each. No agent? Try <a href="https://opencode.ai">OpenCode</a>.</p>
 					</div>
 				</div>
 				<div class="checklist-item">
@@ -230,7 +230,7 @@ const stepByIndex = (i: number) => STEPS[i];
 				<div class="phase-content">
 					<p>Clone the repo the deploy button created in your account and start a working branch:</p>
 					<CommandBlock client:load text={COMMANDS.cloneAndBranch} />
-					<p class="phase-note">Changed the repo name in the deploy form? Use that name instead. Open the <code>worker-previews-starter</code> folder in your editor and your agent.</p>
+					<p class="phase-note">Changed the repo name in the deploy form? Use that name instead. Start your agent <strong>inside</strong> the <code>worker-previews-starter</code> folder, so it reads the repo's <code>AGENTS.md</code> and MCP config.</p>
 				</div>
 			</div>
 
@@ -366,6 +366,28 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 
 			<div class="phase">
+				<span class="phase-badge phase-badge--do">Connect</span>
+				<div class="phase-content">
+					<p>While the build runs, connect your agent to your Preview's logs. The starter repo already configures the read-only <strong>Workers Observability MCP server</strong> (<code>cloudflare-observability</code>), so you only need to sign in with Cloudflare once:</p>
+					<ul class="tight-list">
+						<li><strong>Claude Code:</strong> approve the project's MCP server when asked, then run <code>/mcp</code>, pick <code>cloudflare-observability</code>, and authenticate.</li>
+						<li><strong>Cursor:</strong> open <strong>Cursor Settings → MCP</strong>, enable <code>cloudflare-observability</code>, and click <strong>Connect</strong>.</li>
+						<li><strong>VS Code (Copilot):</strong> open <code>.vscode/mcp.json</code>, click <strong>Start</strong> above the server, and sign in. Use Copilot Chat in <strong>Agent</strong> mode.</li>
+						<li><strong>OpenCode:</strong> run <code>opencode mcp auth cloudflare-observability</code>.</li>
+						<li><strong>Codex:</strong> trust the project when asked, then run <code>codex mcp login cloudflare-observability</code>.</li>
+						<li><strong>Another agent:</strong> add a remote MCP server with the URL <code>{OBSERVABILITY_MCP_URL}</code>.</li>
+					</ul>
+					<p>Then check it worked:</p>
+					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.checkObservability} />
+					<p class="phase-note">Agent started before you cloned the repo? Restart it in the <code>worker-previews-starter</code> folder so it reads the config. Can't connect? Carry on: Step 5 has a dashboard fallback.</p>
+					<div class="tip">
+						<span class="tip-label">Open AGENTS.md</span>
+						<p>It's how your agent knows the rules: Preview settings go in <code>previews</code>, never write to production data, test on the Preview URL, read the Preview's logs. Copy it into your own repos.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
 					<p>Open the Preview URL. The badge says <strong>Preview</strong>, and the page says the database is connected but has no schema yet.</p>
@@ -401,7 +423,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(4).label}</h2>
-				<p class="stepcard-lede">Apply a Preview-only schema, then test the app.</p>
+				<p class="stepcard-lede">Apply a Preview-only schema, then let your agent test the Preview.</p>
 			</div>
 		</div>
 
@@ -430,7 +452,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Refresh the Preview: three rows mentioning <strong>Preview</strong>. Add an entry and refresh; it stays. Then click <strong>Delete</strong>.</p>
+					<p>Refresh the Preview: three rows mentioning <strong>Preview</strong>. Click <strong>Delete</strong> on one.</p>
 					<Figure
 						src="/screenshots/app-preview-delete-error.png"
 						width={960}
@@ -438,10 +460,19 @@ const stepByIndex = (i: number) => STEPS[i];
 						size="narrow"
 						alt="The Preview Activity Log with three Preview seed rows and a red error: Delete failed. Your data is unchanged. Check this Preview's Observability logs."
 					/>
+				</div>
+			</div>
+
+			<div class="phase">
+				<span class="phase-badge phase-badge--do">Agent</span>
+				<div class="phase-content">
+					<p>Now have your agent test it properly. The Preview has its own database, so the agent can add and delete data freely without any risk to production.</p>
+					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.testPreview} />
+					<p>Expect listing and adding to work (<code>200</code>, <code>201</code>) and delete to return <code>500</code>.</p>
 					<details class="aside aside--spoiler">
 						<summary>Did something break?</summary>
 						<div class="aside-body">
-							<p>Delete fails and the row stays. That's intentional: the new schema broke a query, and only the Preview is affected. You'll diagnose it next.</p>
+							<p>Delete fails and the row stays. That's intentional: the new schema broke a query, and only the Preview is affected. Your agent diagnoses it next.</p>
 						</div>
 					</details>
 				</div>
@@ -465,14 +496,35 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(5).label}</h2>
-				<p class="stepcard-lede">Find the cause in your Preview's own logs.</p>
+				<p class="stepcard-lede">Your agent finds the cause in the Preview's own logs.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
 			<div class="phase">
-				<span class="phase-badge phase-badge--do">Do</span>
+				<span class="phase-badge phase-badge--why">Why</span>
 				<div class="phase-content">
+					<p>Each Preview has its own Observability, separate from production. Every log line is tagged with the Preview's name (<code>$workers.preview.slug</code>), so your agent can read exactly this branch's errors without you copying anything.</p>
+				</div>
+			</div>
+
+			<div class="phase">
+				<span class="phase-badge phase-badge--do">Agent</span>
+				<div class="phase-content">
+					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.readPreviewLogs} />
+				</div>
+			</div>
+
+			<div class="phase">
+				<span class="phase-badge phase-badge--verify">Verify</span>
+				<div class="phase-content">
+					<p>Your agent shows one or more <code>activity_log.delete_failed</code> events whose D1 error names the missing column, and explains why the delete query fails against the Preview schema. Found nothing? Logs can take a minute to arrive, so ask it to try again.</p>
+				</div>
+			</div>
+
+			<details class="aside">
+				<summary>No MCP? Find the error in the dashboard</summary>
+				<div class="aside-body">
 					<ol class="steps-inline">
 						<li>Go to <strong>Workers &amp; Pages</strong> → your Worker.</li>
 						<li>In the Worker header, open the dropdown that says <strong>Production</strong> and pick <code>isolate-preview-db</code>.</li>
@@ -487,14 +539,8 @@ const stepByIndex = (i: number) => STEPS[i];
 					/>
 					<ol class="steps-inline" start="4">
 						<li>Click Delete again and open the failed <code>DELETE</code> request.</li>
+						<li>Find <code>activity_log.delete_failed</code>. Its D1 error names the missing column. Paste the error into your agent before the Step 6 prompt.</li>
 					</ol>
-				</div>
-			</div>
-
-			<div class="phase">
-				<span class="phase-badge phase-badge--verify">Verify</span>
-				<div class="phase-content">
-					<p>Find <code>activity_log.delete_failed</code>. Its D1 error names the missing column. Copy the error text for the next step.</p>
 					<Figure
 						src="/screenshots/dash-observability-delete-failed.png"
 						width={1400}
@@ -503,7 +549,7 @@ const stepByIndex = (i: number) => STEPS[i];
 						caption="Your branch's live events. Click one to see the D1 error."
 					/>
 				</div>
-			</div>
+			</details>
 
 		</div>
 	</article>
@@ -523,33 +569,38 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(6).label}</h2>
-				<p class="stepcard-lede">Fix the bug, verify it in the Preview, then merge.</p>
+				<p class="stepcard-lede">Your agent fixes the bug and re-tests the Preview. You approve the merge.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
 			<div class="phase">
-				<span class="phase-badge phase-badge--do">Do</span>
+				<span class="phase-badge phase-badge--do">Agent</span>
 				<div class="phase-content">
-					<p>Paste the error into your agent with this prompt:</p>
-					<PromptBlock client:load label="Give the error and this prompt to your agent" text={PROMPTS.diagnoseAndFix} />
+					<p>In the same agent session:</p>
+					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.diagnoseAndFix} />
 				</div>
 			</div>
 
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Your agent's push triggers a new build. On the PR, the bot comment now has a <strong>second deployment row</strong> with its own deployment URL, but the <strong>Preview URL is the same</strong>. Refresh your Preview tab: delete now works. Production still shows its original rows.</p>
+					<p>Your agent reports every request passing on the Preview, delete included. Check its evidence yourself:</p>
+					<ul class="tight-list">
+						<li>On the PR, the bot comment has a <strong>second deployment row</strong> for the agent's commit, but the <strong>Preview URL is the same</strong>.</li>
+						<li>Refresh your Preview tab: delete works.</li>
+						<li>Production still shows its original rows.</li>
+					</ul>
 				</div>
 			</div>
 
 			<div class="phase">
-				<span class="phase-badge phase-badge--do">Merge</span>
+				<span class="phase-badge phase-badge--do">Approve</span>
 				<div class="phase-content">
-					<p>Once delete passes in the Preview, merge:</p>
+					<p>The agent built it and tested it, and the Preview showed you the result. Merging is your call. When you're happy, merge:</p>
 					<CommandBlock client:load text={COMMANDS.mergePullRequest} />
 					<details class="aside aside--agent">
-						<summary>Or ask your agent</summary>
+						<summary>Or tell your agent you approve</summary>
 						<div class="aside-body">
 							<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.mergePullRequest} />
 						</div>
@@ -575,7 +626,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(7).label}</h2>
-				<p class="stepcard-lede">One sentence to your agent, one new Preview.</p>
+				<p class="stepcard-lede">One sentence to your agent, one new, tested Preview.</p>
 			</div>
 		</div>
 
@@ -598,7 +649,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>The new PR gets its own bot comment and a <strong>new Preview URL</strong> named after the new branch. Your change is live there, and production and your first Preview are unchanged.</p>
+					<p>The new PR gets its own bot comment and a <strong>new Preview URL</strong> named after the new branch. Your agent hands you that URL along with what it checked there. Production and your first Preview are unchanged.</p>
 					<p class="phase-note">The new Preview uses <code>workshop-preview-db</code> too: its binding is on <code>main</code> now. Isolated from production, shared between Previews.</p>
 				</div>
 			</div>
@@ -613,7 +664,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">What you just did</h2>
-				<p class="stepcard-lede">Deploy, isolate, break, diagnose, fix, merge, repeat.</p>
+				<p class="stepcard-lede">Deploy, isolate, break. Your agent tests, diagnoses, fixes. You approve.</p>
 			</div>
 		</div>
 
@@ -621,10 +672,14 @@ const stepByIndex = (i: number) => STEPS[i];
 			<ul class="wrapup-list">
 				<li>Your branch got its own Preview: its own URL, D1 database, and Observability.</li>
 				<li>You tested a schema change there that production never saw.</li>
-				<li>You found the bug by using the app and diagnosed it from the Preview's logs.</li>
-				<li>Your fix landed on the same Preview URL as a new deployment, and you merged only once it was verified. Production's data never changed.</li>
+				<li>Your agent tested the Preview itself, read the Preview's own logs to find the bug, and fixed it. No copy-paste.</li>
+				<li>The fix landed on the same Preview URL as a new deployment. The agent re-tested it there, and you approved the merge from that evidence. Production's data never changed.</li>
 				<li>Every new branch, yours or your agent's, gets its own Preview automatically.</li>
 			</ul>
+			<div class="tip">
+				<span class="tip-label">Take it home</span>
+				<p>Copy <code>AGENTS.md</code> and the MCP config from your <code>worker-previews-starter</code> repo into your own Worker repos. Change the API section to match your app, and your agent will test and debug every branch on its Preview the same way.</p>
+			</div>
 			<p class="wrapup-p">Keep going: the <a href={LINKS.blog}>Worker Previews announcement</a> and the <a href={LINKS.docs}>Previews docs</a> (custom domains, secrets, per-branch resources).</p>
 		</div>
 	</article>
