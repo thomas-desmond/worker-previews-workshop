@@ -88,10 +88,11 @@ export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
 		"Have everyone run the setup check command. Don't move on until most hands are up: `gh auth status` and `npx wrangler whoami` are the usual failures.",
 		"Pacing: Steps 1–3 set things up (commands, with an optional agent prompt). From Step 4 on, the agent does the work: tests the Preview, reads its logs, fixes, re-tests. The attendee approves. Step 7 is the stretch for fast finishers.",
 		"The agent needs no special setup beyond what's listed. The starter repo ships an AGENTS.md and Observability MCP config for Claude Code, Cursor, VS Code, Codex, and OpenCode. Attendees sign in once in Step 3.",
+		"Multiple accounts: if `CLOUDFLARE_ACCOUNT_ID` isn't set where the agent runs, its first wrangler command fails with \"more than one account\". Restart the agent from a terminal where it's exported.",
 	],
 	deploy: [
 		"There's a real wait after the click (provisioning + first build). Use it.",
-		"Expect \"there's no Visit button\": the dashboard doesn't update after the first build. Answer: refresh the page (or use the workers.dev URL at the bottom of the build log).",
+		"Expect \"there's no Visit button\" or \"the build log looks frozen\": the dashboard doesn't update after the first build. Answer: refresh the page (or use the workers.dev URL at the bottom of the build log).",
 		"Narrate exactly what the button did: created a copy of the repo in their GitHub account, provisioned a production D1 database, wired up Workers Builds (Cloudflare's own CI/CD) to that repo, deployed the Worker.",
 		"Land the callback line: \"You have production deployed, but no Preview yet. That's next, and it's where this gets interesting.\"",
 		"Point at the app while it loads: an Activity Log with three seeded rows. They'll compare this exact data against an isolated copy shortly.",
@@ -157,6 +158,7 @@ npx wrangler whoami`,
 
 	cloneAndBranch: `gh repo clone worker-previews-starter
 cd worker-previews-starter
+npm install
 git checkout -b isolate-preview-db`,
 
 	createPreviewDb: `npx wrangler d1 create workshop-preview-db`,
@@ -165,6 +167,7 @@ git checkout -b isolate-preview-db`,
 
 	openPullRequest: `git push -u origin isolate-preview-db
 gh pr create --fill
+sleep 10
 gh pr checks --watch`,
 
 	applyPreviewSchema: `npx wrangler d1 execute workshop-preview-db --remote --yes --file workshop/preview-schema.sql`,
@@ -197,7 +200,7 @@ export const PROMPTS = {
 2. In \`wrangler.json\`, inside the existing \`previews\` block, add a \`d1_databases\` entry with binding \`DB\` and the \`database_name\` and \`database_id\` from step 1. Also add \`"observability": { "enabled": true }\`. Keep the existing \`vars\` and leave the top-level config unchanged.
 3. Commit the change.`,
 
-	openPullRequest: `Push this branch and open a pull request against main with \`gh pr create --fill\`. Then wait for the Workers Builds check with \`gh pr checks --watch\` and give me the Preview URL from the Cloudflare bot's comment.`,
+	openPullRequest: `Push this branch and open a pull request against main with \`gh pr create --fill\`. Then wait for the Workers Builds check with \`gh pr checks --watch\` (if it reports no checks yet, wait a few seconds and retry) and give me the Preview URL from the Cloudflare bot's comment.`,
 
 	checkObservability: `Do you have tools from the \`cloudflare-observability\` MCP server, such as \`query_worker_observability\`? If yes, reply "Observability connected" and list the tool names. If not, tell me which agent you are and stop. Don't try to install anything.`,
 
@@ -217,7 +220,7 @@ Query events from the last hour where \`$workers.scriptName\` is the Worker name
 
 Fix the Worker code, not either database schema. Production still has an \`id\` column while the Preview schema has \`activity_id\`. The merged code must work with both. Run the project checks, then commit and push so Workers Builds redeploys this branch's Preview.
 
-Then verify your own work: wait for \`gh pr checks --watch\`, confirm your commit appears in the bot comment's deployment table, and re-run the full API test (list, add, delete, list) against the same Preview URL. Report the results and a one-line summary of the change. Do not merge.`,
+Then verify your own work: wait for \`gh pr checks --watch\` (if it reports no checks yet, wait a few seconds and retry), confirm your commit appears in the bot comment's deployment table, and re-run the full API test (list, add, delete, list) against the same Preview URL. Report the results and a one-line summary of the change. Do not merge.`,
 
 	mergePullRequest: `I've reviewed the Preview and approve the merge. Merge this pull request with \`gh pr merge --merge\`. When Workers Builds finishes deploying main, run the API test (list, add, delete, list) against production and confirm its seeded entries are still there. Do not apply \`workshop/preview-schema.sql\` to production.`,
 

@@ -88,7 +88,7 @@ const stepByIndex = (i: number) => STEPS[i];
 					<span class="checklist-icon" aria-hidden="true">5</span>
 					<div>
 						<p class="checklist-title">Wrangler logged in to that account</p>
-						<p class="checklist-note">Run <code>npx wrangler login</code> yourself (it opens a browser, so an agent can't do it). More than one account? Set <code>CLOUDFLARE_ACCOUNT_ID</code> (from the <code>whoami</code> output).</p>
+						<p class="checklist-note">Run <code>npx wrangler login</code> yourself (it opens a browser, so an agent can't do it). More than one account? Run <code>export CLOUDFLARE_ACCOUNT_ID=&lt;id&gt;</code> (the ID from <code>whoami</code>) in the terminal <strong>you start your agent from</strong>, so your agent's wrangler commands use it too.</p>
 					</div>
 				</div>
 			</div>
@@ -165,11 +165,6 @@ const stepByIndex = (i: number) => STEPS[i];
 								alt="The bottom of the deploy form with Enable Preview builds switched on and Protect with Cloudflare Access switched off, next to the Deploy button."
 								caption="4. Check that Enable Preview builds is on, then click Deploy."
 							/>
-							<Figure
-								alt="The Worker dashboard after refreshing, with the Visit button in the top right."
-								placeholderLabel="Placeholder: after the first build succeeds and you refresh, the Visit button in the top right."
-								caption="5. When the build log says Success, refresh the page. Visit opens your production app."
-							/>
 						</div>
 					</details>
 
@@ -189,7 +184,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>When the build says <strong>Success</strong>, <strong>refresh the page</strong> (the dashboard doesn't update on its own), then click <strong>Visit</strong> in the top right.</p>
+					<p>The build log doesn't always update on its own. If it stops moving, <strong>refresh the page</strong>. When it says <strong>Success</strong>, open your production app: click <strong>Visit</strong> in the top right, or the <code>*.workers.dev</code> URL on the Worker's Overview.</p>
 					<p>You should see a <strong>Production</strong> badge and three entries. Add and delete one to try it out. You'll compare this against your Preview later.</p>
 					<Figure
 						src="/screenshots/app-production-seeded.png"
@@ -331,6 +326,7 @@ const stepByIndex = (i: number) => STEPS[i];
 				<div class="phase-content">
 					<p>Push the branch and open a pull request:</p>
 					<CommandBlock client:load text={COMMANDS.openPullRequest} />
+					<p class="phase-note">Says <em>no checks reported</em>? The check takes a few seconds to appear. Run <code>gh pr checks --watch</code> again.</p>
 					<details class="aside aside--agent">
 						<summary>Or ask your agent</summary>
 						<div class="aside-body">
@@ -452,7 +448,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>Refresh the Preview: three rows mentioning <strong>Preview</strong>. Click <strong>Delete</strong> on one.</p>
+					<p>Refresh the Preview: three rows mentioning <strong>Preview</strong>. Click <strong>Delete</strong> on one. It fails, and that's the bug your agent is about to find.</p>
 					<Figure
 						src="/screenshots/app-preview-delete-error.png"
 						width={960}
@@ -597,7 +593,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Approve</span>
 				<div class="phase-content">
-					<p>The agent built it and tested it, and the Preview showed you the result. Merging is your call. When you're happy, merge:</p>
+					<p>The agent built it and tested it, and the Preview showed you the result. Merging is your call. Merge before going to Step 7:</p>
 					<CommandBlock client:load text={COMMANDS.mergePullRequest} />
 					<details class="aside aside--agent">
 						<summary>Or tell your agent you approve</summary>
@@ -649,7 +645,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
-					<p>The new PR gets its own bot comment and a <strong>new Preview URL</strong> named after the new branch. Your agent hands you that URL along with what it checked there. Production and your first Preview are unchanged.</p>
+					<p>The new PR gets its own bot comment and a <strong>new Preview URL</strong> named after the new branch. Your agent hands you that URL along with what it checked there. Production and your first Preview's code are unchanged.</p>
 					<p class="phase-note">The new Preview uses <code>workshop-preview-db</code> too: its binding is on <code>main</code> now. Isolated from production, shared between Previews.</p>
 				</div>
 			</div>
