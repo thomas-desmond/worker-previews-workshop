@@ -1,0 +1,21 @@
+src/components/Hero.astro
+  s_aed3aef5381ef3::t_86c98bc020dde1 38
+src/pages/index.astro
+  s_aed3aef5381ef3::t_e871c0e82576c0 32,98,102-108,137-148,249,437,472,510,517,583,640
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "3d1faec4c11c755dd5d6a817492120ea2f28f992",
+  "prompts": {},
+  "sessions": {
+    "s_aed3aef5381ef3": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_ef0fbe99affeLotRLSxR8bZT6e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Thomas Desmond <24610108+thomas-desmond@users.noreply.github.com>"
+    }
+  }
+}
