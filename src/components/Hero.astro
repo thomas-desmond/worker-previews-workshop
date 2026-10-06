@@ -35,7 +35,7 @@ import { LINKS, SITE } from "../lib/site";
 				</div>
 			</div>
 			<p class="hero-links">
-				New to Worker Previews? Read the <a href={LINKS.blog}>announcement post</a> or the <a href={LINKS.docs}>docs</a>.
+				Worker Previews give every branch its own live copy of your Worker: a stable URL, its own bindings, and its own logs. A Preview inherits your code but not your production settings, so you and your agent can test changes against isolated data before anything merges. Learn more in the <a href={LINKS.blog}>announcement post</a> or the <a href={LINKS.docs}>docs</a>.
 			</p>
 
 			<a href="#prereqs" class="hero-cta">
@@ -44,49 +44,6 @@ import { LINKS, SITE } from "../lib/site";
 					<path d="M5 12h14M12 5l7 7-7 7"></path>
 				</svg>
 			</a>
-		</div>
-
-		<div class="hero-preview" aria-hidden="true">
-			<div class="hero-preview-title">You'll build this flow</div>
-			<div class="hero-preview-flow">
-				<div class="hero-flow-node hero-flow-node--prod">
-					<span class="hero-flow-tag">main</span>
-					<span class="hero-flow-name">Production</span>
-					<span class="hero-flow-db">DB: prod</span>
-				</div>
-
-				<div class="hero-flow-split">
-					<span class="hero-flow-line"></span>
-					<span class="hero-flow-branch">branch + PR</span>
-					<span class="hero-flow-line"></span>
-				</div>
-
-				<div class="hero-flow-node hero-flow-node--preview">
-					<span class="hero-flow-tag">PR #42</span>
-					<span class="hero-flow-name">Preview</span>
-					<span class="hero-flow-db">DB: preview ✨</span>
-					<div class="hero-flow-arc">
-						<span class="hero-flow-arc-step">Test</span>
-						<span class="hero-flow-arc-arrow">→</span>
-						<span class="hero-flow-arc-step hero-flow-arc-step--bug">Find a real bug</span>
-						<span class="hero-flow-arc-arrow">→</span>
-						<span class="hero-flow-arc-step hero-flow-arc-step--fix">Fix it</span>
-					</div>
-				</div>
-
-				<div class="hero-flow-split">
-					<span class="hero-flow-line"></span>
-					<span class="hero-flow-branch">merge, code only</span>
-					<span class="hero-flow-line"></span>
-				</div>
-
-				<div class="hero-flow-node hero-flow-node--merged">
-					<span class="hero-flow-tag">main</span>
-					<span class="hero-flow-name">Production, still healthy</span>
-					<span class="hero-flow-db">DB: prod, unchanged</span>
-				</div>
-			</div>
-			<p class="hero-preview-cap">Same code. Isolated data. A real bug, safely found and fixed.</p>
 		</div>
 	</div>
 </section>

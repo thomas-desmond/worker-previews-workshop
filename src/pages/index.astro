@@ -29,7 +29,7 @@ const stepByIndex = (i: number) => STEPS[i];
 		</ul>
 		<div class="intro-legend">
 			<div class="legend-item">
-				<span class="legend-badge legend-badge--why">Why</span>
+				<span class="legend-badge legend-badge--why">Learn</span>
 				<span>The concept behind the step</span>
 			</div>
 			<div class="legend-item">
@@ -95,10 +95,17 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 
 			<div class="phase">
-				<span class="phase-badge phase-badge--verify">Check</span>
+				<span class="phase-badge phase-badge--verify">Verify</span>
 				<div class="phase-content">
 					<p>Paste these into your terminal (macOS, Linux, or Windows). Each should print a version or account: <code>gh</code> should show you as logged in, and <code>whoami</code> should show the right Cloudflare account.</p>
 					<CommandBlock client:load label="Setup check" text={COMMANDS.setupCheck} />
+					<details class="aside aside--agent">
+						<summary>Or ask your agent to check (and fix) your setup</summary>
+						<div class="aside-body">
+							<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.checkPrereqs} />
+							<p class="phase-note">Your agent can install or update tools, but you run the two logins (<code>gh auth login</code>, <code>npx wrangler login</code>) yourself: they open a browser.</p>
+						</div>
+					</details>
 				</div>
 			</div>
 		</div>
@@ -127,7 +134,18 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
-					<p>Click the button below, then in the deploy form:</p>
+					<div class="deploy-cta-wrap">
+						<a
+							href={`https://deploy.workers.cloudflare.com/?url=${REPO_URL}`}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="deploy-cta-link"
+						>
+							<img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
+						</a>
+					</div>
+					<p class="phase-note deploy-cta-note">Opens in a new tab. Put it side by side with this page: you'll go back and forth.</p>
+					<p>Then, in the deploy form:</p>
 					<ol class="steps-inline">
 						<li>Pick the GitHub account for your copy of the repo.</li>
 						<li><strong>Keep the default names</strong> and create a <strong>new</strong> D1 database. Later steps use these names.</li>
@@ -169,16 +187,6 @@ const stepByIndex = (i: number) => STEPS[i];
 						</div>
 					</details>
 
-					<div class="deploy-cta-wrap">
-						<a
-							href={`https://deploy.workers.cloudflare.com/?url=${REPO_URL}`}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="deploy-cta-link"
-						>
-							<img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
-						</a>
-					</div>
 				</div>
 			</div>
 
@@ -238,7 +246,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 
 			<div class="phase">
-				<span class="phase-badge phase-badge--why">Why</span>
+				<span class="phase-badge phase-badge--why">Learn</span>
 				<div class="phase-content">
 					<p>Previews inherit your <strong>code</strong>, not your settings. They never fall back to production's variables or bindings, so a Preview can't touch production data by accident. Without its own binding, <code>env.DB</code> is undefined in the Preview, and <code>wrangler preview</code> warns that bindings are missing.</p>
 
@@ -426,7 +434,7 @@ const stepByIndex = (i: number) => STEPS[i];
 
 		<div class="stepcard-body">
 			<div class="phase">
-				<span class="phase-badge phase-badge--why">Why</span>
+				<span class="phase-badge phase-badge--why">Learn</span>
 				<div class="phase-content">
 					<p>You're testing a schema change that production doesn't have, in a database production can't see.</p>
 				</div>
@@ -461,7 +469,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 
 			<div class="phase">
-				<span class="phase-badge phase-badge--do">Agent</span>
+				<span class="phase-badge phase-badge--do">Prompt</span>
 				<div class="phase-content">
 					<p>Now have your agent test it properly. The Preview has its own database, so the agent can add and delete data freely without any risk to production.</p>
 					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.testPreview} />
@@ -499,14 +507,14 @@ const stepByIndex = (i: number) => STEPS[i];
 
 		<div class="stepcard-body">
 			<div class="phase">
-				<span class="phase-badge phase-badge--why">Why</span>
+				<span class="phase-badge phase-badge--why">Learn</span>
 				<div class="phase-content">
 					<p>Each Preview has its own Observability, separate from production. Every log line is tagged with the Preview's name (<code>$workers.preview.slug</code>), so your agent can read exactly this branch's errors without you copying anything.</p>
 				</div>
 			</div>
 
 			<div class="phase">
-				<span class="phase-badge phase-badge--do">Agent</span>
+				<span class="phase-badge phase-badge--do">Prompt</span>
 				<div class="phase-content">
 					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.readPreviewLogs} />
 				</div>
@@ -572,7 +580,7 @@ const stepByIndex = (i: number) => STEPS[i];
 
 		<div class="stepcard-body">
 			<div class="phase">
-				<span class="phase-badge phase-badge--do">Agent</span>
+				<span class="phase-badge phase-badge--do">Prompt</span>
 				<div class="phase-content">
 					<p>In the same agent session:</p>
 					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.diagnoseAndFix} />
@@ -629,7 +637,7 @@ const stepByIndex = (i: number) => STEPS[i];
 
 		<div class="stepcard-body">
 			<div class="phase">
-				<span class="phase-badge phase-badge--why">Why</span>
+				<span class="phase-badge phase-badge--why">Learn</span>
 				<div class="phase-content">
 					<p>You configured Previews once. Now every branch gets one automatically, including branches your agent creates.</p>
 				</div>

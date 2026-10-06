@@ -25,7 +25,7 @@ export const STEPS = [
 	{
 		id: "prereqs",
 		num: "0",
-		label: "Before you start",
+		label: "Prerequisites",
 		short: "Prereqs",
 	},
 	{
@@ -236,6 +236,19 @@ export const PREVIEWS_BLOCK = `"previews": {
 }`;
 
 export const PROMPTS = {
+	checkPrereqs: `Check that this machine is ready for the Cloudflare Worker Previews workshop. Run each check yourself and report the results in a short table (tool, status, version or account, fix):
+
+1. Node.js: \`node -v\`. Needs a current LTS release (v20 or newer).
+2. git: \`git --version\`.
+3. GitHub CLI: \`gh --version\` and \`gh auth status\`. I must be logged in.
+4. Wrangler: \`npx wrangler whoami\`. I must be logged in to the Cloudflare account I'll use today.
+
+If something is missing or outdated, tell me the exact command to install or update it for my OS, and offer to run it. Don't run \`gh auth login\` or \`npx wrangler login\` yourself: they open a browser, so tell me to run them and wait.
+
+If \`whoami\` lists more than one Cloudflare account, show me the accounts and tell me to run \`export CLOUDFLARE_ACCOUNT_ID=<id>\` (or \`$env:CLOUDFLARE_ACCOUNT_ID="<id>"\` in PowerShell) in the terminal I start my agent from, then restart my agent there.
+
+Finish with "Ready" or a list of what's left to fix. Don't clone or deploy anything yet.`,
+
 	cloneAndBranch: `Clone my copy of the workshop repo with \`gh repo clone worker-previews-starter\`. If that repo doesn't exist, I changed its name in the deploy form: ask me for it. Then, inside the cloned folder, run \`npm install\` and \`git checkout -b isolate-preview-db\`. Tell me the full path of the folder when you're done.`,
 
 	isolateResource: `In this repo, give Worker Previews their own D1 database:

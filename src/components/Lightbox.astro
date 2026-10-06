@@ -1,0 +1,47 @@
+---
+/**
+ * Lightbox. One shared <dialog> for every click-to-enlarge <Figure>.
+ * Rendered once in BaseLayout. Any element with `data-lightbox-src`
+ * opens it. Esc, the close button, or a backdrop click closes it.
+ */
+---
+
+<dialog id="lightbox" class="lightbox" aria-label="Enlarged screenshot">
+	<button type="button" class="lightbox-close" aria-label="Close" data-lightbox-close>
+		<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+			<path d="M6 6l12 12M18 6L6 18"></path>
+		</svg>
+	</button>
+	<img class="lightbox-img" alt="" />
+	<p class="lightbox-cap"></p>
+</dialog>
+
+<script>
+	const dialog = document.getElementById("lightbox") as HTMLDialogElement | null;
+	const img = dialog?.querySelector<HTMLImageElement>(".lightbox-img");
+	const cap = dialog?.querySelector<HTMLParagraphElement>(".lightbox-cap");
+
+	if (dialog && img && cap) {
+		document.addEventListener("click", (event) => {
+			const target = event.target as Element | null;
+			const trigger = target?.closest<HTMLElement>("[data-lightbox-src]");
+			if (!trigger) return;
+			img.src = trigger.dataset.lightboxSrc ?? "";
+			img.alt = trigger.dataset.lightboxAlt ?? "";
+			const caption = trigger.closest("figure")?.querySelector("figcaption")?.textContent ?? "";
+			cap.textContent = caption;
+			cap.hidden = !caption;
+			dialog.showModal();
+		});
+
+		dialog.addEventListener("click", (event) => {
+			const target = event.target as Element;
+			// Close on backdrop clicks (target is the dialog itself) or the close button.
+			if (target === dialog || target.closest("[data-lightbox-close]")) dialog.close();
+		});
+
+		dialog.addEventListener("close", () => {
+			img.removeAttribute("src");
+		});
+	}
+</script>
