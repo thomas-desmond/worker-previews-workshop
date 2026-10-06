@@ -31,8 +31,6 @@
 	--code-bg: #14161a;
 	--code-fg: #e8ecef;
 	--code-accent: #a7e57c;
-	--leader: #be123c;
-	--leader-tint: #fff1f3;
 }
 
 html {
@@ -168,6 +166,15 @@ html {
 	color: var(--brand-deep);
 }
 
+.hero-brand-eyebrow {
+	min-width: 0;
+}
+
+.hero-brand-stack {
+	color: var(--ink-mute);
+	white-space: nowrap;
+}
+
 .hero-title {
 	font-size: clamp(2.25rem, 5vw, 3.25rem);
 	font-weight: 800;
@@ -187,75 +194,16 @@ html {
 	text-wrap: pretty;
 }
 
-.hero-facts {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 0.75rem;
-	margin-bottom: 1.5rem;
-	max-width: 30rem;
-}
-
-@media (min-width: 500px) {
-	.hero-facts {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-}
-
-.hero-fact {
-	display: flex;
-	flex-direction: column;
-	gap: 0.15rem;
-	padding: 0.7rem 0.9rem;
-	background: rgba(255, 255, 255, 0.7);
-	border: 1px solid rgba(255, 255, 255, 0.9);
-	border-radius: 0.6rem;
-	backdrop-filter: blur(6px);
-}
-
-.hero-fact-label {
-	font-size: 0.7rem;
-	letter-spacing: 0.1em;
-	text-transform: uppercase;
-	color: var(--ink-mute);
-	font-weight: 700;
-}
-
-.hero-fact-value {
-	font-size: 0.95rem;
-	font-weight: 700;
-	color: var(--ink);
-}
-
 .hero-links {
 	font-size: 1rem;
 	line-height: 1.6;
 	color: var(--ink-soft);
-	margin: 0 0 1.75rem;
+	margin: 0;
 }
 
 .hero-links a {
 	color: var(--ink);
 	font-weight: 600;
-}
-
-.hero-cta {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.55rem;
-	padding: 0.9rem 1.4rem;
-	background: var(--ink);
-	color: #fff;
-	border-radius: 0.6rem;
-	font-size: 1.05rem;
-	font-weight: 700;
-	text-decoration: none;
-	transition: transform 0.15s ease, background 0.15s ease;
-	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-}
-
-.hero-cta:hover {
-	background: #000;
-	transform: translateY(-1px);
 }
 
 /* ─── RAIL (step sidebar) ────────────────────────────────── */
@@ -383,7 +331,7 @@ html {
 .intro-objectives {
 	display: grid;
 	gap: 0.6rem;
-	margin: 0 0 1.25rem;
+	margin: 0;
 	padding: 0;
 	list-style: none;
 }
@@ -406,54 +354,6 @@ html {
 	height: 0.5rem;
 	border-radius: 50%;
 	background: var(--brand);
-}
-
-.intro-legend {
-	display: grid;
-	gap: 0.55rem;
-	padding-top: 1rem;
-	border-top: 1px solid var(--line);
-}
-
-@media (min-width: 640px) {
-	.intro-legend {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 1rem;
-	}
-}
-
-.legend-item {
-	display: flex;
-	align-items: center;
-	gap: 0.6rem;
-	font-size: 0.9rem;
-	color: var(--ink-soft);
-	font-weight: 500;
-}
-
-.legend-badge {
-	flex-shrink: 0;
-	font-size: 0.68rem;
-	letter-spacing: 0.1em;
-	text-transform: uppercase;
-	font-weight: 800;
-	padding: 0.2rem 0.5rem;
-	border-radius: 0.35rem;
-}
-
-.legend-badge--why {
-	background: var(--why-tint);
-	color: var(--why);
-}
-
-.legend-badge--do {
-	background: var(--do-tint);
-	color: var(--do);
-}
-
-.legend-badge--verify {
-	background: var(--verify-tint);
-	color: var(--verify);
 }
 
 /* ─── STEP CARD ──────────────────────────────────────────── */
@@ -536,79 +436,6 @@ html {
 	display: flex;
 	flex-direction: column;
 	gap: 1.5rem;
-}
-
-/* ─── LEADER NOTES (review-pass only, not a long-term feature) ── */
-.leader-toolbar {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
-	gap: 0.3rem;
-	margin: 0 0 1.5rem;
-}
-
-.leader-toggle-hint {
-	font-size: 0.75rem;
-	color: var(--ink-mute);
-}
-
-.leader-toggle-btn {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.5rem;
-	padding: 0.55rem 0.9rem;
-	border-radius: 0.6rem;
-	border: 1px solid var(--leader);
-	background: var(--leader-tint);
-	color: var(--leader);
-	font-weight: 700;
-	font-size: 0.85rem;
-	cursor: pointer;
-	transition: background 0.15s ease;
-}
-
-.leader-toggle-btn:hover {
-	background: #ffe4e9;
-}
-
-.leader-card {
-	border: 2px dashed var(--leader);
-	background: var(--leader-tint);
-}
-
-.leader-card-badge {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.4rem;
-	font-size: 0.72rem;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	font-weight: 800;
-	color: var(--leader);
-	background: #ffe4e9;
-	border: 1px solid #fecdd6;
-	padding: 0.35rem 0.7rem;
-	border-radius: 0.5rem;
-	margin-bottom: 1.25rem;
-}
-
-.leader-card-list {
-	margin: 0;
-	padding-left: 1.25rem;
-	display: flex;
-	flex-direction: column;
-	gap: 0.65rem;
-	color: var(--ink);
-	font-size: 0.98rem;
-	line-height: 1.55;
-}
-
-.leader-card-list li::marker {
-	color: var(--leader);
-}
-
-body.leader-notes-hidden .leader-card {
-	display: none;
 }
 
 /* ─── PHASE (Why/Do/Verify blocks) ───────────────────────── */

@@ -6,7 +6,7 @@ import Hero from "../components/Hero.astro";
 import { PromptBlock } from "../components/PromptBlock";
 import { StepNav } from "../components/StepNav";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { COMMANDS, LEADER_NOTES, LEARNING_OBJECTIVES, LINKS, MCP_AGENTS, PREVIEWS_BLOCK, PROMPTS, REPO_URL, STEPS } from "../lib/site";
+import { COMMANDS, LEARNING_OBJECTIVES, LINKS, MCP_AGENTS, PREVIEWS_BLOCK, PROMPTS, REPO_URL, STEPS } from "../lib/site";
 
 const stepByIndex = (i: number) => STEPS[i];
 ---
@@ -15,32 +15,11 @@ const stepByIndex = (i: number) => STEPS[i];
 	<Hero slot="hero" />
 	<StepNav slot="nav" client:load />
 
-	<div class="leader-toolbar">
-		<button type="button" id="leader-toggle" class="leader-toggle-btn" title="Presenter notes. Removed before launch.">
-			🎤 Hide room lead notes
-		</button>
-		<span class="leader-toggle-hint">For the presenter · removed before launch</span>
-	</div>
-
 	<section class="intro-card">
 		<h2 class="intro-title">What you'll learn</h2>
 		<ul class="intro-objectives">
 			{LEARNING_OBJECTIVES.map((objective) => <li>{objective}</li>)}
 		</ul>
-		<div class="intro-legend">
-			<div class="legend-item">
-				<span class="legend-badge legend-badge--why">Learn</span>
-				<span>The concept behind the step</span>
-			</div>
-			<div class="legend-item">
-				<span class="legend-badge legend-badge--do">Do</span>
-				<span>The action: run it yourself, or hand it to your agent</span>
-			</div>
-			<div class="legend-item">
-				<span class="legend-badge legend-badge--verify">Verify</span>
-				<span>What success looks like</span>
-			</div>
-		</div>
 	</section>
 
 	{/* ─── Step 0: Prereqs ─── */}
@@ -109,13 +88,6 @@ const stepByIndex = (i: number) => STEPS[i];
 				</div>
 			</div>
 		</div>
-	</article>
-
-	<article class="stepcard leader-card">
-		<span class="leader-card-badge">🎤 For the room lead</span>
-		<ul class="leader-card-list">
-			{LEADER_NOTES.prereqs?.map((note) => <li>{note}</li>)}
-		</ul>
 	</article>
 
 	{/* ─── Step 1: Deploy ─── */}
@@ -207,13 +179,6 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 
 		</div>
-	</article>
-
-	<article class="stepcard leader-card">
-		<span class="leader-card-badge">🎤 For the room lead</span>
-		<ul class="leader-card-list">
-			{LEADER_NOTES.deploy?.map((note) => <li>{note}</li>)}
-		</ul>
 	</article>
 
 	{/* ─── Step 2: Isolate ─── */}
@@ -317,13 +282,6 @@ const stepByIndex = (i: number) => STEPS[i];
 		</div>
 	</article>
 
-	<article class="stepcard leader-card">
-		<span class="leader-card-badge">🎤 For the room lead</span>
-		<ul class="leader-card-list">
-			{LEADER_NOTES.isolate?.map((note) => <li>{note}</li>)}
-		</ul>
-	</article>
-
 	{/* ─── Step 3: Preview ─── */}
 	<article id="preview" class="stepcard">
 		<div class="stepcard-head">
@@ -413,13 +371,6 @@ const stepByIndex = (i: number) => STEPS[i];
 		</div>
 	</article>
 
-	<article class="stepcard leader-card">
-		<span class="leader-card-badge">🎤 For the room lead</span>
-		<ul class="leader-card-list">
-			{LEADER_NOTES.preview?.map((note) => <li>{note}</li>)}
-		</ul>
-	</article>
-
 	{/* ─── Step 4: Prove ─── */}
 	<article id="interact" class="stepcard">
 		<div class="stepcard-head">
@@ -484,13 +435,6 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 
 		</div>
-	</article>
-
-	<article class="stepcard leader-card">
-		<span class="leader-card-badge">🎤 For the room lead</span>
-		<ul class="leader-card-list">
-			{LEADER_NOTES.interact?.map((note) => <li>{note}</li>)}
-		</ul>
 	</article>
 
 	{/* ─── Step 5: Observability ─── */}
@@ -559,13 +503,6 @@ const stepByIndex = (i: number) => STEPS[i];
 		</div>
 	</article>
 
-	<article class="stepcard leader-card">
-		<span class="leader-card-badge">🎤 For the room lead</span>
-		<ul class="leader-card-list">
-			{LEADER_NOTES.observability?.map((note) => <li>{note}</li>)}
-		</ul>
-	</article>
-
 	{/* ─── Step 6: Fix and merge ─── */}
 	<article id="final" class="stepcard">
 		<div class="stepcard-head">
@@ -614,13 +551,6 @@ const stepByIndex = (i: number) => STEPS[i];
 				</div>
 			</div>
 		</div>
-	</article>
-
-	<article class="stepcard leader-card">
-		<span class="leader-card-badge">🎤 For the room lead</span>
-		<ul class="leader-card-list">
-			{LEADER_NOTES.final?.map((note) => <li>{note}</li>)}
-		</ul>
 	</article>
 
 	{/* ─── Step 7: Your turn ─── */}
@@ -729,11 +659,3 @@ const stepByIndex = (i: number) => STEPS[i];
 	</article>
 </BaseLayout>
 
-<script>
-	const leaderToggle = document.getElementById("leader-toggle");
-	leaderToggle?.addEventListener("click", () => {
-		document.body.classList.toggle("leader-notes-hidden");
-		const hidden = document.body.classList.contains("leader-notes-hidden");
-		leaderToggle.textContent = hidden ? "🎤 Show room lead notes" : "🎤 Hide room lead notes";
-	});
-</script>
