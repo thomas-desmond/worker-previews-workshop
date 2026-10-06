@@ -7,6 +7,9 @@
  *    adding a `src`, with zero layout change.
  *  - Image (`src` given): a lazy-loaded <img> with the same caption.
  *
+ * Images are click-to-enlarge: the button opens the shared <Lightbox />
+ * dialog rendered once in BaseLayout.
+ *
  * Pass `width`/`height` when you know them to avoid layout shift.
  * Use `size="narrow"` for tall, app-style screenshots so they don't
  * dominate the column.
@@ -28,7 +31,7 @@ const { src, alt, caption, placeholderLabel, width, height, size = "full" } = As
 <figure class:list={["figure", { "figure--narrow": size === "narrow" }]}>
 	{
 		src ? (
-			<div class="figure-frame">
+			<button type="button" class="figure-frame figure-zoom" data-lightbox-src={src} data-lightbox-alt={alt}>
 				<img
 					src={src}
 					alt={alt}
@@ -37,7 +40,14 @@ const { src, alt, caption, placeholderLabel, width, height, size = "full" } = As
 					loading="lazy"
 					decoding="async"
 				/>
-			</div>
+				<span class="figure-zoom-hint" aria-hidden="true">
+					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="11" cy="11" r="7"></circle>
+						<path d="M21 21l-4.3-4.3M11 8v6M8 11h6"></path>
+					</svg>
+					Click to enlarge
+				</span>
+			</button>
 		) : (
 			<div class="figure-placeholder" role="img" aria-label={alt}>
 				<span class="figure-placeholder-tag">Screenshot</span>
