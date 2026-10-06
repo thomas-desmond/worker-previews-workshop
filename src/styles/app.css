@@ -574,8 +574,8 @@ html {
 	font-weight: 600;
 }
 
-/* ─── AGENT DOES (what a prompt will do, before you paste it) ── */
-.agent-does {
+/* ─── STEP FACTS (three short boxes: what this step does) ─── */
+.step-facts {
 	display: grid;
 	gap: 0.6rem;
 	margin: 0;
@@ -584,12 +584,12 @@ html {
 }
 
 @media (min-width: 640px) {
-	.agent-does {
+	.step-facts {
 		grid-template-columns: repeat(3, minmax(0, 1fr));
 	}
 }
 
-.agent-does li {
+.step-facts li {
 	display: flex;
 	flex-direction: column;
 	gap: 0.2rem;
@@ -602,7 +602,7 @@ html {
 	color: var(--ink-soft);
 }
 
-.agent-does-label {
+.step-facts-label {
 	font-size: 0.72rem;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
@@ -833,19 +833,50 @@ html {
 }
 
 /* ─── DEPLOY CTA ────────────────────────────────────────── */
-.deploy-cta-wrap {
-	padding: 1rem;
-	background: var(--paper);
-	border: 1px dashed var(--line-strong);
-	border-radius: 0.7rem;
+.deploy-panel {
 	display: flex;
-	justify-content: center;
-	margin-top: 0.25rem;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+	padding: 1.75rem 1.25rem 1.5rem;
+	background: linear-gradient(135deg, var(--brand-tint) 0%, #fff8f0 100%);
+	border: 1px solid #f5c99a;
+	border-radius: 0.9rem;
 }
 
-.deploy-cta-note {
-	text-align: center;
-	margin-top: 0.5rem;
+.deploy-panel-steps {
+	display: flex;
+	flex-direction: column;
+	gap: 0.45rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: 0.92rem;
+	color: var(--ink-soft);
+	counter-reset: deploy-step;
+}
+
+.deploy-panel-steps li {
+	counter-increment: deploy-step;
+	display: flex;
+	align-items: center;
+}
+
+.deploy-panel-steps li::before {
+	content: counter(deploy-step);
+	flex-shrink: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.35rem;
+	height: 1.35rem;
+	margin-right: 0.55rem;
+	border-radius: 999px;
+	background: #fff;
+	border: 1px solid #f5c99a;
+	color: var(--brand-deep);
+	font-size: 0.72rem;
+	font-weight: 800;
 }
 
 .deploy-cta-link {

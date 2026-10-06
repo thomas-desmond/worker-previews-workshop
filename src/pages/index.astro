@@ -35,17 +35,17 @@ const stepByIndex = (i: number) => STEPS[i];
 		</div>
 
 		<div class="stepcard-body">
-			<ul class="agent-does" aria-label="What your agent will do">
+			<ul class="step-facts" aria-label="What your agent will do">
 				<li>
-					<span class="agent-does-label">Checks</span>
+					<span class="step-facts-label">Checks</span>
 					<span>Node, git, the GitHub CLI, and Wrangler.</span>
 				</li>
 				<li>
-					<span class="agent-does-label">Asks first</span>
+					<span class="step-facts-label">Asks first</span>
 					<span>Before it installs or updates anything.</span>
 				</li>
 				<li>
-					<span class="agent-does-label">You sign in</span>
+					<span class="step-facts-label">You sign in</span>
 					<span>GitHub and Cloudflare logins open your browser. You run them.</span>
 				</li>
 			</ul>
@@ -64,86 +64,63 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(1).label}</h2>
-				<p class="stepcard-lede">One click creates a repo in your account, a D1 database, and a production Worker to branch from.</p>
+				<p class="stepcard-lede">One click creates your copy of the repo, a production D1 database, and a live Worker with Preview builds on.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
-			<div class="phase">
-				<span class="phase-badge phase-badge--do">Do</span>
-				<div class="phase-content">
-					<div class="deploy-cta-wrap">
-						<a
-							href={`https://deploy.workers.cloudflare.com/?url=${REPO_URL}`}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="deploy-cta-link"
-						>
-							<img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
-						</a>
-					</div>
-					<p class="phase-note deploy-cta-note">Opens in a new tab. Put it side by side with this page: you'll go back and forth.</p>
-					<p>Then, in the deploy form:</p>
-					<ol class="steps-inline">
-						<li>Pick the GitHub account for your copy of the repo.</li>
-						<li><strong>Keep the default names</strong> and create a <strong>new</strong> D1 database. Later steps use these names.</li>
-						<li>Leave <strong>ENVIRONMENT</strong> (<code>production</code>) and the <strong>Build</strong>, <strong>Deploy</strong>, and <strong>Preview</strong> commands as they are.</li>
-						<li>Check that <strong>Enable Preview builds</strong> is on, then click <strong>Deploy</strong>.</li>
-					</ol>
-
-					<details class="aside">
-						<summary>Show me each screen of the deploy flow</summary>
-						<div class="aside-body">
-							<Figure
-								src="/screenshots/deploy-01-github.png"
-								width={1400}
-								height={647}
-								alt="The Git account dropdown in the deploy form, listing connected GitHub and GitLab accounts and options to add a new connection."
-								caption="1. Pick the Git account for your copy of the repo. Use a personal GitHub account; work organizations with SSO can block the Cloudflare GitHub app install."
-							/>
-							<Figure
-								src="/screenshots/deploy-02-form.png"
-								width={1400}
-								height={639}
-								alt="The deploy form with project name worker-previews-starter, Create new selected for the D1 database, and the database named activity-log-db."
-								caption="2. Keep the default project name, choose Create new, and keep the database name activity-log-db."
-							/>
-							<Figure
-								src="/screenshots/deploy-03-build-settings.png"
-								width={1400}
-								height={642}
-								alt="The deploy form showing ENVIRONMENT set to production, an empty build command, deploy command npm run deploy, and preview command npx wrangler preview."
-								caption="3. Leave ENVIRONMENT as production and the commands as they are."
-							/>
-							<Figure
-								src="/screenshots/deploy-04-preview-settings.png"
-								width={1400}
-								height={646}
-								alt="The bottom of the deploy form with Enable Preview builds switched on and Protect with Cloudflare Access switched off, next to the Deploy button."
-								caption="4. Check that Enable Preview builds is on, then click Deploy."
-							/>
-						</div>
-					</details>
-
-				</div>
+			<div class="deploy-panel">
+				<a
+					href={`https://deploy.workers.cloudflare.com/?url=${REPO_URL}`}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="deploy-cta-link"
+				>
+					<img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
+				</a>
+				<ol class="deploy-panel-steps">
+					<li><span>Pick a personal GitHub account</span></li>
+					<li><span>Keep the default names</span></li>
+					<li><span>Database: choose <strong>Create new</strong></span></li>
+					<li><span>Click <strong>Deploy</strong></span></li>
+				</ol>
 			</div>
 
-			<div class="phase">
-				<span class="phase-badge phase-badge--verify">Verify</span>
-				<div class="phase-content">
-					<p>The build log doesn't always update on its own. If it stops moving, <strong>refresh the page</strong>. When it says <strong>Success</strong>, open your production app: click <strong>Visit</strong> in the top right, or the <code>*.workers.dev</code> URL on the Worker's Overview.</p>
-					<p>You should see a <strong>Production</strong> badge and three entries. Add and delete one to try it out. You'll compare this against your Preview later.</p>
+			<details class="aside">
+				<summary>See each screen of the form</summary>
+				<div class="aside-body">
 					<Figure
-						src="/screenshots/app-production-seeded.png"
-						width={960}
-						height={716}
-						size="narrow"
-						alt="The production Activity Log with a green Production badge and three seeded entries: Wired up Workers Builds, Provisioned the D1 database, and Deployed the production Worker."
-						caption="Production: three seeded rows your Preview won't have."
+						src="/screenshots/deploy-01-github.png"
+						width={1400}
+						height={647}
+						alt="The Git account dropdown in the deploy form, listing connected GitHub and GitLab accounts and options to add a new connection."
+						caption="1. Pick the Git account for your copy of the repo. Use a personal GitHub account; work organizations with SSO can block the Cloudflare GitHub app install."
+					/>
+					<Figure
+						src="/screenshots/deploy-02-form.png"
+						width={1400}
+						height={639}
+						alt="The deploy form with project name worker-previews-starter, Create new selected for the D1 database, and the database named activity-log-db."
+						caption="2. Keep the default project name, choose Create new, and keep the database name activity-log-db."
+					/>
+					<Figure
+						src="/screenshots/deploy-03-build-settings.png"
+						width={1400}
+						height={642}
+						alt="The deploy form showing ENVIRONMENT set to production, an empty build command, deploy command npm run deploy, and preview command npx wrangler preview."
+						caption="3. Leave ENVIRONMENT as production and the commands as they are."
+					/>
+					<Figure
+						src="/screenshots/deploy-04-preview-settings.png"
+						width={1400}
+						height={646}
+						alt="The bottom of the deploy form with Enable Preview builds switched on and Protect with Cloudflare Access switched off, next to the Deploy button."
+						caption="4. Check that Enable Preview builds is on, then click Deploy."
 					/>
 				</div>
-			</div>
+			</details>
 
+			<p class="step-success">When the build says <strong>Success</strong>, click <strong>Visit</strong>. You should see a <strong>Production</strong> badge and three entries. Build log stuck? Refresh the page.</p>
 		</div>
 	</article>
 
