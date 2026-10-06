@@ -21,8 +21,8 @@ export const STEPS = [
 	{
 		id: "prereqs",
 		num: "0",
-		label: "Prerequisites",
-		short: "Prereqs",
+		label: "Check your setup",
+		short: "Setup",
 	},
 	{
 		id: "deploy",
@@ -120,11 +120,6 @@ export const MCP_AGENTS: McpAgent[] = [
 /** Deterministic steps: the primary path is a command the attendee runs. */
 export const COMMANDS = {
 	// One command per line, no `&&`: Windows PowerShell 5.1 doesn't support `&&`.
-	setupCheck: `node -v
-git --version
-gh auth status
-npx wrangler whoami`,
-
 	cloneAndBranch: `gh repo clone worker-previews-starter
 cd worker-previews-starter
 npm install
@@ -163,18 +158,16 @@ export const PREVIEWS_BLOCK = `"previews": {
 }`;
 
 export const PROMPTS = {
-	checkPrereqs: `Check that this machine is ready for the Cloudflare Worker Previews workshop. Run each check yourself and report the results in a short table (tool, status, version or account, fix):
+	checkPrereqs: `Check that my machine is ready for the Cloudflare Worker Previews workshop. Before each command, tell me in one line what it does.
 
-1. Node.js: \`node -v\`. Needs a current LTS release (v20 or newer).
-2. git: \`git --version\`.
-3. GitHub CLI: \`gh --version\` and \`gh auth status\`. I must be logged in.
-4. Wrangler: \`npx wrangler whoami\`. I must be logged in to the Cloudflare account I'll use today.
+1. Check: \`node -v\` (v20 or newer), \`git --version\`, \`gh auth status\`, \`npx wrangler whoami\`.
+2. Missing or outdated tool: tell me the install command for my OS and ask before you run it.
+3. Not signed in to GitHub or Cloudflare: don't sign in for me. Tell me to run \`gh auth login\` or \`npx wrangler login\` myself (they open my browser), wait for me, then check again.
+4. More than one Cloudflare account: list them and tell me to run \`export CLOUDFLARE_ACCOUNT_ID=<id>\` (PowerShell: \`$env:CLOUDFLARE_ACCOUNT_ID="<id>"\`) in the terminal I start you from, then restart you there.
 
-If something is missing or outdated, tell me the exact command to install or update it for my OS, and offer to run it. Don't run \`gh auth login\` or \`npx wrangler login\` yourself: they open a browser, so tell me to run them and wait.
+Ignore Wrangler warnings about missing optional permissions: the workshop doesn't need them.
 
-If \`whoami\` lists more than one Cloudflare account, show me the accounts and tell me to run \`export CLOUDFLARE_ACCOUNT_ID=<id>\` (or \`$env:CLOUDFLARE_ACCOUNT_ID="<id>"\` in PowerShell) in the terminal I start my agent from, then restart my agent there.
-
-Finish with "Ready" or a list of what's left to fix. Don't clone or deploy anything yet.`,
+Finish with a short table (tool, status, version or account), then "Ready" or what's left to fix. Don't clone or deploy anything yet.`,
 
 	cloneAndBranch: `Clone my copy of the workshop repo with \`gh repo clone worker-previews-starter\`. If that repo doesn't exist, I changed its name in the deploy form: ask me for it. Then, inside the cloned folder, run \`npm install\` and \`git checkout -b isolate-preview-db\`. Tell me the full path of the folder when you're done.`,
 

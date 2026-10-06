@@ -30,63 +30,29 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(0).label}</h2>
-				<p class="stepcard-lede">Have these ready before you start.</p>
+				<p class="stepcard-lede">Paste this into your coding agent. It checks your machine and helps you fix anything missing.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
-			<div class="checklist">
-				<div class="checklist-item">
-					<span class="checklist-icon" aria-hidden="true">1</span>
-					<div>
-						<p class="checklist-title">Node.js, git, and a terminal</p>
-						<p class="checklist-note">No global Wrangler install needed; every command uses <code>npx</code>.</p>
-					</div>
-				</div>
-				<div class="checklist-item">
-					<span class="checklist-icon" aria-hidden="true">2</span>
-					<div>
-						<p class="checklist-title">A coding agent</p>
-						<p class="checklist-note">Your agent tests your Preview, reads its logs, and fixes a bug. It needs to run terminal commands and connect to a remote MCP server. Claude Code, Cursor, VS Code with Copilot, Codex, and OpenCode work out of the box: the starter repo ships config for each. No agent? Try <a href="https://opencode.ai">OpenCode</a>.</p>
-					</div>
-				</div>
-				<div class="checklist-item">
-					<span class="checklist-icon" aria-hidden="true">3</span>
-					<div>
-						<p class="checklist-title">A GitHub account and the GitHub CLI</p>
-						<p class="checklist-note">The deploy button creates a repo in your account. Install <a href="https://github.com/cli/cli#installation"><code>gh</code></a> and run <code>gh auth login</code>; you'll use it to clone, open, and merge the PR.</p>
-					</div>
-				</div>
-				<div class="checklist-item">
-					<span class="checklist-icon" aria-hidden="true">4</span>
-					<div>
-						<p class="checklist-title">A free Cloudflare account</p>
-						<p class="checklist-note">No credit card required. <a href="https://dash.cloudflare.com/sign-up">Sign up</a>.</p>
-					</div>
-				</div>
-				<div class="checklist-item">
-					<span class="checklist-icon" aria-hidden="true">5</span>
-					<div>
-						<p class="checklist-title">Wrangler logged in to that account</p>
-						<p class="checklist-note">Run <code>npx wrangler login</code> yourself (it opens a browser, so an agent can't do it). More than one account? Run <code>export CLOUDFLARE_ACCOUNT_ID=&lt;id&gt;</code> (the ID from <code>whoami</code>) in the terminal <strong>you start your agent from</strong>, so your agent's wrangler commands use it too.</p>
-					</div>
-				</div>
-			</div>
+			<ul class="agent-does" aria-label="What your agent will do">
+				<li>
+					<span class="agent-does-label">Checks</span>
+					<span>Node, git, the GitHub CLI, and Wrangler.</span>
+				</li>
+				<li>
+					<span class="agent-does-label">Asks first</span>
+					<span>Before it installs or updates anything.</span>
+				</li>
+				<li>
+					<span class="agent-does-label">You sign in</span>
+					<span>GitHub and Cloudflare logins open your browser. You run them.</span>
+				</li>
+			</ul>
 
-			<div class="phase">
-				<span class="phase-badge phase-badge--verify">Verify</span>
-				<div class="phase-content">
-					<p>Paste these into your terminal (macOS, Linux, or Windows). Each should print a version or account: <code>gh</code> should show you as logged in, and <code>whoami</code> should show the right Cloudflare account.</p>
-					<CommandBlock client:load label="Setup check" text={COMMANDS.setupCheck} />
-					<details class="aside aside--agent">
-						<summary>Or ask your agent to check (and fix) your setup</summary>
-						<div class="aside-body">
-							<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.checkPrereqs} />
-							<p class="phase-note">Your agent can install or update tools, but you run the two logins (<code>gh auth login</code>, <code>npx wrangler login</code>) yourself: they open a browser.</p>
-						</div>
-					</details>
-				</div>
-			</div>
+			<PromptBlock client:load collapsed label="Copy this prompt into your agent" text={PROMPTS.checkPrereqs} />
+
+			<p class="step-success">You should see a table of your tools and <strong>Ready</strong>.</p>
 		</div>
 	</article>
 
