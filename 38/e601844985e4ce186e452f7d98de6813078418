@@ -1,0 +1,19 @@
+src/lib/site.ts
+  s_fd891409fa9ffa::t_d4cc9f18b0d17d 165-172,175-183
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "38e601844985e4ce186e452f7d98de6813078418",
+  "prompts": {},
+  "sessions": {
+    "s_fd891409fa9ffa": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_eecbda9d7ffeKJnMhy3DVRcoZA",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Thomas Desmond <24610108+thomas-desmond@users.noreply.github.com>"
+    }
+  }
+}
