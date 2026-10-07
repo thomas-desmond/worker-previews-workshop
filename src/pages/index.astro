@@ -194,84 +194,25 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(4).label}</h2>
-				<p class="stepcard-lede">Push the branch, open a pull request, and let Workers Builds run <code>wrangler preview</code>.</p>
+				<p class="stepcard-lede">A pull request gets its own Preview: a separate copy of your Worker, with its own URL, running this branch's code and settings.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
-			<div class="phase">
-				<span class="phase-badge phase-badge--do">Do</span>
-				<div class="phase-content">
-					<p>Push the branch and open a pull request:</p>
-					<CommandBlock client:load text={COMMANDS.openPullRequest} />
-					<p class="phase-note">Says <em>no checks reported</em>? The check takes a few seconds to appear. Run <code>gh pr checks --watch</code> again.</p>
-					<details class="aside aside--agent">
-						<summary>Or ask your agent</summary>
-						<div class="aside-body">
-							<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.openPullRequest} />
-						</div>
-					</details>
-					<p>Open the PR on GitHub. Within a minute or two, <strong>Workers Builds</strong> deploys the Preview and comments its URL.</p>
-					<Figure
-						src="/screenshots/pr-bot-comment.png"
-						width={1400}
-						height={910}
-						alt="The cloudflare-workers-and-pages bot comment on the pull request, showing the Preview URL and a table of Preview deployments by commit with build and deployment status."
-						caption="The Preview URL, commented on your PR."
-					/>
-					<div class="url-compare">
-						<p class="url-compare-title">Your PR has two kinds of URL</p>
-						<div class="url-compare-grid">
-							<div class="url-compare-col">
-								<span class="url-compare-name">Preview URL<small>One per branch</small></span>
-								<p>Stays the same and always serves the branch's latest deploy.</p>
-								<code>isolate-preview-db-worker-previews-starter.&lt;subdomain&gt;.workers.dev</code>
-								<p class="url-compare-use"><strong>Use it to</strong> share with your team.</p>
-							</div>
-							<div class="url-compare-col">
-								<span class="url-compare-name">Deployment URL<small>One per push</small></span>
-								<p>Pinned to one exact deploy. These are the rows in the bot's table.</p>
-								<code>&lt;deployment-id&gt;-worker-previews-starter.&lt;subdomain&gt;.workers.dev</code>
-								<p class="url-compare-use"><strong>Use it to</strong> point at one specific version.</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+			<PromptBlock client:load collapsed label="Copy this prompt into your agent" text={PROMPTS.openPullRequest} />
 
-			<div class="phase">
-				<span class="phase-badge phase-badge--do">Connect</span>
-				<div class="phase-content">
-					<p>While the build runs, connect your agent to your Preview's logs. The starter repo already configures the read-only <strong>Workers Observability MCP server</strong> (<code>cloudflare-observability</code>), so you only need to sign in with Cloudflare once. Pick your agent:</p>
-					<AgentPicker client:load agents={MCP_AGENTS} />
-					<p>Then check it worked:</p>
-					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.checkObservability} />
-					<p class="phase-note">Agent started before you cloned the repo? Restart it in the <code>worker-previews-starter</code> folder so it reads the config. Can't connect? Carry on: Step 6 has a dashboard fallback.</p>
-					<div class="tip">
-						<span class="tip-label">Open AGENTS.md</span>
-						<p>It's how your agent knows the rules: Preview settings go in <code>previews</code>, never write to production data, test on the Preview URL, read the Preview's logs. Copy it into your own repos.</p>
-					</div>
-				</div>
+			<div class="tip">
+				<span class="tip-label">Open both links</span>
+				<p><strong>The PR first:</strong> scroll to the Cloudflare bot's comment. That's where your team finds the Preview.</p>
+				<p><strong>Then the Preview URL:</strong> the badge says <strong>Preview</strong>, and the page says the database is connected but has no schema yet. That's your new Preview database: empty, and nothing to do with production's data. Keep this tab and production open. You'll compare them next.</p>
 			</div>
-
-			<div class="phase">
-				<span class="phase-badge phase-badge--verify">Verify</span>
-				<div class="phase-content">
-					<p>Open the Preview URL. The badge says <strong>Preview</strong>, and the page says the database is connected but has no schema yet.</p>
-					<Figure
-						src="/screenshots/app-preview-needs-schema.png"
-						width={960}
-						height={360}
-						alt="The Preview Activity Log with an orange Preview badge, explaining that its database is connected but doesn't have the workshop schema yet."
-						caption="Expected: the new database is empty."
-					/>
-					<div class="tip tip--pin">
-						<span class="tip-label">Keep both tabs open</span>
-						<p>Preview and production. You'll compare them next.</p>
-					</div>
-				</div>
-			</div>
-
+			<Figure
+				src="/screenshots/app-preview-needs-schema.png"
+				width={960}
+				height={360}
+				alt="The Preview Activity Log with an orange Preview badge, explaining that its database is connected but doesn't have the workshop schema yet."
+				caption="Expected: the new database is empty."
+			/>
 		</div>
 	</article>
 
@@ -354,6 +295,17 @@ const stepByIndex = (i: number) => STEPS[i];
 		</div>
 
 		<div class="stepcard-body">
+			<div class="phase">
+				<span class="phase-badge phase-badge--do">Connect</span>
+				<div class="phase-content">
+					<p>First, connect your agent to your Preview's logs. The starter repo already configures the read-only <strong>Workers Observability MCP server</strong> (<code>cloudflare-observability</code>), so you only need to sign in with Cloudflare once. Pick your agent:</p>
+					<AgentPicker client:load agents={MCP_AGENTS} />
+					<p>Then check it worked:</p>
+					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.checkObservability} />
+					<p class="phase-note">Agent started before you cloned the repo? Restart it in the <code>worker-previews-starter</code> folder so it reads the config. Can't connect? Use the dashboard fallback at the end of this step.</p>
+				</div>
+			</div>
+
 			<div class="phase">
 				<span class="phase-badge phase-badge--why">Learn</span>
 				<div class="phase-content">

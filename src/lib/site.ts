@@ -82,7 +82,7 @@ export const REPO_URL = "https://github.com/thomas-desmond/worker-previews-start
 export const OBSERVABILITY_MCP_URL = "https://observability.mcp.cloudflare.com/mcp";
 
 /**
- * How to sign in to the Observability MCP server, per agent (Step 4).
+ * How to sign in to the Observability MCP server, per agent (Step 6).
  * Backticks in steps render as inline code. `command` renders as a copyable terminal block.
  */
 export type McpAgent = { id: string; name: string; steps: string[]; command?: string };
@@ -126,10 +126,6 @@ export const MCP_AGENTS: McpAgent[] = [
 /** Deterministic steps: the primary path is a command the attendee runs. */
 export const COMMANDS = {
 	// One command per line, no `&&`: Windows PowerShell 5.1 doesn't support `&&`.
-	openPullRequest: `git push -u origin isolate-preview-db
-gh pr create --fill
-sleep 10
-gh pr checks --watch`,
 
 	applyPreviewSchema: `npx wrangler d1 execute workshop-preview-db --remote --yes --file workshop/preview-schema.sql`,
 
@@ -182,7 +178,25 @@ Steps:
 
 Don't push yet.`,
 
-	openPullRequest: `Push this branch and open a pull request against main with \`gh pr create --fill\`. Then wait for the Workers Builds check with \`gh pr checks --watch\` (if it reports no checks yet, wait a few seconds and retry) and give me the Preview URL from the Cloudflare bot's comment.`,
+	openPullRequest: `Open a pull request for this branch so it gets a Preview. I'm learning, so explain why each step matters.
+
+Format each step like this, and keep the whole reply short:
+
+**1. What you did, in one line**
+> Why it matters: one or two plain sentences.
+
+Steps:
+
+1. Push the branch: \`git push -u origin isolate-preview-db\`.
+   Why it matters: what the push sets off in Workers Builds.
+2. Open a pull request against main: \`gh pr create --fill\`. Give me the PR link.
+   Why it matters: where the Preview URL shows up.
+3. Wait for the Workers Builds check: \`gh pr checks --watch\`. If it says no checks reported, wait a few seconds and retry. It can take a minute or two.
+   Why it matters: a branch build runs \`wrangler preview\`, not a production deploy.
+4. Get the Preview URL from the Cloudflare bot's comment on the PR.
+   Why it matters: the Preview URL stays the same for the branch, while each push also gets its own deployment URL in the bot's table.
+
+Then stop. Don't open or test the Preview: I'll open it myself. End your reply with two links on their own lines: the PR, then the Preview URL.`,
 
 	checkObservability: `Do you have tools from the \`cloudflare-observability\` MCP server, such as \`query_worker_observability\`? If yes, reply "Observability connected" and list the tool names. If not, tell me which agent you are and stop. Don't try to install anything.`,
 
