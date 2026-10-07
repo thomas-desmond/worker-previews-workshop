@@ -31,38 +31,44 @@ export const STEPS = [
 		short: "Deploy",
 	},
 	{
-		id: "isolate",
+		id: "clone",
 		num: "2",
+		label: "Get the code",
+		short: "Clone",
+	},
+	{
+		id: "isolate",
+		num: "3",
 		label: "Configure Previews",
 		short: "Configure",
 	},
 	{
 		id: "preview",
-		num: "3",
+		num: "4",
 		label: "Open your Preview",
 		short: "Preview",
 	},
 	{
 		id: "interact",
-		num: "4",
+		num: "5",
 		label: "Apply and test",
 		short: "Test",
 	},
 	{
 		id: "observability",
-		num: "5",
+		num: "6",
 		label: "Observability",
 		short: "Observe",
 	},
 	{
 		id: "final",
-		num: "6",
+		num: "7",
 		label: "Fix and merge",
 		short: "Fix",
 	},
 	{
 		id: "your-turn",
-		num: "7",
+		num: "8",
 		label: "Your turn (optional)",
 		short: "Your turn",
 	},
@@ -76,7 +82,7 @@ export const REPO_URL = "https://github.com/thomas-desmond/worker-previews-start
 export const OBSERVABILITY_MCP_URL = "https://observability.mcp.cloudflare.com/mcp";
 
 /**
- * How to sign in to the Observability MCP server, per agent (Step 3).
+ * How to sign in to the Observability MCP server, per agent (Step 4).
  * Backticks in steps render as inline code. `command` renders as a copyable terminal block.
  */
 export type McpAgent = { id: string; name: string; steps: string[]; command?: string };
@@ -120,12 +126,8 @@ export const MCP_AGENTS: McpAgent[] = [
 /** Deterministic steps: the primary path is a command the attendee runs. */
 export const COMMANDS = {
 	// One command per line, no `&&`: Windows PowerShell 5.1 doesn't support `&&`.
-	cloneAndBranch: `gh repo clone worker-previews-starter
-cd worker-previews-starter
-npm install
-git checkout -b isolate-preview-db`,
-
-	createPreviewDb: `npx wrangler d1 create workshop-preview-db`,
+	createPreviewDb: `git checkout -b isolate-preview-db
+npx wrangler d1 create workshop-preview-db`,
 
 	commitConfig: `git commit -am "Give Previews their own D1 database"`,
 
@@ -144,7 +146,7 @@ npx wrangler d1 delete workshop-preview-db
 gh repo delete worker-previews-starter --yes`,
 } as const;
 
-/** The `previews` block attendees paste into wrangler.json in Step 2. */
+/** The `previews` block attendees paste into wrangler.json in Step 3. */
 export const PREVIEWS_BLOCK = `"previews": {
   "vars": { "ENVIRONMENT": "preview" },
   "d1_databases": [
@@ -169,13 +171,21 @@ Ignore Wrangler warnings about missing optional permissions: the workshop doesn'
 
 Finish with a short table (tool, status, version or account), then "Ready" or what's left to fix. Don't clone or deploy anything yet.`,
 
-	cloneAndBranch: `Clone my copy of the workshop repo with \`gh repo clone worker-previews-starter\`. If that repo doesn't exist, I changed its name in the deploy form: ask me for it. Then, inside the cloned folder, run \`npm install\` and \`git checkout -b isolate-preview-db\`. Tell me the full path of the folder when you're done.`,
+	clone: `Get my copy of the Cloudflare Worker Previews workshop repo onto this machine. Before each command, tell me in one line what it does.
+
+1. Clone it: \`gh repo clone worker-previews-starter\`. Not found? I renamed it in the deploy form: ask me for the name.
+2. Inside the folder, run \`npm install\`. Ignore npm audit warnings.
+3. In plain language, tell me what this app is: at most three short sentences, no file names or code. Cover what it does, where its data lives, and that the repo includes rules and tools for you to use later in the workshop.
+4. Give me the folder's full path and the exact commands to restart you inside it, with one line on why.
+
+Keep your whole reply short. Don't create a branch or change any files yet.`,
 
 	isolateResource: `In this repo, give Worker Previews their own D1 database:
 
-1. Run \`npx wrangler d1 create workshop-preview-db\`. If Wrangler offers to add the binding to wrangler.json, decline.
-2. In \`wrangler.json\`, inside the existing \`previews\` block, add a \`d1_databases\` entry with binding \`DB\` and the \`database_name\` and \`database_id\` from step 1. Also add \`"observability": { "enabled": true }\`. Keep the existing \`vars\` and leave the top-level config unchanged.
-3. Commit the change.`,
+1. Create a branch: \`git checkout -b isolate-preview-db\`.
+2. Run \`npx wrangler d1 create workshop-preview-db\`. If Wrangler offers to add the binding to wrangler.json, decline.
+3. In \`wrangler.json\`, inside the existing \`previews\` block, add a \`d1_databases\` entry with binding \`DB\` and the \`database_name\` and \`database_id\` from step 2. Also add \`"observability": { "enabled": true }\`. Keep the existing \`vars\` and leave the top-level config unchanged.
+4. Commit the change.`,
 
 	openPullRequest: `Push this branch and open a pull request against main with \`gh pr create --fill\`. Then wait for the Workers Builds check with \`gh pr checks --watch\` (if it reports no checks yet, wait a few seconds and retry) and give me the Preview URL from the Cloudflare bot's comment.`,
 

@@ -619,6 +619,46 @@ html {
 	line-height: 1.5;
 }
 
+/* ─── STEP REQUIRED (an action you must take before moving on) ─ */
+.step-required {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 0.9rem;
+	align-items: start;
+	padding: 1rem 1.15rem;
+	background: #fffbeb;
+	border: 1.5px solid #f59e0b;
+	border-radius: 0.8rem;
+}
+
+.step-required-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.1rem;
+	height: 2.1rem;
+	border-radius: 999px;
+	background: #f59e0b;
+	color: #fff;
+	font-size: 1.15rem;
+	font-weight: 800;
+	line-height: 1;
+}
+
+.step-required-title {
+	margin: 0.1rem 0 0.2rem;
+	font-size: 1.05rem;
+	font-weight: 800;
+	color: var(--ink);
+}
+
+.step-required-body {
+	margin: 0;
+	font-size: 0.95rem;
+	line-height: 1.5;
+	color: var(--ink-soft);
+}
+
 /* ─── TIP ────────────────────────────────────────────────── */
 .tip {
 	display: flex;

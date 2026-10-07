@@ -124,35 +124,46 @@ const stepByIndex = (i: number) => STEPS[i];
 		</div>
 	</article>
 
-	{/* ─── Step 2: Isolate ─── */}
-	<article id="isolate" class="stepcard">
+	{/* ─── Step 2: Clone ─── */}
+	<article id="clone" class="stepcard">
 		<div class="stepcard-head">
 			<div class="stepcard-badge">
 				<span class="stepcard-badge-num">{stepByIndex(2).num}</span>
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(2).label}</h2>
+				<p class="stepcard-lede">The deploy button created a repo in your GitHub account and deployed it to Cloudflare. Your agent works on your machine, so get a local copy.</p>
+			</div>
+		</div>
+
+		<div class="stepcard-body">
+			<PromptBlock client:load collapsed label="Copy this prompt into your agent" text={PROMPTS.clone} />
+
+			<p class="step-success">You should see a short summary of the app and the folder's path.</p>
+
+			<div class="step-required" role="note">
+				<span class="step-required-icon" aria-hidden="true">↻</span>
+				<div>
+					<p class="step-required-title">Restart your agent inside that folder</p>
+					<p class="step-required-body">Your agent gave you the commands. It only loads the repo's rules and log tools when it starts there, and the next steps need them.</p>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	{/* ─── Step 3: Isolate ─── */}
+	<article id="isolate" class="stepcard">
+		<div class="stepcard-head">
+			<div class="stepcard-badge">
+				<span class="stepcard-badge-num">{stepByIndex(3).num}</span>
+			</div>
+			<div class="stepcard-head-copy">
+				<h2 class="stepcard-title">{stepByIndex(3).label}</h2>
 				<p class="stepcard-lede">Give Previews their own D1 database and Observability settings.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
-			<div class="phase">
-				<span class="phase-badge phase-badge--do">Setup</span>
-				<div class="phase-content">
-					<p>Clone the repo the deploy button created in your account and start a working branch:</p>
-					<CommandBlock client:load text={COMMANDS.cloneAndBranch} />
-					<details class="aside aside--agent">
-						<summary>Or ask your agent</summary>
-						<div class="aside-body">
-							<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.cloneAndBranch} />
-							<p class="phase-note">When it's done, restart your agent inside the folder it cloned. An agent started elsewhere hasn't read the repo's <code>AGENTS.md</code> or MCP config.</p>
-						</div>
-					</details>
-					<p class="phase-note">Changed the repo name in the deploy form? Use that name instead. Start your agent <strong>inside</strong> the <code>worker-previews-starter</code> folder, so it reads the repo's <code>AGENTS.md</code> and MCP config.</p>
-				</div>
-			</div>
-
 			<div class="phase">
 				<span class="phase-badge phase-badge--why">Learn</span>
 				<div class="phase-content">
@@ -178,7 +189,7 @@ const stepByIndex = (i: number) => STEPS[i];
 				<span class="phase-badge phase-badge--do">Do</span>
 				<div class="phase-content">
 					<ol class="steps-inline">
-						<li>Create a new D1 database for Previews. If Wrangler offers to add the binding to <code>wrangler.json</code> for you, say <strong>no</strong>: it would add it to production's config.</li>
+						<li>Start a branch for this change, then create a new D1 database for Previews. If Wrangler offers to add the binding to <code>wrangler.json</code> for you, say <strong>no</strong>: it would add it to production's config.</li>
 					</ol>
 					<CommandBlock client:load text={COMMANDS.createPreviewDb} />
 					<ol class="steps-inline" start="2">
@@ -225,14 +236,14 @@ const stepByIndex = (i: number) => STEPS[i];
 		</div>
 	</article>
 
-	{/* ─── Step 3: Preview ─── */}
+	{/* ─── Step 4: Preview ─── */}
 	<article id="preview" class="stepcard">
 		<div class="stepcard-head">
 			<div class="stepcard-badge">
-				<span class="stepcard-badge-num">{stepByIndex(3).num}</span>
+				<span class="stepcard-badge-num">{stepByIndex(4).num}</span>
 			</div>
 			<div class="stepcard-head-copy">
-				<h2 class="stepcard-title">{stepByIndex(3).label}</h2>
+				<h2 class="stepcard-title">{stepByIndex(4).label}</h2>
 				<p class="stepcard-lede">Push the branch, open a pull request, and let Workers Builds run <code>wrangler preview</code>.</p>
 			</div>
 		</div>
@@ -285,7 +296,7 @@ const stepByIndex = (i: number) => STEPS[i];
 					<AgentPicker client:load agents={MCP_AGENTS} />
 					<p>Then check it worked:</p>
 					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.checkObservability} />
-					<p class="phase-note">Agent started before you cloned the repo? Restart it in the <code>worker-previews-starter</code> folder so it reads the config. Can't connect? Carry on: Step 5 has a dashboard fallback.</p>
+					<p class="phase-note">Agent started before you cloned the repo? Restart it in the <code>worker-previews-starter</code> folder so it reads the config. Can't connect? Carry on: Step 6 has a dashboard fallback.</p>
 					<div class="tip">
 						<span class="tip-label">Open AGENTS.md</span>
 						<p>It's how your agent knows the rules: Preview settings go in <code>previews</code>, never write to production data, test on the Preview URL, read the Preview's logs. Copy it into your own repos.</p>
@@ -314,14 +325,14 @@ const stepByIndex = (i: number) => STEPS[i];
 		</div>
 	</article>
 
-	{/* ─── Step 4: Prove ─── */}
+	{/* ─── Step 5: Prove ─── */}
 	<article id="interact" class="stepcard">
 		<div class="stepcard-head">
 			<div class="stepcard-badge">
-				<span class="stepcard-badge-num">{stepByIndex(4).num}</span>
+				<span class="stepcard-badge-num">{stepByIndex(5).num}</span>
 			</div>
 			<div class="stepcard-head-copy">
-				<h2 class="stepcard-title">{stepByIndex(4).label}</h2>
+				<h2 class="stepcard-title">{stepByIndex(5).label}</h2>
 				<p class="stepcard-lede">Apply a Preview-only schema, then let your agent test the Preview.</p>
 			</div>
 		</div>
@@ -380,14 +391,14 @@ const stepByIndex = (i: number) => STEPS[i];
 		</div>
 	</article>
 
-	{/* ─── Step 5: Observability ─── */}
+	{/* ─── Step 6: Observability ─── */}
 	<article id="observability" class="stepcard">
 		<div class="stepcard-head">
 			<div class="stepcard-badge">
-				<span class="stepcard-badge-num">{stepByIndex(5).num}</span>
+				<span class="stepcard-badge-num">{stepByIndex(6).num}</span>
 			</div>
 			<div class="stepcard-head-copy">
-				<h2 class="stepcard-title">{stepByIndex(5).label}</h2>
+				<h2 class="stepcard-title">{stepByIndex(6).label}</h2>
 				<p class="stepcard-lede">Your agent finds the cause in the Preview's own logs.</p>
 			</div>
 		</div>
@@ -431,7 +442,7 @@ const stepByIndex = (i: number) => STEPS[i];
 					/>
 					<ol class="steps-inline" start="4">
 						<li>Click Delete again and open the failed <code>DELETE</code> request.</li>
-						<li>Find <code>activity_log.delete_failed</code>. Its D1 error names the missing column. Paste the error into your agent before the Step 6 prompt.</li>
+						<li>Find <code>activity_log.delete_failed</code>. Its D1 error names the missing column. Paste the error into your agent before the Step 7 prompt.</li>
 					</ol>
 					<Figure
 						src="/screenshots/dash-observability-delete-failed.png"
@@ -446,14 +457,14 @@ const stepByIndex = (i: number) => STEPS[i];
 		</div>
 	</article>
 
-	{/* ─── Step 6: Fix and merge ─── */}
+	{/* ─── Step 7: Fix and merge ─── */}
 	<article id="final" class="stepcard">
 		<div class="stepcard-head">
 			<div class="stepcard-badge">
-				<span class="stepcard-badge-num">{stepByIndex(6).num}</span>
+				<span class="stepcard-badge-num">{stepByIndex(7).num}</span>
 			</div>
 			<div class="stepcard-head-copy">
-				<h2 class="stepcard-title">{stepByIndex(6).label}</h2>
+				<h2 class="stepcard-title">{stepByIndex(7).label}</h2>
 				<p class="stepcard-lede">Your agent fixes the bug and re-tests the Preview. You approve the merge.</p>
 			</div>
 		</div>
@@ -482,7 +493,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<div class="phase">
 				<span class="phase-badge phase-badge--do">Approve</span>
 				<div class="phase-content">
-					<p>The agent built it and tested it, and the Preview showed you the result. Merging is your call. Merge before going to Step 7:</p>
+					<p>The agent built it and tested it, and the Preview showed you the result. Merging is your call. Merge before going to Step 8:</p>
 					<CommandBlock client:load text={COMMANDS.mergePullRequest} />
 					<details class="aside aside--agent">
 						<summary>Or tell your agent you approve</summary>
@@ -496,14 +507,14 @@ const stepByIndex = (i: number) => STEPS[i];
 		</div>
 	</article>
 
-	{/* ─── Step 7: Your turn ─── */}
+	{/* ─── Step 8: Your turn ─── */}
 	<article id="your-turn" class="stepcard">
 		<div class="stepcard-head">
 			<div class="stepcard-badge">
-				<span class="stepcard-badge-num">{stepByIndex(7).num}</span>
+				<span class="stepcard-badge-num">{stepByIndex(8).num}</span>
 			</div>
 			<div class="stepcard-head-copy">
-				<h2 class="stepcard-title">{stepByIndex(7).label}</h2>
+				<h2 class="stepcard-title">{stepByIndex(8).label}</h2>
 				<p class="stepcard-lede">One sentence to your agent, one new, tested Preview.</p>
 			</div>
 		</div>
