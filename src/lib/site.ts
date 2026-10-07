@@ -3,291 +3,240 @@ export const SITE = {
 	tagline: "Isolated environments for every change your agent makes.",
 	description:
 		"Deploy a production Worker, test a candidate D1 schema safely in a Preview, diagnose a real failure, and merge a fix without changing production data.",
-	audience: "Developers",
 } as const;
 
 export const LINKS = {
 	blog: "https://blog.cloudflare.com/worker-previews/",
 	docs: "https://developers.cloudflare.com/workers/previews/",
-	configDocs: "https://developers.cloudflare.com/workers/previews/configuration/",
 } as const;
 
 export const LEARNING_OBJECTIVES = [
-	"What a Preview inherits from production (code) and what it doesn't (variables and bindings).",
-	"How to give Previews their own D1 database.",
-	"How your agent tests its own changes on a Preview URL.",
-	"How your agent reads a Preview's Observability logs and fixes the bug, with no copy-paste.",
-	"How to approve a merge from Preview evidence.",
-	"How a Preview URL (one per branch) differs from a deployment URL (one per push).",
+	"Give every branch its own Preview, with its own URL, database, and logs, isolated from production.",
+	"Let your agent test, debug, and fix its own work on that Preview, then approve the merge from what it shows you.",
 ] as const;
 
 export const STEPS = [
 	{
 		id: "prereqs",
 		num: "0",
-		label: "Prerequisites",
-		short: "Prereqs",
+		label: "Check your setup",
 	},
 	{
 		id: "deploy",
 		num: "1",
 		label: "Deploy to Cloudflare",
-		short: "Deploy",
+	},
+	{
+		id: "clone",
+		num: "2",
+		label: "Get the code",
 	},
 	{
 		id: "isolate",
-		num: "2",
+		num: "3",
 		label: "Configure Previews",
-		short: "Configure",
 	},
 	{
 		id: "preview",
-		num: "3",
+		num: "4",
 		label: "Open your Preview",
-		short: "Preview",
 	},
 	{
 		id: "interact",
-		num: "4",
+		num: "5",
 		label: "Apply and test",
-		short: "Test",
 	},
 	{
 		id: "observability",
-		num: "5",
+		num: "6",
 		label: "Observability",
-		short: "Observe",
 	},
 	{
 		id: "final",
-		num: "6",
+		num: "7",
 		label: "Fix and merge",
-		short: "Fix",
 	},
 	{
-		id: "your-turn",
-		num: "7",
-		label: "Your turn (optional)",
-		short: "Your turn",
+		id: "full-flow",
+		num: "8",
+		label: "Full flow",
 	},
 ] as const;
-
-export type StepId = (typeof STEPS)[number]["id"];
-
-/**
- * Talking points for whoever is leading the room: what to say during the
- * dead time each step creates (a deploy running, a build finishing) and the
- * narrative bridge to the next step. Review-pass content: not meant to be a
- * permanent feature of the public site, just visible enough to sanity-check
- * the script before Oct 1.
- */
-export const LEADER_NOTES: Partial<Record<StepId, string[]>> = {
-	prereqs: [
-		"Frame the hour before anyone touches a laptop: \"Agents can ship code faster than we can review it. Previews gives every change its own throwaway environment. Today you build one slice of that yourself.\"",
-		"Name it explicitly as one piece of the ADLC (Agent Development Lifecycle), not the whole thing.",
-		"Have everyone run the setup check command. Don't move on until most hands are up: `gh auth status` and `npx wrangler whoami` are the usual failures.",
-		"Pacing: Steps 1–3 set things up (commands, with an optional agent prompt). From Step 4 on, the agent does the work: tests the Preview, reads its logs, fixes, re-tests. The attendee approves. Step 7 is the stretch for fast finishers.",
-		"The agent needs no special setup beyond what's listed. The starter repo ships an AGENTS.md and Observability MCP config for Claude Code, Cursor, VS Code, Codex, and OpenCode. Attendees sign in once in Step 3.",
-		"Multiple accounts: if `CLOUDFLARE_ACCOUNT_ID` isn't set where the agent runs, its first wrangler command fails with \"more than one account\". Restart the agent from a terminal where it's exported.",
-	],
-	deploy: [
-		"There's a real wait after the click (provisioning + first build). Use it.",
-		"Expect \"there's no Visit button\" or \"the build log looks frozen\": the dashboard doesn't update after the first build. Answer: refresh the page (or use the workers.dev URL at the bottom of the build log).",
-		"Narrate exactly what the button did: created a copy of the repo in their GitHub account, provisioned a production D1 database, wired up Workers Builds (Cloudflare's own CI/CD) to that repo, deployed the Worker.",
-		"Land the callback line: \"You have production deployed, but no Preview yet. That's next, and it's where this gets interesting.\"",
-		"Point at the app while it loads: an Activity Log with three seeded rows. They'll compare this exact data against an isolated copy shortly.",
-		"Plant the seed: \"No GitHub Actions written, no secrets pasted. Workers Builds is already watching this repo. When you open a PR, it just reacts.\"",
-	],
-	isolate: [
-		"Slow down here: production settings stay top-level and Preview settings belong in the previews block.",
-		"This database is isolated from production, but it becomes the shared Preview database after the PR merges.",
-		"Frame the override plainly: same DB binding name, different account-level resource.",
-		"Wrangler may offer to add the new D1 to wrangler.json itself, which writes a top-level binding. Attendees should decline and put it under previews instead.",
-		"Expect the question \"wouldn't the Preview just use the production DB?\" No: Previews never fall back to production bindings. Without a previews binding, env.DB is undefined and `wrangler preview` warns about missing bindings.",
-	],
-	preview: [
-		"After push + PR, there's dead time while Workers Builds runs. Use it to connect the Observability MCP: it's the one setup step with real failure modes (OAuth popups, wrong account, agent started before the clone). Walk the room.",
-		"Agent started before `gh repo clone`? It won't have read the repo's MCP config. Restart it inside the worker-previews-starter folder.",
-		"Point at AGENTS.md while people wait: it's why the agent knows to put bindings in previews, never touch activity-log-db, and test on the Preview URL. It's the take-home.",
-		"Recap what's happening with zero manual deploy steps: Workers Builds runs `wrangler preview` for the branch and comments the stable URL on the PR.",
-		"Point at the bot comment: one Preview URL for the branch, plus a deployment row per commit. That distinction pays off in Step 6.",
-		"Close the loop from Step 1: \"This is the moment that fills the gap. Production existed; now the branch gets its own live environment too.\"",
-		"Point out the Preview badge on the page: it comes from previews.vars, which the starter already had. Previews don't inherit production vars.",
-	],
-	interact: [
-		"Land the new beat before the schema goes in: creating a database is not the same as seeding it. Empty tables, no rows, nothing to test yet, until this step's schema lands.",
-		"The SQL file is outside migrations on purpose. Applying it by Preview database name is the safety boundary.",
-		"The agent tests the Preview through the app's JSON API with curl: no browser tool needed, works in every agent. Delete is expected to return 500.",
-		"Land the point: the agent can add and delete data freely here because the Preview has its own database. That's what makes it safe to let an agent test its own work.",
-		"Attendees should still click Delete once themselves. The visible error is deliberate evidence, not workshop breakage.",
-		"Name the CI/CD extension: this same check could run automatically against every PR's Preview before a human ever looks at it.",
-	],
-	observability: [
-		"The agent queries the Observability MCP itself. The key filter is `$workers.preview.slug` = the branch name. Every Preview log line carries it, and production logs never include Preview traffic.",
-		"Expected result: activity_log.delete_failed with `D1_ERROR: no such column: id` and the entry ID. Logs can take a minute to show up, so if the agent finds nothing, have it retry.",
-		"Multiple Cloudflare accounts? The MCP tools ask for an account_id. The agent can get it from `npx wrangler whoami`.",
-		"No MCP (agent doesn't support it, OAuth blocked)? The collapsed dashboard path still works: environment dropdown in the Worker header → branch → Observability. Copy the error into the agent by hand.",
-		"Name the CI/CD extension: this observe-and-diagnose loop could run on every PR, with an agent triaging failures before a human is looped in.",
-	],
-	final: [
-		"The repair must support production's id column and the Preview's activity_id column. Do not accept a Preview-only fix. AGENTS.md tells the agent the same.",
-		"The agent re-tests the same Preview URL after its push lands. It checks the bot comment's deployment table for its commit, so it doesn't test stale code.",
-		"Reframe the human's job: you didn't read the diff first, you read the evidence (the Preview URL, the API results, the log that's gone quiet) and then decided. The merge stays a human call.",
-		"After merging, verify production. No SQL from workshop/ is ever applied there.",
-		"Call out the bot comment again: same Preview URL, new deployment row. Share the Preview URL; link a deployment URL when you need an exact version.",
-	],
-	"your-turn": [
-		"This is the agent-driven part: one sentence in, a Preview URL out. Fast finishers start here while others catch up.",
-		"Demo the hands-off version on your own machine: a one-sentence feature request that ends with a tested Preview URL on a PR, no manual steps.",
-		"Land the takeaway: every branch gets its own Preview, automatically, and the agent checks its own work there. Copy AGENTS.md into your own repos to keep doing this after today.",
-	],
-};
 
 export const REPO_URL = "https://github.com/thomas-desmond/worker-previews-starter";
 
 /** Remote Workers Observability MCP server. The starter repo ships config for it. */
-export const OBSERVABILITY_MCP_URL = "https://observability.mcp.cloudflare.com/mcp";
-
-/**
- * How to sign in to the Observability MCP server, per agent (Step 3).
- * Backticks in steps render as inline code. `command` renders as a copyable terminal block.
- */
-export type McpAgent = { id: string; name: string; steps: string[]; command?: string };
-
-export const MCP_AGENTS: McpAgent[] = [
-	{
-		id: "claude-code",
-		name: "Claude Code",
-		steps: ["Approve the project's MCP server when asked.", "Run `/mcp`, pick `cloudflare-observability`, and authenticate."],
-	},
-	{
-		id: "cursor",
-		name: "Cursor",
-		steps: ["Open **Cursor Settings → MCP**.", "Enable `cloudflare-observability` and click **Connect**."],
-	},
-	{
-		id: "vscode",
-		name: "VS Code",
-		steps: ["Open `.vscode/mcp.json` and click **Start** above the server.", "Sign in with Cloudflare.", "Use Copilot Chat in **Agent** mode."],
-	},
-	{
-		id: "opencode",
-		name: "OpenCode",
-		steps: ["Run this in the repo folder, then sign in with Cloudflare:"],
-		command: "opencode mcp auth cloudflare-observability",
-	},
-	{
-		id: "codex",
-		name: "Codex",
-		steps: ["Trust the project when asked.", "Run this, then sign in with Cloudflare:"],
-		command: "codex mcp login cloudflare-observability",
-	},
-	{
-		id: "other",
-		name: "Other",
-		steps: ["Add a remote MCP server with this URL, then sign in with Cloudflare:"],
-		command: OBSERVABILITY_MCP_URL,
-	},
-];
-
-/** Deterministic steps: the primary path is a command the attendee runs. */
-export const COMMANDS = {
-	// One command per line, no `&&`: Windows PowerShell 5.1 doesn't support `&&`.
-	setupCheck: `node -v
-git --version
-gh auth status
-npx wrangler whoami`,
-
-	cloneAndBranch: `gh repo clone worker-previews-starter
-cd worker-previews-starter
-npm install
-git checkout -b isolate-preview-db`,
-
-	createPreviewDb: `npx wrangler d1 create workshop-preview-db`,
-
-	commitConfig: `git commit -am "Give Previews their own D1 database"`,
-
-	openPullRequest: `git push -u origin isolate-preview-db
-gh pr create --fill
-sleep 10
-gh pr checks --watch`,
-
-	applyPreviewSchema: `npx wrangler d1 execute workshop-preview-db --remote --yes --file workshop/preview-schema.sql`,
-
-	mergePullRequest: `gh pr merge --merge`,
-
-	cleanup: `npx wrangler delete worker-previews-starter
-npx wrangler d1 delete activity-log-db
-npx wrangler d1 delete workshop-preview-db
-gh repo delete worker-previews-starter --yes`,
-} as const;
-
-/** The `previews` block attendees paste into wrangler.json in Step 2. */
-export const PREVIEWS_BLOCK = `"previews": {
-  "vars": { "ENVIRONMENT": "preview" },
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "workshop-preview-db",
-      "database_id": "<database_id from d1 create>"
-    }
-  ],
-  "observability": { "enabled": true }
-}`;
+const OBSERVABILITY_MCP_URL = "https://observability.mcp.cloudflare.com/mcp";
 
 export const PROMPTS = {
-	checkPrereqs: `Check that this machine is ready for the Cloudflare Worker Previews workshop. Run each check yourself and report the results in a short table (tool, status, version or account, fix):
+	checkPrereqs: `Check that my machine is ready for the Cloudflare Worker Previews workshop. Before each command, tell me in one line what it does.
 
-1. Node.js: \`node -v\`. Needs a current LTS release (v20 or newer).
-2. git: \`git --version\`.
-3. GitHub CLI: \`gh --version\` and \`gh auth status\`. I must be logged in.
-4. Wrangler: \`npx wrangler whoami\`. I must be logged in to the Cloudflare account I'll use today.
+1. Check: \`node -v\` (v20 or newer), \`git --version\`, \`gh auth status\`, \`npx wrangler whoami\`.
+2. Missing or outdated tool: tell me the install command for my OS and ask before you run it.
+3. Not signed in to GitHub or Cloudflare: don't sign in for me. Tell me to run \`gh auth login\` or \`npx wrangler login\` myself (they open my browser), wait for me, then check again.
+4. More than one Cloudflare account: list them and tell me to run \`export CLOUDFLARE_ACCOUNT_ID=<id>\` (PowerShell: \`$env:CLOUDFLARE_ACCOUNT_ID="<id>"\`) in the terminal I start you from, then restart you there.
 
-If something is missing or outdated, tell me the exact command to install or update it for my OS, and offer to run it. Don't run \`gh auth login\` or \`npx wrangler login\` yourself: they open a browser, so tell me to run them and wait.
+Ignore Wrangler warnings about missing optional permissions: the workshop doesn't need them.
 
-If \`whoami\` lists more than one Cloudflare account, show me the accounts and tell me to run \`export CLOUDFLARE_ACCOUNT_ID=<id>\` (or \`$env:CLOUDFLARE_ACCOUNT_ID="<id>"\` in PowerShell) in the terminal I start my agent from, then restart my agent there.
+Finish with a short table (tool, status, version or account), then "Ready" or what's left to fix. Don't clone or deploy anything yet.`,
 
-Finish with "Ready" or a list of what's left to fix. Don't clone or deploy anything yet.`,
+	clone: `Get my copy of the Cloudflare Worker Previews workshop repo onto this machine. Before each command, tell me in one line what it does.
 
-	cloneAndBranch: `Clone my copy of the workshop repo with \`gh repo clone worker-previews-starter\`. If that repo doesn't exist, I changed its name in the deploy form: ask me for it. Then, inside the cloned folder, run \`npm install\` and \`git checkout -b isolate-preview-db\`. Tell me the full path of the folder when you're done.`,
+1. Clone it: \`gh repo clone worker-previews-starter\`. Not found? I renamed it in the deploy form: ask me for the name.
+2. Inside the folder, run \`npm install\`. Ignore npm audit warnings.
+3. In plain language, tell me what this app is: at most three short sentences, no file names or code. Cover what it does, where its data lives, and that the repo includes rules and tools for you to use later in the workshop.
+4. Give me the folder's full path and the exact commands to restart you inside it, with one line on why.
 
-	isolateResource: `In this repo, give Worker Previews their own D1 database:
+Keep your whole reply short. Don't create a branch or change any files yet.`,
 
-1. Run \`npx wrangler d1 create workshop-preview-db\`. If Wrangler offers to add the binding to wrangler.json, decline.
-2. In \`wrangler.json\`, inside the existing \`previews\` block, add a \`d1_databases\` entry with binding \`DB\` and the \`database_name\` and \`database_id\` from step 1. Also add \`"observability": { "enabled": true }\`. Keep the existing \`vars\` and leave the top-level config unchanged.
-3. Commit the change.`,
+	configure: `Give this branch's Previews their own D1 database. I'm learning, so explain why each step matters.
 
-	openPullRequest: `Push this branch and open a pull request against main with \`gh pr create --fill\`. Then wait for the Workers Builds check with \`gh pr checks --watch\` (if it reports no checks yet, wait a few seconds and retry) and give me the Preview URL from the Cloudflare bot's comment.`,
+Format each step like this, and keep the whole reply short:
 
-	checkObservability: `Do you have tools from the \`cloudflare-observability\` MCP server, such as \`query_worker_observability\`? If yes, reply "Observability connected" and list the tool names. If not, tell me which agent you are and stop. Don't try to install anything.`,
+**1. What you did, in one line**
+> One or two plain sentences on why it matters, with no label in front.
 
-	applyPreviewSchema: `Run exactly this and print the result:
+Steps:
 
-\`npx wrangler d1 execute workshop-preview-db --remote --yes --file workshop/preview-schema.sql\``,
+1. Create a branch: \`git checkout -b isolate-preview-db\`.
+   Explain: every branch I push gets its own Preview, with its own URL.
+2. Create the database: \`npx wrangler d1 create workshop-preview-db\`. If Wrangler asks which account, use the one that has \`activity-log-db\`. If it offers to add the database to wrangler.json, decline.
+   Explain: what declining protects.
+3. In \`wrangler.json\`, inside the existing \`previews\` block, keep \`vars\` and add a \`d1_databases\` entry (binding \`DB\`, the new database's name and ID) and \`"observability": { "enabled": true }\`. Leave the top-level config unchanged. Then show me the two \`DB\` bindings side by side: the top-level one and the one in \`previews\`. Just those, not the whole file.
+   Explain: what a Preview would get without this block.
+4. Commit: \`git commit -am "Give Previews their own D1 database"\`.
+   Explain: what happens to this config when the branch merges.
 
-	testPreview: `Test this branch's Preview. Get its Preview URL from the Cloudflare bot's comment on the PR (\`gh pr view --comments\`).
+Don't push yet.`,
 
-Using curl against that URL and the API described in AGENTS.md: list the entries, add one, list again, then delete one. Report each request's status code and response body in a short table. Don't fix anything yet, just tell me what works and what doesn't.`,
+	openPullRequest: `Open a pull request for this branch so it gets a Preview. I'm learning, so explain why each step matters.
 
-	readPreviewLogs: `Delete is failing on this branch's Preview. Find out why from the Preview's own logs, using the \`cloudflare-observability\` MCP tools.
+Format each step like this, and keep the whole reply short:
 
-Query events from the last hour where \`$workers.scriptName\` is the Worker name in wrangler.json and \`$workers.preview.slug\` is this branch's name. Find the \`activity_log.delete_failed\` events and show me the error and entry ID. Then explain the cause in two sentences, using the error and the code in src/. Don't change any code yet.`,
+**1. What you did, in one line**
+> One or two plain sentences on why it matters, with no label in front.
 
-	diagnoseAndFix: `Fix the delete bug you just found in the Preview's logs.
+Steps:
 
-Fix the Worker code, not either database schema. Production still has an \`id\` column while the Preview schema has \`activity_id\`. The merged code must work with both. Run the project checks, then commit and push so Workers Builds redeploys this branch's Preview.
+1. Push the branch: \`git push -u origin isolate-preview-db\`.
+   Explain: what the push sets off in Workers Builds.
+2. Open a pull request against main: \`gh pr create --fill\`. Give me the PR link.
+   Explain: where the Preview URL shows up.
+3. Wait for the Workers Builds check: \`gh pr checks --watch\`. If it says no checks reported, wait a few seconds and retry. It can take a minute or two.
+   Explain: a branch build runs \`wrangler preview\`, not a production deploy.
+4. Get the Preview URL from the Cloudflare bot's comment on the PR.
+   Explain: the Preview URL stays the same for the branch, while each push also gets its own deployment URL in the bot's table.
 
-Then verify your own work: wait for \`gh pr checks --watch\` (if it reports no checks yet, wait a few seconds and retry), confirm your commit appears in the bot comment's deployment table, and re-run the full API test (list, add, delete, list) against the same Preview URL. Report the results and a one-line summary of the change. Do not merge.`,
+Then stop. Don't open or test the Preview: I'll open it myself. End your reply with two links on their own lines: the PR, then the Preview URL.`,
 
-	mergePullRequest: `I've reviewed the Preview and approve the merge. Merge this pull request with \`gh pr merge --merge\`. When Workers Builds finishes deploying main, run the API test (list, add, delete, list) against production and confirm its seeded entries are still there. Do not apply \`workshop/preview-schema.sql\` to production.`,
+	testPreview: `Apply a candidate schema change to this branch's Preview database, then test the Preview's API to see what works and what doesn't. I'm learning, so explain why each step matters.
 
-	yourTurn: `Switch to main and pull the latest. Then create a new branch and make one small, visible change to the Activity Log app: for example, show a count of entries under the heading. Run the project checks, commit, push, and open a pull request with \`gh pr create --fill\`.
+Format each step like this, and keep the whole reply short:
 
-When the Preview is live, check your change on the new branch's Preview URL yourself, then give me the URL and what you checked. Do not merge.`,
+**1. What you did, in one line**
+> One or two plain sentences on why it matters, with no label in front.
 
-	cleanup: `Delete everything this workshop created:
+Steps:
 
-${COMMANDS.cleanup}
+1. Apply the Preview-only schema: \`npx wrangler d1 execute workshop-preview-db --remote --yes --file workshop/preview-schema.sql\`.
+   Explain: the file lives outside \`migrations/\`, so production deploys never apply it, and this command only touches the Preview's database.
+2. Test the Preview with curl, against the Preview URL from the PR's bot comment and the API in AGENTS.md: list the entries, add one, then delete one. Show each request's status code in a short table.
+   Explain: you can add and delete data freely, because this database isn't production's.
 
-If a name differs from \`wrangler.json\` or the git remote, use the actual name. Confirm each wrangler prompt. Do not touch other Workers, databases, or repositories.`,
+If something fails, say what failed, but don't look for the cause or read the code: the next step finds it from the Preview's logs.
+
+End by telling me to try it myself, in two short lines:
+- Open the Preview URL (put it on its own line) and click Delete on a row.
+- Refresh my production tab and check its entries are untouched, and say in one sentence why they are.`,
+
+	readPreviewLogs: `Find out why delete fails on this branch's Preview, from the Preview's own logs. I'm learning, so explain why each step matters.
+
+Format each step like this, and keep the whole reply short:
+
+**1. What you did, in one line**
+> One or two plain sentences on why it matters, with no label in front.
+
+Steps:
+
+1. Check that you have tools from the \`cloudflare-observability\` MCP server (this repo already configures it, and it's read-only), and that they can see this Worker: list the Workers in the account. If you see it, say so in one line and go on to step 2. If the tools are missing, or the Worker isn't listed (signed in to the wrong account), help me sign in, then stop:
+   - Tell me which agent you are.
+   - OpenCode: ask me, then run \`opencode mcp auth cloudflare-observability\`.
+   - Codex: ask me, then run \`codex mcp login cloudflare-observability\`.
+   - Claude Code: tell me to approve the project's MCP server if asked, then run \`/mcp\`, pick \`cloudflare-observability\`, and authenticate.
+   - Cursor: tell me to open Cursor Settings → MCP, enable \`cloudflare-observability\`, and click Connect.
+   - VS Code: tell me to open \`.vscode/mcp.json\`, click Start above the server, and use Copilot Chat in Agent mode.
+   - Any other agent: tell me how to add a remote MCP server with the URL \`${OBSERVABILITY_MCP_URL}\`.
+   When Cloudflare asks which account to authorize, I must pick the one that has this Worker. If I'm already signed in to the wrong one, tell me to sign out first (OpenCode: \`opencode mcp logout cloudflare-observability\`).
+   Then tell me whether I need to restart you (if unsure, say yes) and to paste this prompt again.
+   Explain: with the MCP server, you read the logs yourself, so I don't copy and paste errors.
+2. Query this Preview's events from the last hour, filtered on \`$workers.scriptName\` (the Worker's deployed name) and \`$workers.preview.slug\` (this branch's name). Find the \`activity_log.delete_failed\` events and show me the error and entry ID. Logs can take a minute to appear.
+   Explain: every log line is tagged with its Preview, so you read this branch's errors and none of production's.
+3. Explain the cause in two plain sentences, using the error and the code in \`src/\`. Don't change any code.
+   Explain: the bug was caught on a Preview, before it reached production.
+
+End by telling me to see the error myself: take the dashboard link to this Preview from the Cloudflare bot's comment on the PR (it ends in \`/previews/<branch>\`), add \`/observability\` to the end, and give me that on its own line. It opens this Preview's logs.`,
+
+	diagnoseAndFix: `Fix the delete bug you just found in the Preview's logs, then prove the fix on the same Preview. I'm learning, so explain why each step matters.
+
+Format each step like this, and keep the whole reply short:
+
+**1. What you did, in one line**
+> One or two plain sentences on why it matters, with no label in front.
+
+Steps:
+
+1. Fix the Worker code, not either database schema. Production still has an \`id\` column while the Preview schema has \`activity_id\`, so the code must work with both. Show me only the lines you changed.
+   Explain: once merged, this code runs against production's schema too.
+2. Run the project checks, then commit and push.
+   Explain: the push redeploys this branch's Preview at the same URL.
+3. Wait for the Workers Builds check (\`gh pr checks --watch\`; if it reports no checks yet, wait a few seconds and retry). Confirm your commit appears in the bot comment's deployment table. Then re-run list, add, delete, list against the same Preview URL, and show the status codes in a short table.
+   Explain: you check your own work on a real deploy before a human reviews it.
+
+Don't merge. End by telling me to review it myself, in short lines: open the PR (link on its own line) and find the new row in the bot's deployment table, open the Preview URL (on its own line) and click Delete, and check production is unchanged. Then say that merging is my call.`,
+
+	mergePullRequest: `I've reviewed the Preview and approve the merge. I'm learning, so explain why each step matters.
+
+Format each step like this, and keep the whole reply short:
+
+**1. What you did, in one line**
+> One or two plain sentences on why it matters, with no label in front.
+
+Steps:
+
+1. Merge the pull request: \`gh pr merge --merge\`.
+   Explain: what Workers Builds deploys to production now, and which part of wrangler.json production uses.
+2. Wait for Workers Builds to finish deploying \`main\` (watch the check on main's latest commit; it can take a minute or two).
+   Explain: production only changes through \`main\`, by the same pipeline that built your Previews.
+3. Test production: list, add, delete the entry you added, list again. Show the status codes in a short table, and confirm the seeded entries are still there. Don't apply \`workshop/preview-schema.sql\` to production.
+   Explain: the fix works on production's schema, and the Preview's schema and data never reached it.
+
+End by telling me to refresh my production tab (production URL on its own line) and check its entries are all there.`,
+
+	yourTurn: `Make this change: show a count of entries under the heading.
+
+Take it through the whole flow on a new Preview, from branch to tested pull request. I'm learning, so explain why each step matters.
+
+Format each step like this, and keep the whole reply short:
+
+**1. What you did, in one line**
+> One or two plain sentences on why it matters, with no label in front.
+
+Steps:
+
+1. Switch to main, pull the latest, and create a new branch named after the change.
+   Explain: this branch gets its own Preview automatically, with no setup this time.
+2. Make the change and show me only the lines you changed. Run the project checks, commit, push, and open a pull request with \`gh pr create --fill\`.
+   Explain: why the new Preview already has a database, and that it's shared with other Previews but never with production.
+3. Wait for the Workers Builds check (\`gh pr checks --watch\`; if it reports no checks yet, wait a few seconds and retry). Get the new Preview URL from the bot's comment, check the change there yourself, and re-run list, add, delete, list so nothing else broke. Show the status codes in a short table.
+   Explain: you check your own work on a Preview before I review it.
+
+Don't merge. End with the PR link and the new Preview URL, each on its own line, and tell me to open the Preview and see the change myself.`,
+
+	cleanup: `Delete everything this workshop created. Before each command, tell me in one line what it does.
+
+1. Find the real names: the Worker and both D1 databases from \`wrangler.json\` (top level and \`previews\`), and the GitHub repo from the git remote. They may differ from the defaults.
+2. List exactly what you'll delete, and wait for my yes.
+3. Delete the Worker (\`npx wrangler delete <name>\`), both databases (\`npx wrangler d1 delete <name>\`), and the repo (\`gh repo delete <owner>/<repo> --yes\`). If gh says it needs the \`delete_repo\` scope, tell me to run \`gh auth refresh -s delete_repo\` myself (it opens my browser), wait for me, then retry.
+
+Don't touch any other Workers, databases, or repositories. End with a short list of what's gone, and remind me the local folder is still on my machine.`,
 } as const;

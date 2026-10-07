@@ -3,10 +3,13 @@ import { useCallback, useState } from "react";
 type Props = {
 	label?: string;
 	text: string;
+	/** Show only the first few lines until expanded. Copy always copies the full prompt. */
+	collapsed?: boolean;
 };
 
-export function PromptBlock({ label = "Paste into your agent", text }: Props) {
+export function PromptBlock({ label = "Paste into your agent", text, collapsed = false }: Props) {
 	const [copied, setCopied] = useState(false);
+	const [expanded, setExpanded] = useState(!collapsed);
 
 	const onCopy = useCallback(async () => {
 		try {
@@ -29,7 +32,7 @@ export function PromptBlock({ label = "Paste into your agent", text }: Props) {
 	}, [text]);
 
 	return (
-		<div className="prompt-block">
+		<div className="prompt-block" data-expanded={expanded ? "true" : "false"}>
 			<div className="prompt-block-bar">
 				<span className="prompt-block-label">{label}</span>
 				<button
@@ -42,6 +45,16 @@ export function PromptBlock({ label = "Paste into your agent", text }: Props) {
 				</button>
 			</div>
 			<pre>{text}</pre>
+			{collapsed && (
+				<button
+					type="button"
+					className="prompt-block-toggle"
+					aria-expanded={expanded}
+					onClick={() => setExpanded((v) => !v)}
+				>
+					{expanded ? "Show less" : "Show full prompt"}
+				</button>
+			)}
 		</div>
 	);
 }
