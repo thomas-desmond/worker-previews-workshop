@@ -3,13 +3,11 @@ export const SITE = {
 	tagline: "Isolated environments for every change your agent makes.",
 	description:
 		"Deploy a production Worker, test a candidate D1 schema safely in a Preview, diagnose a real failure, and merge a fix without changing production data.",
-	audience: "Developers",
 } as const;
 
 export const LINKS = {
 	blog: "https://blog.cloudflare.com/worker-previews/",
 	docs: "https://developers.cloudflare.com/workers/previews/",
-	configDocs: "https://developers.cloudflare.com/workers/previews/configuration/",
 } as const;
 
 export const LEARNING_OBJECTIVES = [
@@ -22,64 +20,53 @@ export const STEPS = [
 		id: "prereqs",
 		num: "0",
 		label: "Check your setup",
-		short: "Setup",
 	},
 	{
 		id: "deploy",
 		num: "1",
 		label: "Deploy to Cloudflare",
-		short: "Deploy",
 	},
 	{
 		id: "clone",
 		num: "2",
 		label: "Get the code",
-		short: "Clone",
 	},
 	{
 		id: "isolate",
 		num: "3",
 		label: "Configure Previews",
-		short: "Configure",
 	},
 	{
 		id: "preview",
 		num: "4",
 		label: "Open your Preview",
-		short: "Preview",
 	},
 	{
 		id: "interact",
 		num: "5",
 		label: "Apply and test",
-		short: "Test",
 	},
 	{
 		id: "observability",
 		num: "6",
 		label: "Observability",
-		short: "Observe",
 	},
 	{
 		id: "final",
 		num: "7",
 		label: "Fix and merge",
-		short: "Fix",
 	},
 	{
 		id: "full-flow",
 		num: "8",
 		label: "Full flow",
-		short: "Full flow",
 	},
 ] as const;
-
-export type StepId = (typeof STEPS)[number]["id"];
 
 export const REPO_URL = "https://github.com/thomas-desmond/worker-previews-starter";
 
 /** Remote Workers Observability MCP server. The starter repo ships config for it. */
-export const OBSERVABILITY_MCP_URL = "https://observability.mcp.cloudflare.com/mcp";
+const OBSERVABILITY_MCP_URL = "https://observability.mcp.cloudflare.com/mcp";
 
 export const PROMPTS = {
 	checkPrereqs: `Check that my machine is ready for the Cloudflare Worker Previews workshop. Before each command, tell me in one line what it does.
