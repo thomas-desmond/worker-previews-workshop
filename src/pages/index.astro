@@ -1,11 +1,10 @@
 ---
-import { CommandBlock } from "../components/CommandBlock";
 import Figure from "../components/Figure.astro";
 import Hero from "../components/Hero.astro";
 import { PromptBlock } from "../components/PromptBlock";
 import { StepNav } from "../components/StepNav";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { COMMANDS, LEARNING_OBJECTIVES, LINKS, PROMPTS, REPO_URL, STEPS } from "../lib/site";
+import { LEARNING_OBJECTIVES, LINKS, PROMPTS, REPO_URL, STEPS } from "../lib/site";
 
 const stepByIndex = (i: number) => STEPS[i];
 ---
@@ -326,45 +325,30 @@ const stepByIndex = (i: number) => STEPS[i];
 		</div>
 	</article>
 
-	{/* ─── Step 8: Your turn ─── */}
-	<article id="your-turn" class="stepcard">
+	{/* ─── Step 8: Full flow ─── */}
+	<article id="full-flow" class="stepcard">
 		<div class="stepcard-head">
 			<div class="stepcard-badge">
 				<span class="stepcard-badge-num">{stepByIndex(8).num}</span>
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(8).label}</h2>
-				<p class="stepcard-lede">One sentence to your agent, one new, tested Preview.</p>
+				<p class="stepcard-lede">Everything you just did, in one prompt. Your agent builds a feature, opens a pull request, and tests it on its own Preview. The merge is still yours.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
-			<div class="phase">
-				<span class="phase-badge phase-badge--why">Learn</span>
-				<div class="phase-content">
-					<p>You configured Previews once. Now every branch gets one automatically, including branches your agent creates.</p>
-				</div>
-			</div>
+			<PromptBlock client:load collapsed label="Edit the first line to your own idea, then copy" text={PROMPTS.yourTurn} />
 
-			<div class="phase">
-				<span class="phase-badge phase-badge--do">Do</span>
-				<div class="phase-content">
-					<p>Hand your agent a small feature and let it take it all the way to a PR. Swap in your own idea:</p>
-					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.yourTurn} />
-				</div>
-			</div>
-
-			<div class="phase">
-				<span class="phase-badge phase-badge--verify">Verify</span>
-				<div class="phase-content">
-					<p>The new PR gets its own bot comment and a <strong>new Preview URL</strong> named after the new branch. Your agent hands you that URL along with what it checked there. Production and your first Preview's code are unchanged.</p>
-					<p class="phase-note">The new Preview uses <code>workshop-preview-db</code> too: its binding is on <code>main</code> now. Isolated from production, shared between Previews.</p>
-				</div>
+			<div class="tip">
+				<span class="tip-label">Try it yourself</span>
+				<p><strong>Open the new Preview URL:</strong> your change is there, at a URL named after the new branch.</p>
+				<p><strong>Open production:</strong> no change. It only updates when you merge.</p>
 			</div>
 		</div>
 	</article>
 
-	{/* ─── Recap ─── */}
+	{/* ─── Wrap-up ─── */}
 	<article id="recap" class="stepcard stepcard--wrapup">
 		<div class="stepcard-head">
 			<div class="stepcard-badge stepcard-badge--wrapup">
@@ -378,53 +362,22 @@ const stepByIndex = (i: number) => STEPS[i];
 
 		<div class="stepcard-body">
 			<ul class="wrapup-list">
-				<li>Your branch got its own Preview: its own URL, D1 database, and Observability.</li>
-				<li>You tested a schema change there that production never saw.</li>
-				<li>Your agent tested the Preview itself, read the Preview's own logs to find the bug, and fixed it. No copy-paste.</li>
-				<li>The fix landed on the same Preview URL as a new deployment. The agent re-tested it there, and you approved the merge from that evidence. Production's data never changed.</li>
-				<li>Every new branch, yours or your agent's, gets its own Preview automatically.</li>
+				<li>Your branch got its own Preview: its own URL, database, and logs, isolated from production.</li>
+				<li>Your agent tested it, found the bug in the Preview's own logs, and proved the fix on the same URL.</li>
+				<li>You approved the merge from that evidence. Production's data never changed.</li>
 			</ul>
 			<div class="tip">
 				<span class="tip-label">Take it home</span>
 				<p>Copy <code>AGENTS.md</code> and the MCP config from your <code>worker-previews-starter</code> repo into your own Worker repos. Change the API section to match your app, and your agent will test and debug every branch on its Preview the same way.</p>
 			</div>
 			<p class="wrapup-p">Keep going: the <a href={LINKS.blog}>Worker Previews announcement</a> and the <a href={LINKS.docs}>Previews docs</a> (custom domains, secrets, per-branch resources).</p>
-		</div>
-	</article>
 
-	{/* ─── Wrap-up ─── */}
-	<article id="wrap-up" class="stepcard stepcard--wrapup">
-		<div class="stepcard-head">
-			<div class="stepcard-badge stepcard-badge--wrapup">
-				<span class="stepcard-badge-num">✓</span>
-			</div>
-			<div class="stepcard-head-copy">
-				<h2 class="stepcard-title">Clean up</h2>
-				<p class="stepcard-lede">What stays after the PR closes.</p>
-			</div>
-		</div>
-
-		<div class="stepcard-body">
-			<p class="wrapup-p">Keep <code>workshop-preview-db</code>. Its binding is now on <code>main</code>, so every future Preview of this Worker uses it: isolated from production, shared between Previews. For a separate database per branch, give that branch its own binding and apply the schema to it.</p>
-
+			<h3 class="step-gate">Clean up</h3>
+			<p class="step-gate-lede">Keep <code>workshop-preview-db</code>: every future Preview of this Worker uses it. Closing a PR only removes its Preview. The repo, Worker, and both databases stay until you delete them.</p>
 			<details class="aside">
 				<summary>Want everything gone?</summary>
 				<div class="aside-body">
-					<p>Closing the PR only removes the Preview. The repo, Worker, and both databases stay until you delete them. Default names:</p>
-					<ul class="tight-list">
-						<li>GitHub repo: <code>&lt;you&gt;/worker-previews-starter</code></li>
-						<li>Worker: <code>worker-previews-starter</code></li>
-						<li>Production D1: <code>activity-log-db</code></li>
-						<li>Preview D1: <code>workshop-preview-db</code></li>
-					</ul>
-					<CommandBlock client:load text={COMMANDS.cleanup} />
-					<p class="phase-note"><code>gh repo delete</code> needs the <code>delete_repo</code> scope. If it complains, run <code>gh auth refresh -s delete_repo</code>.</p>
-					<details class="aside aside--agent">
-						<summary>Or ask your agent</summary>
-						<div class="aside-body">
-							<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.cleanup} />
-						</div>
-					</details>
+					<PromptBlock client:load collapsed label="Copy this prompt into your agent" text={PROMPTS.cleanup} />
 					<p>You can also delete the Worker and both databases from the Cloudflare dashboard.</p>
 				</div>
 			</details>

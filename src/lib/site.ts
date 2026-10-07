@@ -67,10 +67,10 @@ export const STEPS = [
 		short: "Fix",
 	},
 	{
-		id: "your-turn",
+		id: "full-flow",
 		num: "8",
-		label: "Your turn (optional)",
-		short: "Your turn",
+		label: "Full flow",
+		short: "Full flow",
 	},
 ] as const;
 
@@ -80,17 +80,6 @@ export const REPO_URL = "https://github.com/thomas-desmond/worker-previews-start
 
 /** Remote Workers Observability MCP server. The starter repo ships config for it. */
 export const OBSERVABILITY_MCP_URL = "https://observability.mcp.cloudflare.com/mcp";
-
-/** Deterministic steps: the primary path is a command the attendee runs. */
-export const COMMANDS = {
-	// One command per line, no `&&`: Windows PowerShell 5.1 doesn't support `&&`.
-
-
-	cleanup: `npx wrangler delete worker-previews-starter
-npx wrangler d1 delete activity-log-db
-npx wrangler d1 delete workshop-preview-db
-gh repo delete worker-previews-starter --yes`,
-} as const;
 
 export const PROMPTS = {
 	checkPrereqs: `Check that my machine is ready for the Cloudflare Worker Previews workshop. Before each command, tell me in one line what it does.
@@ -236,13 +225,31 @@ Steps:
 
 End by telling me to refresh my production tab (production URL on its own line) and check its entries are all there.`,
 
-	yourTurn: `Switch to main and pull the latest. Then create a new branch and make one small, visible change to the Activity Log app: for example, show a count of entries under the heading. Run the project checks, commit, push, and open a pull request with \`gh pr create --fill\`.
+	yourTurn: `Make this change: show a count of entries under the heading.
 
-When the Preview is live, check your change on the new branch's Preview URL yourself, then give me the URL and what you checked. Do not merge.`,
+Take it through the whole flow on a new Preview, from branch to tested pull request. I'm learning, so explain why each step matters.
 
-	cleanup: `Delete everything this workshop created:
+Format each step like this, and keep the whole reply short:
 
-${COMMANDS.cleanup}
+**1. What you did, in one line**
+> One or two plain sentences on why it matters, with no label in front.
 
-If a name differs from \`wrangler.json\` or the git remote, use the actual name. Confirm each wrangler prompt. Do not touch other Workers, databases, or repositories.`,
+Steps:
+
+1. Switch to main, pull the latest, and create a new branch named after the change.
+   Explain: this branch gets its own Preview automatically, with no setup this time.
+2. Make the change and show me only the lines you changed. Run the project checks, commit, push, and open a pull request with \`gh pr create --fill\`.
+   Explain: why the new Preview already has a database, and that it's shared with other Previews but never with production.
+3. Wait for the Workers Builds check (\`gh pr checks --watch\`; if it reports no checks yet, wait a few seconds and retry). Get the new Preview URL from the bot's comment, check the change there yourself, and re-run list, add, delete, list so nothing else broke. Show the status codes in a short table.
+   Explain: you check your own work on a Preview before I review it.
+
+Don't merge. End with the PR link and the new Preview URL, each on its own line, and tell me to open the Preview and see the change myself.`,
+
+	cleanup: `Delete everything this workshop created. Before each command, tell me in one line what it does.
+
+1. Find the real names: the Worker and both D1 databases from \`wrangler.json\` (top level and \`previews\`), and the GitHub repo from the git remote. They may differ from the defaults.
+2. List exactly what you'll delete, and wait for my yes.
+3. Delete the Worker (\`npx wrangler delete <name>\`), both databases (\`npx wrangler d1 delete <name>\`), and the repo (\`gh repo delete <owner>/<repo> --yes\`). If gh says it needs the \`delete_repo\` scope, tell me to run \`gh auth refresh -s delete_repo\` myself (it opens my browser), wait for me, then retry.
+
+Don't touch any other Workers, databases, or repositories. End with a short list of what's gone, and remind me the local folder is still on my machine.`,
 } as const;

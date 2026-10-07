@@ -817,77 +817,6 @@ html {
 	}
 }
 
-/* ─── CODE BLOCKS ───────────────────────────────────────── */
-.cmd {
-	background: var(--code-bg);
-	border-radius: 0.7rem;
-	overflow: hidden;
-	border: 1px solid #23272d;
-}
-
-.cmd-bar {
-	padding: 0.55rem 0.9rem;
-	background: #1c1f24;
-	border-bottom: 1px solid #23272d;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
-
-.cmd-label {
-	font-size: 0.72rem;
-	letter-spacing: 0.12em;
-	text-transform: uppercase;
-	font-weight: 800;
-	color: var(--code-accent);
-	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-}
-
-.cmd pre {
-	margin: 0;
-	padding: 1rem 1.1rem 1.15rem;
-	overflow-x: auto;
-	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-	font-size: 0.95rem;
-	line-height: 1.6;
-	color: var(--code-fg);
-	white-space: pre;
-}
-
-.cmd code {
-	font: inherit;
-	color: inherit;
-	background: transparent;
-	padding: 0;
-	border: 0;
-}
-
-.cmd-copy {
-	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-	font-size: 0.72rem;
-	font-weight: 700;
-	letter-spacing: 0.06em;
-	text-transform: uppercase;
-	color: var(--code-fg);
-	background: transparent;
-	border: 1px solid #3a3f47;
-	border-radius: 0.4rem;
-	padding: 0.25rem 0.6rem;
-	cursor: pointer;
-	transition:
-		background 0.15s ease,
-		border-color 0.15s ease;
-}
-
-.cmd-copy:hover {
-	background: #2a2e35;
-}
-
-.cmd-copy[data-copied="true"] {
-	color: var(--code-accent);
-	border-color: var(--code-accent);
-}
-
 /* ─── DEPLOY CTA ────────────────────────────────────────── */
 .deploy-panel {
 	display: flex;
@@ -1352,22 +1281,16 @@ html {
 }
 
 .aside-body p + p,
-.aside-body .cmd + p,
-.aside-body .tight-list + .prompt-block,
-.aside-body .prompt-block + .cmd {
+.aside-body .prompt-block + p,
+.aside-body .tight-list + .prompt-block {
 	margin-top: 0.85rem;
-}
-
-.aside-body .cmd {
-	margin: 0.85rem 0 0;
 }
 
 .aside-body .tight-list {
 	margin: 0.85rem 0 0;
 }
 
-.aside-body .phase-note,
-.aside-body .cmd + .phase-note {
+.aside-body .phase-note {
 	margin-top: 0.6rem;
 }
 
