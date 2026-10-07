@@ -100,8 +100,8 @@ Steps:
 
 1. Create a branch: \`git checkout -b isolate-preview-db\`.
    Explain: every branch I push gets its own Preview, with its own URL.
-2. Create the database: \`npx wrangler d1 create workshop-preview-db\`. If Wrangler asks which account, use the one that has \`activity-log-db\`. If it offers to add the database to wrangler.json, decline.
-   Explain: what declining protects.
+2. Create the database: \`npx wrangler d1 create workshop-preview-db\`. If Wrangler asks which account, use the one that has \`activity-log-db\`. Wrangler may offer to add it to wrangler.json: it mustn't, because it would put it at the top level.
+   Explain: why this database must not go at the top level.
 3. In \`wrangler.json\`, inside the existing \`previews\` block, keep \`vars\` and add a \`d1_databases\` entry (binding \`DB\`, the new database's name and ID) and \`"observability": { "enabled": true }\`. Leave the top-level config unchanged. Then show me the two \`DB\` bindings side by side: the top-level one and the one in \`previews\`. Just those, not the whole file.
    Explain: what a Preview would get without this block.
 4. Commit: \`git commit -am "Give Previews their own D1 database"\`.
@@ -227,6 +227,7 @@ Steps:
    Explain: this branch gets its own Preview automatically, with no setup this time.
 2. Make the change and show me only the lines you changed. Run the project checks, commit, push, and open a pull request with \`gh pr create --fill\`.
    Explain: why the new Preview already has a database, and that it's shared with other Previews but never with production.
+   Explain: what sharing means here: this Preview already has the earlier branch's schema and test rows, and a schema change on one branch shows up in every Preview.
 3. Wait for the Workers Builds check (\`gh pr checks --watch\`; if it reports no checks yet, wait a few seconds and retry). Get the new Preview URL from the bot's comment, check the change there yourself, and re-run list, add, delete, list so nothing else broke. Show the status codes in a short table.
    Explain: you check your own work on a Preview before I review it.
 
