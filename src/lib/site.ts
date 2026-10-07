@@ -81,48 +81,6 @@ export const REPO_URL = "https://github.com/thomas-desmond/worker-previews-start
 /** Remote Workers Observability MCP server. The starter repo ships config for it. */
 export const OBSERVABILITY_MCP_URL = "https://observability.mcp.cloudflare.com/mcp";
 
-/**
- * How to sign in to the Observability MCP server, per agent (Step 6).
- * Backticks in steps render as inline code. `command` renders as a copyable terminal block.
- */
-export type McpAgent = { id: string; name: string; steps: string[]; command?: string };
-
-export const MCP_AGENTS: McpAgent[] = [
-	{
-		id: "claude-code",
-		name: "Claude Code",
-		steps: ["Approve the project's MCP server when asked.", "Run `/mcp`, pick `cloudflare-observability`, and authenticate."],
-	},
-	{
-		id: "cursor",
-		name: "Cursor",
-		steps: ["Open **Cursor Settings → MCP**.", "Enable `cloudflare-observability` and click **Connect**."],
-	},
-	{
-		id: "vscode",
-		name: "VS Code",
-		steps: ["Open `.vscode/mcp.json` and click **Start** above the server.", "Sign in with Cloudflare.", "Use Copilot Chat in **Agent** mode."],
-	},
-	{
-		id: "opencode",
-		name: "OpenCode",
-		steps: ["Run this in the repo folder, then sign in with Cloudflare:"],
-		command: "opencode mcp auth cloudflare-observability",
-	},
-	{
-		id: "codex",
-		name: "Codex",
-		steps: ["Trust the project when asked.", "Run this, then sign in with Cloudflare:"],
-		command: "codex mcp login cloudflare-observability",
-	},
-	{
-		id: "other",
-		name: "Other",
-		steps: ["Add a remote MCP server with this URL, then sign in with Cloudflare:"],
-		command: OBSERVABILITY_MCP_URL,
-	},
-];
-
 /** Deterministic steps: the primary path is a command the attendee runs. */
 export const COMMANDS = {
 	// One command per line, no `&&`: Windows PowerShell 5.1 doesn't support `&&`.
@@ -196,8 +154,6 @@ Steps:
 
 Then stop. Don't open or test the Preview: I'll open it myself. End your reply with two links on their own lines: the PR, then the Preview URL.`,
 
-	checkObservability: `Do you have tools from the \`cloudflare-observability\` MCP server, such as \`query_worker_observability\`? If yes, reply "Observability connected" and list the tool names. If not, tell me which agent you are and stop. Don't try to install anything.`,
-
 	testPreview: `Apply a candidate schema change to this branch's Preview database, then test the Preview's API to see what works and what doesn't. I'm learning, so explain why each step matters.
 
 Format each step like this, and keep the whole reply short:
@@ -218,9 +174,32 @@ End by telling me to try it myself, in two short lines:
 - Open the Preview URL (put it on its own line) and click Delete on a row.
 - Refresh my production tab and check its entries are untouched, and say in one sentence why they are.`,
 
-	readPreviewLogs: `Delete is failing on this branch's Preview. Find out why from the Preview's own logs, using the \`cloudflare-observability\` MCP tools.
+	readPreviewLogs: `Find out why delete fails on this branch's Preview, from the Preview's own logs. I'm learning, so explain why each step matters.
 
-Query events from the last hour where \`$workers.scriptName\` is the Worker name in wrangler.json and \`$workers.preview.slug\` is this branch's name. Find the \`activity_log.delete_failed\` events and show me the error and entry ID. Then explain the cause in two sentences, using the error and the code in src/. Don't change any code yet.`,
+Format each step like this, and keep the whole reply short:
+
+**1. What you did, in one line**
+> Why it matters: one or two plain sentences.
+
+Steps:
+
+1. Check that you have tools from the \`cloudflare-observability\` MCP server (this repo already configures it, and it's read-only), and that they can see this Worker: list the Workers in the account. If you see it, say so in one line and go on to step 2. If the tools are missing, or the Worker isn't listed (signed in to the wrong account), help me sign in, then stop:
+   - Tell me which agent you are.
+   - OpenCode: ask me, then run \`opencode mcp auth cloudflare-observability\`.
+   - Codex: ask me, then run \`codex mcp login cloudflare-observability\`.
+   - Claude Code: tell me to approve the project's MCP server if asked, then run \`/mcp\`, pick \`cloudflare-observability\`, and authenticate.
+   - Cursor: tell me to open Cursor Settings → MCP, enable \`cloudflare-observability\`, and click Connect.
+   - VS Code: tell me to open \`.vscode/mcp.json\`, click Start above the server, and use Copilot Chat in Agent mode.
+   - Any other agent: tell me how to add a remote MCP server with the URL \`${OBSERVABILITY_MCP_URL}\`.
+   When Cloudflare asks which account to authorize, I must pick the one that has this Worker. If I'm already signed in to the wrong one, tell me to sign out first (OpenCode: \`opencode mcp logout cloudflare-observability\`).
+   Then tell me whether I need to restart you (if unsure, say yes) and to paste this prompt again.
+   Why it matters: with the MCP server, you read the logs yourself, so I don't copy and paste errors.
+2. Query this Preview's events from the last hour, filtered on \`$workers.scriptName\` (the Worker's deployed name) and \`$workers.preview.slug\` (this branch's name). Find the \`activity_log.delete_failed\` events and show me the error and entry ID. Logs can take a minute to appear.
+   Why it matters: every log line is tagged with its Preview, so you read this branch's errors and none of production's.
+3. Explain the cause in two plain sentences, using the error and the code in \`src/\`. Don't change any code.
+   Why it matters: the bug was caught on a Preview, before it reached production.
+
+End by telling me to see the error myself: take the dashboard link to this Preview from the Cloudflare bot's comment on the PR (it ends in \`/previews/<branch>\`), add \`/observability\` to the end, and give me that on its own line. It opens this Preview's logs.`,
 
 	diagnoseAndFix: `Fix the delete bug you just found in the Preview's logs.
 

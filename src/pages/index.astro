@@ -1,12 +1,11 @@
 ---
-import { AgentPicker } from "../components/AgentPicker";
 import { CommandBlock } from "../components/CommandBlock";
 import Figure from "../components/Figure.astro";
 import Hero from "../components/Hero.astro";
 import { PromptBlock } from "../components/PromptBlock";
 import { StepNav } from "../components/StepNav";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { COMMANDS, LEARNING_OBJECTIVES, LINKS, MCP_AGENTS, PROMPTS, REPO_URL, STEPS } from "../lib/site";
+import { COMMANDS, LEARNING_OBJECTIVES, LINKS, PROMPTS, REPO_URL, STEPS } from "../lib/site";
 
 const stepByIndex = (i: number) => STEPS[i];
 ---
@@ -255,72 +254,47 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(6).label}</h2>
-				<p class="stepcard-lede">Your agent finds the cause in the Preview's own logs.</p>
+				<p class="stepcard-lede">Each Preview has its own logs, tagged with its branch. Your agent reads them and finds the cause, without you copying a single error.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
-			<div class="phase">
-				<span class="phase-badge phase-badge--do">Connect</span>
-				<div class="phase-content">
-					<p>First, connect your agent to your Preview's logs. The starter repo already configures the read-only <strong>Workers Observability MCP server</strong> (<code>cloudflare-observability</code>), so you only need to sign in with Cloudflare once. Pick your agent:</p>
-					<AgentPicker client:load agents={MCP_AGENTS} />
-					<p>Then check it worked:</p>
-					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.checkObservability} />
-					<p class="phase-note">Agent started before you cloned the repo? Restart it in the <code>worker-previews-starter</code> folder so it reads the config. Can't connect? Use the dashboard fallback at the end of this step.</p>
+			<PromptBlock client:load collapsed label="Copy this prompt into your agent" text={PROMPTS.readPreviewLogs} />
+
+			<div class="step-required" role="note">
+				<span class="step-required-icon" aria-hidden="true">↻</span>
+				<div>
+					<p class="step-required-title">Agent stopped to connect? Paste the prompt again</p>
+					<p class="step-required-body">The first time, your agent may stop to connect to your logs. Sign in when it asks, and when Cloudflare asks which account to authorize, pick the one with your Worker. Restart your agent if it says to, then paste the same prompt again.</p>
 				</div>
 			</div>
 
-			<div class="phase">
-				<span class="phase-badge phase-badge--why">Learn</span>
-				<div class="phase-content">
-					<p>Each Preview has its own Observability, separate from production. Every log line is tagged with the Preview's name (<code>$workers.preview.slug</code>), so your agent can read exactly this branch's errors without you copying anything.</p>
-				</div>
-			</div>
-
-			<div class="phase">
-				<span class="phase-badge phase-badge--do">Prompt</span>
-				<div class="phase-content">
-					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.readPreviewLogs} />
-				</div>
-			</div>
-
-			<div class="phase">
-				<span class="phase-badge phase-badge--verify">Verify</span>
-				<div class="phase-content">
-					<p>Your agent shows one or more <code>activity_log.delete_failed</code> events whose D1 error names the missing column, and explains why the delete query fails against the Preview schema. Found nothing? Logs can take a minute to arrive, so ask it to try again.</p>
-				</div>
+			<div class="tip">
+				<span class="tip-label">See it yourself</span>
+				<p>Open the dashboard link your agent gives you. It goes straight to this Preview's logs. The <code>activity_log.delete_failed</code> events are there. Production's logs don't have them.</p>
+				<p>No link? Open your Worker in the dashboard, switch the dropdown in its header from <strong>Production</strong> to <code>isolate-preview-db</code>, then open <strong>Observability</strong>.</p>
+				<p>Agent couldn't connect? Copy the error from here and paste it into your agent instead.</p>
 			</div>
 
 			<details class="aside">
-				<summary>No MCP? Find the error in the dashboard</summary>
+				<summary>Show me where</summary>
 				<div class="aside-body">
-					<ol class="steps-inline">
-						<li>Go to <strong>Workers &amp; Pages</strong> → your Worker.</li>
-						<li>In the Worker header, open the dropdown that says <strong>Production</strong> and pick <code>isolate-preview-db</code>.</li>
-						<li>Open <strong>Observability</strong> and switch on <strong>Live</strong>.</li>
-					</ol>
 					<Figure
 						src="/screenshots/dash-env-dropdown.png"
 						width={1400}
 						height={456}
 						alt="The Cloudflare dashboard Worker header with the environment dropdown open, showing Production and the isolate-preview-db branch."
-						caption="Switch from Production to your branch. Production's logs won't show these errors."
+						caption="Switch from Production to your branch."
 					/>
-					<ol class="steps-inline" start="4">
-						<li>Click Delete again and open the failed <code>DELETE</code> request.</li>
-						<li>Find <code>activity_log.delete_failed</code>. Its D1 error names the missing column. Paste the error into your agent before the Step 7 prompt.</li>
-					</ol>
 					<Figure
 						src="/screenshots/dash-observability-delete-failed.png"
 						width={1400}
 						height={540}
 						alt="The Observability tab with isolate-preview-db selected in the Worker header, listing error-level events for DELETE requests to the Preview URL."
-						caption="Your branch's live events. Click one to see the D1 error."
+						caption="Your branch's events. Click one to see the D1 error."
 					/>
 				</div>
 			</details>
-
 		</div>
 	</article>
 
