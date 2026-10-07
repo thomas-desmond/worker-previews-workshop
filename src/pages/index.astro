@@ -224,61 +224,26 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(5).label}</h2>
-				<p class="stepcard-lede">Apply a Preview-only schema, then let your agent test the Preview.</p>
+				<p class="stepcard-lede">Try a schema change production doesn't have, in a database production can't see.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
-			<div class="phase">
-				<span class="phase-badge phase-badge--why">Learn</span>
-				<div class="phase-content">
-					<p>You're testing a schema change that production doesn't have, in a database production can't see.</p>
-				</div>
-			</div>
+			<PromptBlock client:load collapsed label="Copy this prompt into your agent" text={PROMPTS.testPreview} />
 
-			<div class="phase">
-				<span class="phase-badge phase-badge--do">Do</span>
-				<div class="phase-content">
-					<p>The schema file lives outside <code>migrations/</code>, so production deploys never apply it. Apply it to the Preview database by name:</p>
-					<CommandBlock client:load text={COMMANDS.applyPreviewSchema} />
-					<details class="aside aside--agent">
-						<summary>Or ask your agent</summary>
-						<div class="aside-body">
-							<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.applyPreviewSchema} />
-						</div>
-					</details>
-				</div>
+			<div class="tip">
+				<span class="tip-label">Try it yourself</span>
+				<p><strong>Refresh the Preview tab:</strong> three rows mentioning <strong>Preview</strong>. Click <strong>Delete</strong> on one. It fails and the row stays. That's the bug your agent finds next.</p>
+				<p><strong>Refresh the production tab:</strong> its entries are all still there. Nothing you did touched it.</p>
 			</div>
-
-			<div class="phase">
-				<span class="phase-badge phase-badge--verify">Verify</span>
-				<div class="phase-content">
-					<p>Refresh the Preview: three rows mentioning <strong>Preview</strong>. Click <strong>Delete</strong> on one. It fails, and that's the bug your agent is about to find.</p>
-					<Figure
-						src="/screenshots/app-preview-delete-error.png"
-						width={960}
-						height={828}
-						size="narrow"
-						alt="The Preview Activity Log with three Preview seed rows and a red error: Delete failed. Your data is unchanged. Check this Preview's Observability logs."
-					/>
-				</div>
-			</div>
-
-			<div class="phase">
-				<span class="phase-badge phase-badge--do">Prompt</span>
-				<div class="phase-content">
-					<p>Now have your agent test it properly. The Preview has its own database, so the agent can add and delete data freely without any risk to production.</p>
-					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.testPreview} />
-					<p>Expect listing and adding to work (<code>200</code>, <code>201</code>) and delete to return <code>500</code>.</p>
-					<details class="aside aside--spoiler">
-						<summary>Did something break?</summary>
-						<div class="aside-body">
-							<p>Delete fails and the row stays. That's intentional: the new schema broke a query, and only the Preview is affected. Your agent diagnoses it next.</p>
-						</div>
-					</details>
-				</div>
-			</div>
-
+			<Figure
+				src="/screenshots/app-preview-delete-error.png"
+				width={960}
+				height={828}
+				size="narrow"
+				alt="The Preview Activity Log with three Preview seed rows and a red error: Delete failed. Your data is unchanged. Check this Preview's Observability logs."
+				caption="What you'll see when you click Delete on the Preview."
+			/>
 		</div>
 	</article>
 

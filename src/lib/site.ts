@@ -127,8 +127,6 @@ export const MCP_AGENTS: McpAgent[] = [
 export const COMMANDS = {
 	// One command per line, no `&&`: Windows PowerShell 5.1 doesn't support `&&`.
 
-	applyPreviewSchema: `npx wrangler d1 execute workshop-preview-db --remote --yes --file workshop/preview-schema.sql`,
-
 	mergePullRequest: `gh pr merge --merge`,
 
 	cleanup: `npx wrangler delete worker-previews-starter
@@ -200,13 +198,25 @@ Then stop. Don't open or test the Preview: I'll open it myself. End your reply w
 
 	checkObservability: `Do you have tools from the \`cloudflare-observability\` MCP server, such as \`query_worker_observability\`? If yes, reply "Observability connected" and list the tool names. If not, tell me which agent you are and stop. Don't try to install anything.`,
 
-	applyPreviewSchema: `Run exactly this and print the result:
+	testPreview: `Apply a candidate schema change to this branch's Preview database, then test the Preview's API to see what works and what doesn't. I'm learning, so explain why each step matters.
 
-\`npx wrangler d1 execute workshop-preview-db --remote --yes --file workshop/preview-schema.sql\``,
+Format each step like this, and keep the whole reply short:
 
-	testPreview: `Test this branch's Preview. Get its Preview URL from the Cloudflare bot's comment on the PR (\`gh pr view --comments\`).
+**1. What you did, in one line**
+> Why it matters: one or two plain sentences.
 
-Using curl against that URL and the API described in AGENTS.md: list the entries, add one, list again, then delete one. Report each request's status code and response body in a short table. Don't fix anything yet, just tell me what works and what doesn't.`,
+Steps:
+
+1. Apply the Preview-only schema: \`npx wrangler d1 execute workshop-preview-db --remote --yes --file workshop/preview-schema.sql\`.
+   Why it matters: the file lives outside \`migrations/\`, so production deploys never apply it, and this command only touches the Preview's database.
+2. Test the Preview with curl, against the Preview URL from the PR's bot comment and the API in AGENTS.md: list the entries, add one, then delete one. Show each request's status code in a short table.
+   Why it matters: you can add and delete data freely, because this database isn't production's.
+
+If something fails, say what failed, but don't look for the cause or read the code: the next step finds it from the Preview's logs.
+
+End by telling me to try it myself, in two short lines:
+- Open the Preview URL (put it on its own line) and click Delete on a row.
+- Refresh my production tab and check its entries are untouched, and say in one sentence why they are.`,
 
 	readPreviewLogs: `Delete is failing on this branch's Preview. Find out why from the Preview's own logs, using the \`cloudflare-observability\` MCP tools.
 
