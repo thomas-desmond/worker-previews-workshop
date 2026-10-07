@@ -6,7 +6,7 @@ import Hero from "../components/Hero.astro";
 import { PromptBlock } from "../components/PromptBlock";
 import { StepNav } from "../components/StepNav";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { COMMANDS, LEARNING_OBJECTIVES, LINKS, MCP_AGENTS, PREVIEWS_BLOCK, PROMPTS, REPO_URL, STEPS } from "../lib/site";
+import { COMMANDS, LEARNING_OBJECTIVES, LINKS, MCP_AGENTS, PROMPTS, REPO_URL, STEPS } from "../lib/site";
 
 const stepByIndex = (i: number) => STEPS[i];
 ---
@@ -159,80 +159,30 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(3).label}</h2>
-				<p class="stepcard-lede">Give Previews their own D1 database and Observability settings.</p>
+				<p class="stepcard-lede">Previews inherit your code, not your settings. A Preview never falls back to production's database, so until you give it one, it has none.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
-			<div class="phase">
-				<span class="phase-badge phase-badge--why">Learn</span>
-				<div class="phase-content">
-					<p>Previews inherit your <strong>code</strong>, not your settings. They never fall back to production's variables or bindings, so a Preview can't touch production data by accident. Without its own binding, <code>env.DB</code> is undefined in the Preview, and <code>wrangler preview</code> warns that bindings are missing.</p>
-
-					<div class="concept-diagram">
-						<div class="concept-col">
-							<span class="concept-col-head concept-col-head--prod">Production</span>
-							<div class="concept-cell">code</div>
-							<div class="concept-cell concept-cell--bind">DB → activity-log-db</div>
-						</div>
-						<div class="concept-col">
-							<span class="concept-col-head concept-col-head--preview">Preview</span>
-							<div class="concept-cell concept-cell--inherit">code (inherited)</div>
-							<div class="concept-cell concept-cell--empty">DB → nothing until you add it</div>
-						</div>
-					</div>
-					<p class="phase-note">From the docs: "Previews do not inherit production settings." More in <a href={LINKS.configDocs}>Previews configuration</a>.</p>
+			<div class="concept-diagram">
+				<div class="concept-col">
+					<span class="concept-col-head concept-col-head--prod">Production</span>
+					<div class="concept-cell">code</div>
+					<div class="concept-cell concept-cell--bind">DB → activity-log-db</div>
+				</div>
+				<div class="concept-col">
+					<span class="concept-col-head concept-col-head--preview">Preview</span>
+					<div class="concept-cell concept-cell--inherit">code (inherited)</div>
+					<div class="concept-cell concept-cell--empty">DB → nothing until you add it</div>
 				</div>
 			</div>
 
-			<div class="phase">
-				<span class="phase-badge phase-badge--do">Do</span>
-				<div class="phase-content">
-					<ol class="steps-inline">
-						<li>Start a branch for this change, then create a new D1 database for Previews. If Wrangler offers to add the binding to <code>wrangler.json</code> for you, say <strong>no</strong>: it would add it to production's config.</li>
-					</ol>
-					<CommandBlock client:load text={COMMANDS.createPreviewDb} />
-					<ol class="steps-inline" start="2">
-						<li>Open <code>wrangler.json</code>. It already has a <code>previews</code> block with <code>ENVIRONMENT = "preview"</code> (that's what drives the badge). Replace that block with this one, pasting in the <code>database_id</code> from the output above:</li>
-					</ol>
-					<CommandBlock client:load label="wrangler.json · previews block" text={PREVIEWS_BLOCK} />
-					<ol class="steps-inline" start="3">
-						<li>Commit it. This config stays when the branch merges, so future Previews use it too.</li>
-					</ol>
-					<CommandBlock client:load text={COMMANDS.commitConfig} />
-					<details class="aside aside--agent">
-						<summary>Or ask your agent to do steps 1–3</summary>
-						<div class="aside-body">
-							<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.isolateResource} />
-						</div>
-					</details>
-				</div>
+			<PromptBlock client:load collapsed label="Copy this prompt into your agent" text={PROMPTS.configure} />
+
+			<div class="tip">
+				<span class="tip-label">Compare the two DB bindings</span>
+				<p>Your agent shows <code>DB</code> twice. The top-level one points at <code>activity-log-db</code>: that's production. The one in <code>previews</code> points at <code>workshop-preview-db</code>. Same binding name, so the code doesn't change. Different database, so a Preview never touches production data.</p>
 			</div>
-
-			<div class="phase">
-				<span class="phase-badge phase-badge--verify">Verify</span>
-				<div class="phase-content">
-					<p><code>git show</code> shows a change only inside <code>previews</code>: a <code>DB</code> binding pointing at <code>workshop-preview-db</code>, plus Observability. Production still binds the same name, <code>DB</code>, to <code>activity-log-db</code>, and the top level is unchanged.</p>
-				</div>
-			</div>
-
-			<details class="aside">
-				<summary>Prefer the dashboard? What about secrets?</summary>
-				<div class="aside-body">
-					<p>In the dashboard, your Worker's <strong>Settings</strong> has a <strong>Production</strong> / <strong>Previews Base</strong> toggle for variables, bindings, and Observability. It generates the same <code>previews</code> config, which you then copy into <code>wrangler.json</code>.</p>
-					<p>Secrets can't go in the config file. Set them once for all new Previews with <code>npx wrangler preview base-config secret put NAME</code>. See <a href={LINKS.configDocs}>Previews configuration</a>.</p>
-				</div>
-			</details>
-
-			<details class="aside">
-				<summary>Why doesn't this apply to Durable Objects?</summary>
-				<div class="aside-body">
-					<p>
-						Durable Objects and Containers in the same Worker get new storage for each Preview automatically, because that state belongs to the Worker. D1, KV, and R2 are separate resources bound by ID: anything bound to the same ID shares the data.
-					</p>
-				</div>
-			</details>
-
 		</div>
 	</article>
 

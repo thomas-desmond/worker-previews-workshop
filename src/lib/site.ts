@@ -126,11 +126,6 @@ export const MCP_AGENTS: McpAgent[] = [
 /** Deterministic steps: the primary path is a command the attendee runs. */
 export const COMMANDS = {
 	// One command per line, no `&&`: Windows PowerShell 5.1 doesn't support `&&`.
-	createPreviewDb: `git checkout -b isolate-preview-db
-npx wrangler d1 create workshop-preview-db`,
-
-	commitConfig: `git commit -am "Give Previews their own D1 database"`,
-
 	openPullRequest: `git push -u origin isolate-preview-db
 gh pr create --fill
 sleep 10
@@ -145,19 +140,6 @@ npx wrangler d1 delete activity-log-db
 npx wrangler d1 delete workshop-preview-db
 gh repo delete worker-previews-starter --yes`,
 } as const;
-
-/** The `previews` block attendees paste into wrangler.json in Step 3. */
-export const PREVIEWS_BLOCK = `"previews": {
-  "vars": { "ENVIRONMENT": "preview" },
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "workshop-preview-db",
-      "database_id": "<database_id from d1 create>"
-    }
-  ],
-  "observability": { "enabled": true }
-}`;
 
 export const PROMPTS = {
 	checkPrereqs: `Check that my machine is ready for the Cloudflare Worker Previews workshop. Before each command, tell me in one line what it does.
@@ -180,12 +162,25 @@ Finish with a short table (tool, status, version or account), then "Ready" or wh
 
 Keep your whole reply short. Don't create a branch or change any files yet.`,
 
-	isolateResource: `In this repo, give Worker Previews their own D1 database:
+	configure: `Give this branch's Previews their own D1 database. I'm learning, so explain why each step matters.
+
+Format each step like this, and keep the whole reply short:
+
+**1. What you did, in one line**
+> Why it matters: one or two plain sentences.
+
+Steps:
 
 1. Create a branch: \`git checkout -b isolate-preview-db\`.
-2. Run \`npx wrangler d1 create workshop-preview-db\`. If Wrangler offers to add the binding to wrangler.json, decline.
-3. In \`wrangler.json\`, inside the existing \`previews\` block, add a \`d1_databases\` entry with binding \`DB\` and the \`database_name\` and \`database_id\` from step 2. Also add \`"observability": { "enabled": true }\`. Keep the existing \`vars\` and leave the top-level config unchanged.
-4. Commit the change.`,
+   Why it matters: every branch I push gets its own Preview, with its own URL.
+2. Create the database: \`npx wrangler d1 create workshop-preview-db\`. If Wrangler asks which account, use the one that has \`activity-log-db\`. If it offers to add the database to wrangler.json, decline.
+   Why it matters: what declining protects.
+3. In \`wrangler.json\`, inside the existing \`previews\` block, keep \`vars\` and add a \`d1_databases\` entry (binding \`DB\`, the new database's name and ID) and \`"observability": { "enabled": true }\`. Leave the top-level config unchanged. Then show me the two \`DB\` bindings side by side: the top-level one and the one in \`previews\`. Just those, not the whole file.
+   Why it matters: what a Preview would get without this block.
+4. Commit: \`git commit -am "Give Previews their own D1 database"\`.
+   Why it matters: what happens to this config when the branch merges.
+
+Don't push yet.`,
 
 	openPullRequest: `Push this branch and open a pull request against main with \`gh pr create --fill\`. Then wait for the Workers Builds check with \`gh pr checks --watch\` (if it reports no checks yet, wait a few seconds and retry) and give me the Preview URL from the Cloudflare bot's comment.`,
 
