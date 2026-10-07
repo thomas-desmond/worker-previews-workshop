@@ -659,6 +659,22 @@ html {
 	color: var(--ink-soft);
 }
 
+/* ─── STEP GATE (a human decision partway through a step) ── */
+.step-gate {
+	margin: 0.5rem 0 -1rem;
+	padding-top: 1.25rem;
+	border-top: 1px solid var(--line, #e7e5e0);
+	font-size: 1.15rem;
+	font-weight: 800;
+	color: var(--ink);
+}
+
+.step-gate-lede {
+	margin: 0;
+	color: var(--ink-soft);
+	line-height: 1.5;
+}
+
 /* ─── TIP ────────────────────────────────────────────────── */
 .tip {
 	display: flex;

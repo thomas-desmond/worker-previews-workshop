@@ -306,45 +306,23 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(7).label}</h2>
-				<p class="stepcard-lede">Your agent fixes the bug and re-tests the Preview. You approve the merge.</p>
+				<p class="stepcard-lede">Your agent fixes the bug and proves it on the same Preview. Merging stays your call.</p>
 			</div>
 		</div>
 
 		<div class="stepcard-body">
-			<div class="phase">
-				<span class="phase-badge phase-badge--do">Prompt</span>
-				<div class="phase-content">
-					<p>In the same agent session:</p>
-					<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.diagnoseAndFix} />
-				</div>
+			<PromptBlock client:load collapsed label="Copy this prompt into your agent" text={PROMPTS.diagnoseAndFix} />
+
+			<div class="tip">
+				<span class="tip-label">Review it yourself</span>
+				<p><strong>On the PR:</strong> the bot's table has a new row for the agent's commit, but the Preview URL hasn't changed.</p>
+				<p><strong>On the Preview:</strong> click Delete. It works now.</p>
+				<p><strong>On production:</strong> nothing has changed yet.</p>
 			</div>
 
-			<div class="phase">
-				<span class="phase-badge phase-badge--verify">Verify</span>
-				<div class="phase-content">
-					<p>Your agent reports every request passing on the Preview, delete included. Check its evidence yourself:</p>
-					<ul class="tight-list">
-						<li>On the PR, the bot comment has a <strong>second deployment row</strong> for the agent's commit, but the <strong>Preview URL is the same</strong>.</li>
-						<li>Refresh your Preview tab: delete works.</li>
-						<li>Production still shows its original rows.</li>
-					</ul>
-				</div>
-			</div>
-
-			<div class="phase">
-				<span class="phase-badge phase-badge--do">Approve</span>
-				<div class="phase-content">
-					<p>The agent built it and tested it, and the Preview showed you the result. Merging is your call. Merge before going to Step 8:</p>
-					<CommandBlock client:load text={COMMANDS.mergePullRequest} />
-					<details class="aside aside--agent">
-						<summary>Or tell your agent you approve</summary>
-						<div class="aside-body">
-							<PromptBlock client:load label="Copy this prompt into your agent" text={PROMPTS.mergePullRequest} />
-						</div>
-					</details>
-					<p>Workers Builds deploys <code>main</code> to production. Production keeps its seeded rows and delete still works there. Nothing from <code>workshop/</code> touched it.</p>
-				</div>
-			</div>
+			<h3 class="step-gate">Happy with it? Approve the merge</h3>
+			<p class="step-gate-lede">The agent built it and tested it, but you decide what reaches production. Merge before the next step.</p>
+			<PromptBlock client:load collapsed label="Copy this prompt into your agent" text={PROMPTS.mergePullRequest} />
 		</div>
 	</article>
 

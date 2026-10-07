@@ -85,7 +85,6 @@ export const OBSERVABILITY_MCP_URL = "https://observability.mcp.cloudflare.com/m
 export const COMMANDS = {
 	// One command per line, no `&&`: Windows PowerShell 5.1 doesn't support `&&`.
 
-	mergePullRequest: `gh pr merge --merge`,
 
 	cleanup: `npx wrangler delete worker-previews-starter
 npx wrangler d1 delete activity-log-db
@@ -119,18 +118,18 @@ Keep your whole reply short. Don't create a branch or change any files yet.`,
 Format each step like this, and keep the whole reply short:
 
 **1. What you did, in one line**
-> Why it matters: one or two plain sentences.
+> One or two plain sentences on why it matters, with no label in front.
 
 Steps:
 
 1. Create a branch: \`git checkout -b isolate-preview-db\`.
-   Why it matters: every branch I push gets its own Preview, with its own URL.
+   Explain: every branch I push gets its own Preview, with its own URL.
 2. Create the database: \`npx wrangler d1 create workshop-preview-db\`. If Wrangler asks which account, use the one that has \`activity-log-db\`. If it offers to add the database to wrangler.json, decline.
-   Why it matters: what declining protects.
+   Explain: what declining protects.
 3. In \`wrangler.json\`, inside the existing \`previews\` block, keep \`vars\` and add a \`d1_databases\` entry (binding \`DB\`, the new database's name and ID) and \`"observability": { "enabled": true }\`. Leave the top-level config unchanged. Then show me the two \`DB\` bindings side by side: the top-level one and the one in \`previews\`. Just those, not the whole file.
-   Why it matters: what a Preview would get without this block.
+   Explain: what a Preview would get without this block.
 4. Commit: \`git commit -am "Give Previews their own D1 database"\`.
-   Why it matters: what happens to this config when the branch merges.
+   Explain: what happens to this config when the branch merges.
 
 Don't push yet.`,
 
@@ -139,18 +138,18 @@ Don't push yet.`,
 Format each step like this, and keep the whole reply short:
 
 **1. What you did, in one line**
-> Why it matters: one or two plain sentences.
+> One or two plain sentences on why it matters, with no label in front.
 
 Steps:
 
 1. Push the branch: \`git push -u origin isolate-preview-db\`.
-   Why it matters: what the push sets off in Workers Builds.
+   Explain: what the push sets off in Workers Builds.
 2. Open a pull request against main: \`gh pr create --fill\`. Give me the PR link.
-   Why it matters: where the Preview URL shows up.
+   Explain: where the Preview URL shows up.
 3. Wait for the Workers Builds check: \`gh pr checks --watch\`. If it says no checks reported, wait a few seconds and retry. It can take a minute or two.
-   Why it matters: a branch build runs \`wrangler preview\`, not a production deploy.
+   Explain: a branch build runs \`wrangler preview\`, not a production deploy.
 4. Get the Preview URL from the Cloudflare bot's comment on the PR.
-   Why it matters: the Preview URL stays the same for the branch, while each push also gets its own deployment URL in the bot's table.
+   Explain: the Preview URL stays the same for the branch, while each push also gets its own deployment URL in the bot's table.
 
 Then stop. Don't open or test the Preview: I'll open it myself. End your reply with two links on their own lines: the PR, then the Preview URL.`,
 
@@ -159,14 +158,14 @@ Then stop. Don't open or test the Preview: I'll open it myself. End your reply w
 Format each step like this, and keep the whole reply short:
 
 **1. What you did, in one line**
-> Why it matters: one or two plain sentences.
+> One or two plain sentences on why it matters, with no label in front.
 
 Steps:
 
 1. Apply the Preview-only schema: \`npx wrangler d1 execute workshop-preview-db --remote --yes --file workshop/preview-schema.sql\`.
-   Why it matters: the file lives outside \`migrations/\`, so production deploys never apply it, and this command only touches the Preview's database.
+   Explain: the file lives outside \`migrations/\`, so production deploys never apply it, and this command only touches the Preview's database.
 2. Test the Preview with curl, against the Preview URL from the PR's bot comment and the API in AGENTS.md: list the entries, add one, then delete one. Show each request's status code in a short table.
-   Why it matters: you can add and delete data freely, because this database isn't production's.
+   Explain: you can add and delete data freely, because this database isn't production's.
 
 If something fails, say what failed, but don't look for the cause or read the code: the next step finds it from the Preview's logs.
 
@@ -179,7 +178,7 @@ End by telling me to try it myself, in two short lines:
 Format each step like this, and keep the whole reply short:
 
 **1. What you did, in one line**
-> Why it matters: one or two plain sentences.
+> One or two plain sentences on why it matters, with no label in front.
 
 Steps:
 
@@ -193,21 +192,49 @@ Steps:
    - Any other agent: tell me how to add a remote MCP server with the URL \`${OBSERVABILITY_MCP_URL}\`.
    When Cloudflare asks which account to authorize, I must pick the one that has this Worker. If I'm already signed in to the wrong one, tell me to sign out first (OpenCode: \`opencode mcp logout cloudflare-observability\`).
    Then tell me whether I need to restart you (if unsure, say yes) and to paste this prompt again.
-   Why it matters: with the MCP server, you read the logs yourself, so I don't copy and paste errors.
+   Explain: with the MCP server, you read the logs yourself, so I don't copy and paste errors.
 2. Query this Preview's events from the last hour, filtered on \`$workers.scriptName\` (the Worker's deployed name) and \`$workers.preview.slug\` (this branch's name). Find the \`activity_log.delete_failed\` events and show me the error and entry ID. Logs can take a minute to appear.
-   Why it matters: every log line is tagged with its Preview, so you read this branch's errors and none of production's.
+   Explain: every log line is tagged with its Preview, so you read this branch's errors and none of production's.
 3. Explain the cause in two plain sentences, using the error and the code in \`src/\`. Don't change any code.
-   Why it matters: the bug was caught on a Preview, before it reached production.
+   Explain: the bug was caught on a Preview, before it reached production.
 
 End by telling me to see the error myself: take the dashboard link to this Preview from the Cloudflare bot's comment on the PR (it ends in \`/previews/<branch>\`), add \`/observability\` to the end, and give me that on its own line. It opens this Preview's logs.`,
 
-	diagnoseAndFix: `Fix the delete bug you just found in the Preview's logs.
+	diagnoseAndFix: `Fix the delete bug you just found in the Preview's logs, then prove the fix on the same Preview. I'm learning, so explain why each step matters.
 
-Fix the Worker code, not either database schema. Production still has an \`id\` column while the Preview schema has \`activity_id\`. The merged code must work with both. Run the project checks, then commit and push so Workers Builds redeploys this branch's Preview.
+Format each step like this, and keep the whole reply short:
 
-Then verify your own work: wait for \`gh pr checks --watch\` (if it reports no checks yet, wait a few seconds and retry), confirm your commit appears in the bot comment's deployment table, and re-run the full API test (list, add, delete, list) against the same Preview URL. Report the results and a one-line summary of the change. Do not merge.`,
+**1. What you did, in one line**
+> One or two plain sentences on why it matters, with no label in front.
 
-	mergePullRequest: `I've reviewed the Preview and approve the merge. Merge this pull request with \`gh pr merge --merge\`. When Workers Builds finishes deploying main, run the API test (list, add, delete, list) against production and confirm its seeded entries are still there. Do not apply \`workshop/preview-schema.sql\` to production.`,
+Steps:
+
+1. Fix the Worker code, not either database schema. Production still has an \`id\` column while the Preview schema has \`activity_id\`, so the code must work with both. Show me only the lines you changed.
+   Explain: once merged, this code runs against production's schema too.
+2. Run the project checks, then commit and push.
+   Explain: the push redeploys this branch's Preview at the same URL.
+3. Wait for the Workers Builds check (\`gh pr checks --watch\`; if it reports no checks yet, wait a few seconds and retry). Confirm your commit appears in the bot comment's deployment table. Then re-run list, add, delete, list against the same Preview URL, and show the status codes in a short table.
+   Explain: you check your own work on a real deploy before a human reviews it.
+
+Don't merge. End by telling me to review it myself, in short lines: open the PR (link on its own line) and find the new row in the bot's deployment table, open the Preview URL (on its own line) and click Delete, and check production is unchanged. Then say that merging is my call.`,
+
+	mergePullRequest: `I've reviewed the Preview and approve the merge. I'm learning, so explain why each step matters.
+
+Format each step like this, and keep the whole reply short:
+
+**1. What you did, in one line**
+> One or two plain sentences on why it matters, with no label in front.
+
+Steps:
+
+1. Merge the pull request: \`gh pr merge --merge\`.
+   Explain: what Workers Builds deploys to production now, and which part of wrangler.json production uses.
+2. Wait for Workers Builds to finish deploying \`main\` (watch the check on main's latest commit; it can take a minute or two).
+   Explain: production only changes through \`main\`, by the same pipeline that built your Previews.
+3. Test production: list, add, delete the entry you added, list again. Show the status codes in a short table, and confirm the seeded entries are still there. Don't apply \`workshop/preview-schema.sql\` to production.
+   Explain: the fix works on production's schema, and the Preview's schema and data never reached it.
+
+End by telling me to refresh my production tab (production URL on its own line) and check its entries are all there.`,
 
 	yourTurn: `Switch to main and pull the latest. Then create a new branch and make one small, visible change to the Activity Log app: for example, show a count of entries under the heading. Run the project checks, commit, push, and open a pull request with \`gh pr create --fill\`.
 
