@@ -1,7 +1,7 @@
 ---
 import "../styles/app.css";
 import Lightbox from "../components/Lightbox.astro";
-import { LINKS, SITE } from "../lib/site";
+import { LINKS, REPO_URL, SITE } from "../lib/site";
 
 interface Props {
 	title?: string;
@@ -50,6 +50,8 @@ const pageTitle = title === SITE.title ? title : `${title} · ${SITE.title}`;
 				<a class="page-footer-link" href={LINKS.docs}>Worker Previews docs</a>
 				<span class="page-footer-dot" aria-hidden="true">·</span>
 				<a class="page-footer-link" href={LINKS.blog}>Announcement post</a>
+				<span class="page-footer-dot" aria-hidden="true">·</span>
+				<a class="page-footer-link" href={REPO_URL}>Starter repo</a>
 			</div>
 		</footer>
 

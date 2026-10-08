@@ -646,6 +646,23 @@ html {
 	height: auto;
 }
 
+.deploy-repo-link {
+	margin: 0.75rem 0 0;
+	font-size: 0.85rem;
+	color: var(--ink-soft);
+}
+
+.deploy-repo-link a {
+	color: inherit;
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+
+.deploy-repo-link a:hover {
+	color: var(--ink);
+}
+
 /* ─── FIGURE (screenshots + placeholders) ────────────────── */
 .figure {
 	margin: 0.9rem 0 0.25rem;
