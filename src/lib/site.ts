@@ -74,7 +74,7 @@ export const PROMPTS = {
 1. Check: \`node -v\` (v20 or newer), \`git --version\`, \`gh auth status\`, \`npx wrangler whoami\`.
 2. Missing or outdated tool: tell me the install command for my OS and ask before you run it.
 3. Not signed in to GitHub or Cloudflare: don't sign in for me. Tell me to run \`gh auth login\` or \`npx wrangler login\` myself (they open my browser), wait for me, then check again.
-4. More than one Cloudflare account: list them and tell me to run \`export CLOUDFLARE_ACCOUNT_ID=<id>\` (PowerShell: \`$env:CLOUDFLARE_ACCOUNT_ID="<id>"\`) in the terminal I start you from, then restart you there.
+4. More than one Cloudflare account: list them in the table and say we'll pick one after deploying. Don't ask me to set anything.
 
 Ignore Wrangler warnings about missing optional permissions: the workshop doesn't need them.
 
@@ -84,10 +84,11 @@ Finish with a short table (tool, status, version or account), then "Ready" or wh
 
 1. Clone it: \`gh repo clone worker-previews-starter\`. Not found? I renamed it in the deploy form: ask me for the name.
 2. Inside the folder, run \`npm install\`. Ignore npm audit warnings.
-3. In plain language, tell me what this app is: at most three short sentences, no file names or code. Cover what it does, where its data lives, and that the repo includes rules and tools for you to use later in the workshop.
-4. Give me the folder's full path and the exact commands to restart you inside it, with one line on why.
+3. Only if \`npx wrangler whoami\` shows more than one Cloudflare account: list them and ask me which one I deployed to. Check it with \`CLOUDFLARE_ACCOUNT_ID=<id> npx wrangler d1 list\` (it should list \`activity-log-db\`). Then add \`"account_id": "<id>"\` at the top level of \`wrangler.json\` and commit it on its own: \`git commit -am "Pin Cloudflare account"\`. Tell me in one line why: every Wrangler command now uses this account, in any terminal. With one account, skip this step.
+4. In plain language, tell me what this app is: at most three short sentences, no file names or code. Cover what it does, where its data lives, and that the repo includes rules and tools for you to use later in the workshop.
+5. Give me the folder's full path and the exact commands to restart you inside it, with one line on why.
 
-Keep your whole reply short. Don't create a branch or change any files yet.`,
+Keep your whole reply short. Don't create a branch or change any other files yet.`,
 
 	configure: `Give this Worker's Previews their own D1 database, separate from production. I'm learning, so explain why each step matters.
 
@@ -100,7 +101,7 @@ Steps:
 
 1. Create a branch: \`git checkout -b isolate-preview-db\`.
    Explain: every branch I push gets its own Preview, with its own URL.
-2. Create the database: \`npx wrangler d1 create workshop-preview-db\`. If Wrangler asks which account, use the one that has \`activity-log-db\`. Wrangler may offer to add it to wrangler.json: it mustn't, because it would put it at the top level.
+2. Create the database: \`npx wrangler d1 create workshop-preview-db\`. Wrangler may offer to add it to wrangler.json: it mustn't, because it would put it at the top level.
    Explain: why this database must not go at the top level.
 3. In \`wrangler.json\`, inside the existing \`previews\` block, keep \`vars\` and add a \`d1_databases\` entry (binding \`DB\`, the new database's name and ID) and \`"observability": { "enabled": true }\`. Leave the top-level config unchanged.
    Explain: what a Preview would get without this block.
