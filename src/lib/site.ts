@@ -89,7 +89,7 @@ Finish with a short table (tool, status, version or account), then "Ready" or wh
 
 Keep your whole reply short. Don't create a branch or change any files yet.`,
 
-	configure: `Give this branch's Previews their own D1 database. I'm learning, so explain why each step matters.
+	configure: `Give this Worker's Previews their own D1 database, separate from production. I'm learning, so explain why each step matters.
 
 Format each step like this, and keep the whole reply short:
 
@@ -102,14 +102,16 @@ Steps:
    Explain: every branch I push gets its own Preview, with its own URL.
 2. Create the database: \`npx wrangler d1 create workshop-preview-db\`. If Wrangler asks which account, use the one that has \`activity-log-db\`. Wrangler may offer to add it to wrangler.json: it mustn't, because it would put it at the top level.
    Explain: why this database must not go at the top level.
-3. In \`wrangler.json\`, inside the existing \`previews\` block, keep \`vars\` and add a \`d1_databases\` entry (binding \`DB\`, the new database's name and ID) and \`"observability": { "enabled": true }\`. Leave the top-level config unchanged. Then show me the two \`DB\` bindings side by side: the top-level one and the one in \`previews\`. Just those, not the whole file.
+3. In \`wrangler.json\`, inside the existing \`previews\` block, keep \`vars\` and add a \`d1_databases\` entry (binding \`DB\`, the new database's name and ID) and \`"observability": { "enabled": true }\`. Leave the top-level config unchanged.
    Explain: what a Preview would get without this block.
-4. Commit: \`git commit -am "Give Previews their own D1 database"\`.
-   Explain: what happens to this config when the branch merges.
+4. Create \`wrangler.preview-migrations.jsonc\` with only a top-level \`d1_databases\` entry: binding \`PREVIEW_DB\`, the same database name and ID, and \`"migrations_dir": "preview-migrations"\`. Then show me the three bindings side by side: \`DB\` at the top level of \`wrangler.json\`, \`DB\` in \`previews\`, and \`PREVIEW_DB\`. Just those, not the whole files.
+   Explain: production deploys apply \`migrations/\` through \`wrangler.json\`, so the Preview database gets its own config and its own migrations folder, and the two never touch.
+5. Commit: \`git add -A && git commit -m "Give Previews their own D1 database"\`.
+   Explain: once this merges, every new branch's Preview uses this database by default.
 
 Don't push yet.`,
 
-	openPullRequest: `Open a pull request for this branch so it gets a Preview. I'm learning, so explain why each step matters.
+	openPullRequest: `Push this branch to get its Preview, and open a pull request so the Preview URL shows up there. I'm learning, so explain why each step matters.
 
 Format each step like this, and keep the whole reply short:
 
@@ -129,7 +131,7 @@ Steps:
 
 Then stop. Don't open or test the Preview: I'll open it myself. End your reply with two links on their own lines: the PR, then the Preview URL.`,
 
-	testPreview: `Apply a candidate schema change to this branch's Preview database, then test the Preview's API to see what works and what doesn't. I'm learning, so explain why each step matters.
+	testPreview: `Apply the Preview migrations, including a candidate schema change, to the Preview database, then test the Preview's API to see what works and what doesn't. I'm learning, so explain why each step matters.
 
 Format each step like this, and keep the whole reply short:
 
@@ -138,8 +140,8 @@ Format each step like this, and keep the whole reply short:
 
 Steps:
 
-1. Apply the Preview-only schema: \`npx wrangler d1 execute workshop-preview-db --remote --yes --file workshop/preview-schema.sql\`.
-   Explain: the file lives outside \`migrations/\`, so production deploys never apply it, and this command only touches the Preview's database.
+1. Check that \`wrangler.preview-migrations.jsonc\` and the \`previews\` block in \`wrangler.json\` point at the same database, then apply the Preview migrations: \`npx wrangler d1 migrations apply PREVIEW_DB --remote --config wrangler.preview-migrations.jsonc\`. List the migrations it applied.
+   Explain: the \`PREVIEW_DB\` binding only exists in that config file, so this command can't reach production, and D1 records what it applied, so running it again is safe.
 2. Test the Preview with curl, against the Preview URL from the PR's bot comment and the API in AGENTS.md: list the entries, add one, then delete one. Show each request's status code in a short table.
    Explain: you can add and delete data freely, because this database isn't production's.
 
@@ -185,7 +187,7 @@ Format each step like this, and keep the whole reply short:
 
 Steps:
 
-1. Fix the Worker code, not either database schema. Production still has an \`id\` column while the Preview schema has \`activity_id\`, so the code must work with both. Show me only the lines you changed.
+1. Fix the Worker code, not either database schema or either migrations folder. Production has an \`id\` column while the Preview schema has \`activity_id\`, so the code must work with both. Show me only the lines you changed.
    Explain: once merged, this code runs against production's schema too.
 2. Run the project checks, then commit and push.
    Explain: the push redeploys this branch's Preview at the same URL.
@@ -204,10 +206,10 @@ Format each step like this, and keep the whole reply short:
 Steps:
 
 1. Merge the pull request: \`gh pr merge --merge\`.
-   Explain: what Workers Builds deploys to production now, and which part of wrangler.json production uses.
+   Explain: what Workers Builds deploys to production now, which part of wrangler.json production uses, and that its deploy applies only \`migrations/\`.
 2. Wait for Workers Builds to finish deploying \`main\` (watch the check on main's latest commit; it can take a minute or two).
    Explain: production only changes through \`main\`, by the same pipeline that built your Previews.
-3. Test production: list, add, delete the entry you added, list again. Show the status codes in a short table, and confirm the seeded entries are still there. Don't apply \`workshop/preview-schema.sql\` to production.
+3. Test production: list, add, delete the entry you added, list again. Show the status codes in a short table, and confirm the seeded entries are still there. Don't run anything from \`preview-migrations/\` against production.
    Explain: the fix works on production's schema, and the Preview's schema and data never reached it.
 
 End by telling me to refresh my production tab (production URL on its own line) and check its entries are all there.`,
@@ -226,8 +228,8 @@ Steps:
 1. Switch to main, pull the latest, and create a new branch named after the change.
    Explain: this branch gets its own Preview automatically, with no setup this time.
 2. Make the change and show me only the lines you changed. Run the project checks, commit, push, and open a pull request with \`gh pr create --fill\`.
-   Explain: why the new Preview already has a database, and that it's shared with other Previews but never with production.
-   Explain: what sharing means here: this Preview already has the earlier branch's schema and test rows, and a schema change on one branch shows up in every Preview.
+   Explain: why the new Preview already has a database: \`main\` now binds every Preview to one shared Preview database, which is never production's.
+   Explain: what sharing means here: this Preview already has the earlier branch's schema and test rows, and a Preview migration applied for one branch shows up in every Preview. A branch that needs its own database can point both \`previews.d1_databases\` and \`wrangler.preview-migrations.jsonc\` at a different one.
 3. Wait for the Workers Builds check (\`gh pr checks --watch\`; if it reports no checks yet, wait a few seconds and retry). Get the new Preview URL from the bot's comment, check the change there yourself, and re-run list, add, delete, list so nothing else broke. Show the status codes in a short table.
    Explain: you check your own work on a Preview before I review it.
 
@@ -235,7 +237,7 @@ Don't merge. End with the PR link and the new Preview URL, each on its own line,
 
 	cleanup: `Delete everything this workshop created. Before each command, tell me in one line what it does.
 
-1. Find the real names: the Worker and both D1 databases from \`wrangler.json\` (top level and \`previews\`), and the GitHub repo from the git remote. They may differ from the defaults.
+1. Find the real names: the Worker and both D1 databases from \`wrangler.json\` (top level and \`previews\`; \`wrangler.preview-migrations.jsonc\` points at the same Preview database), and the GitHub repo from the git remote. They may differ from the defaults.
 2. List exactly what you'll delete, and wait for my yes.
 3. Delete the Worker (\`npx wrangler delete <name>\`), both databases (\`npx wrangler d1 delete <name>\`), and the repo (\`gh repo delete <owner>/<repo> --yes\`). If gh says it needs the \`delete_repo\` scope, tell me to run \`gh auth refresh -s delete_repo\` myself (it opens my browser), wait for me, then retry.
 

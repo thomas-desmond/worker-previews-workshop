@@ -178,8 +178,9 @@ const stepByIndex = (i: number) => STEPS[i];
 			<PromptBlock client:load collapsed label="Copy this prompt into your agent" text={PROMPTS.configure} />
 
 			<div class="tip">
-				<span class="tip-label">Compare the two DB bindings</span>
-				<p>Your agent shows <code>DB</code> twice. The top-level one points at <code>activity-log-db</code>: that's production. The one in <code>previews</code> points at <code>workshop-preview-db</code>. Same binding name, so the code doesn't change. Different database, so a Preview never touches production data.</p>
+				<span class="tip-label">Compare the three bindings</span>
+				<p>The top-level <code>DB</code> points at <code>activity-log-db</code>: that's production. The <code>DB</code> in <code>previews</code> points at <code>workshop-preview-db</code>. Same binding name, so the code doesn't change. Different database, so a Preview never touches production data.</p>
+				<p><code>PREVIEW_DB</code> in <code>wrangler.preview-migrations.jsonc</code> points at the same Preview database. It's only for applying the Preview's migrations from <code>preview-migrations/</code>. Production applies <code>migrations/</code>, so their schemas never mix. This follows the <a href="https://developers.cloudflare.com/workers/previews/resources/#d1-migrations">D1 migrations pattern in the docs</a>.</p>
 			</div>
 		</div>
 	</article>
@@ -192,7 +193,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(4).label}</h2>
-				<p class="stepcard-lede">A pull request gets its own Preview: a separate copy of your Worker, with its own URL, running this branch's code and settings.</p>
+				<p class="stepcard-lede">Every branch you push gets its own Preview: a separate copy of your Worker, with its own URL, running this branch's code and settings. The pull request is where its URL shows up.</p>
 			</div>
 		</div>
 
@@ -222,7 +223,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(5).label}</h2>
-				<p class="stepcard-lede">Try a schema change production doesn't have, in a database production can't see.</p>
+				<p class="stepcard-lede">Apply the Preview's own migrations, including a schema change production doesn't have, to a database production can't see.</p>
 			</div>
 		</div>
 
@@ -373,7 +374,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<p class="wrapup-p">Keep going: the <a href={LINKS.blog}>Worker Previews announcement</a> and the <a href={LINKS.docs}>Previews docs</a> (custom domains, secrets, per-branch resources).</p>
 
 			<h3 class="step-gate">Clean up</h3>
-			<p class="step-gate-lede">Keep <code>workshop-preview-db</code>: every future Preview of this Worker uses it. Closing a PR only removes its Preview. The repo, Worker, and both databases stay until you delete them.</p>
+			<p class="step-gate-lede">Keep <code>workshop-preview-db</code>: every future Preview of this Worker uses it, unless a branch points its Preview at its own database. Closing a PR only removes its Preview. The repo, Worker, and both databases stay until you delete them.</p>
 			<details class="aside">
 				<summary>Want everything gone?</summary>
 				<div class="aside-body">

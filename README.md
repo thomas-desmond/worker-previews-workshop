@@ -5,9 +5,10 @@ Public follow-along site for the Worker Previews Connect workshop:
 0. Check your setup (tools, sign-ins, Cloudflare account)
 1. Deploy the demo app via the Deploy to Cloudflare button (production D1, seeded)
 2. Get the code: clone, install, restart the agent in the repo
-3. Configure Previews: new branch, Preview-only D1 database, `previews` block
-4. Open a pull request; Workers Builds deploys the Preview
-5. Apply a Preview-only candidate schema and expose a real delete failure
+3. Configure Previews: new branch, Preview-only D1 database, `previews` block, and
+   `wrangler.preview-migrations.jsonc` (the docs' D1 migrations pattern)
+4. Push the branch (Workers Builds deploys its Preview) and open a pull request for the URL
+5. Apply `preview-migrations/` (including a candidate schema change) and expose a real delete failure
 6. Connect the Observability MCP server and diagnose it in that Preview's logs
 7. The agent fixes and re-tests on the Preview; the attendee approves the merge
 8. Full flow: one prompt takes a new feature from branch to tested pull request
@@ -27,7 +28,7 @@ what the attendee checks with their own eyes. Attendees don't type commands.
 - End with a call to action: the links the attendee should open, each on its own line.
 - Keep replies short: no file dumps, show only changed lines.
 
-Companion app repo: [`d1-template-preview`](https://github.com/thomas-desmond/d1-template-preview).
+Companion app repo: [`worker-previews-starter`](https://github.com/thomas-desmond/worker-previews-starter).
 
 ## Develop
 
