@@ -5,10 +5,11 @@ Public follow-along site for the Worker Previews Connect workshop:
 0. Check your setup (tools, sign-ins, Cloudflare account)
 1. Deploy the demo app via the Deploy to Cloudflare button (production D1, seeded)
 2. Get the code: clone, install, restart the agent in the repo
-3. Configure Previews: new branch, Preview-only D1 database, `previews` block, and
-   `wrangler.preview-migrations.jsonc` (the docs' D1 migrations pattern)
+3. Configure Previews: new branch, Preview-only D1 database (`cf d1 create`), and a `previews`
+   block in `wrangler.json`
 4. Push the branch (Workers Builds deploys its Preview) and open a pull request for the URL
-5. Apply `preview-migrations/` (including a candidate schema change) and expose a real delete failure
+5. Apply `preview-migrations/` with `cf d1 migrations apply <id> --dir preview-migrations`
+   (including a candidate schema change) and expose a real delete failure
 6. Connect the Observability MCP server and diagnose it in that Preview's logs
 7. The agent fixes and re-tests on the Preview; the attendee approves the merge
 8. Full flow: one prompt takes a new feature from branch to tested pull request
@@ -22,13 +23,17 @@ what the attendee checks with their own eyes. Attendees don't type commands.
   `>` quote with one or two plain sentences on why it matters, with no label. Per-action
   `Explain:` hints steer the topic.
 - **Setup format** (Steps 0, 2): "before each command, tell me in one line what it does."
-- The agent does the work. Sign-ins that open a browser (`gh auth login`, `npx wrangler login`,
+- The agent does the work. Sign-ins that open a browser (`gh auth login`, `npx cf auth login`,
   `gh auth refresh`) are run by the attendee, never by the agent.
 - Ask before installing or deleting anything. Never merge without the attendee's approval.
 - End with a call to action: the links the attendee should open, each on its own line.
 - Keep replies short: no file dumps, show only changed lines.
 
-Companion app repo: [`worker-previews-starter`](https://github.com/thomas-desmond/worker-previews-starter).
+Companion app repo: [`worker-previews-starter-cf`](https://github.com/thomas-desmond/worker-previews-starter-cf).
+
+**`cf-flow` branch (test only):** the starter keeps `wrangler.json`, because the Deploy to Cloudflare
+button only reads a Wrangler config. Wrangler deploys (button, Workers Builds, `npm run deploy`); the
+`cf` CLI handles sign-in, D1 create/list/delete, Preview migrations, and cleanup.
 
 ## Develop
 
