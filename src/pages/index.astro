@@ -36,7 +36,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			<ul class="step-facts" aria-label="What your agent will do">
 				<li>
 					<span class="step-facts-label">Checks</span>
-					<span>Node, git, the GitHub CLI, and Wrangler.</span>
+					<span>Node, git, the GitHub CLI, and the cf CLI.</span>
 				</li>
 				<li>
 					<span class="step-facts-label">Asks first</span>
@@ -99,14 +99,14 @@ const stepByIndex = (i: number) => STEPS[i];
 						width={1400}
 						height={639}
 						alt="The deploy form with project name worker-previews-starter, Create new selected for the D1 database, and the database named activity-log-db."
-						caption="2. Keep the default project name, choose Create new, and keep the database name activity-log-db."
+						caption="2. [cf test] Keep the default project name (worker-previews-starter-cf). The form may show no D1 section for cloudflare.config.ts: cf deploy creates activity-log-db-cf itself."
 					/>
 					<Figure
 						src="/screenshots/deploy-03-build-settings.png"
 						width={1400}
 						height={642}
 						alt="The deploy form showing ENVIRONMENT set to production, an empty build command, deploy command npm run deploy, and preview command npx wrangler preview."
-						caption="3. Leave ENVIRONMENT as production and the commands as they are."
+						caption="3. [cf test] Deploy command npm run deploy. Preview command npx cf previews deploy (not npx wrangler preview). Note what the form shows here."
 					/>
 					<Figure
 						src="/screenshots/deploy-04-preview-settings.png"
@@ -117,6 +117,8 @@ const stepByIndex = (i: number) => STEPS[i];
 					/>
 				</div>
 			</details>
+
+			<p class="step-success"><strong>cf test:</strong> if the button can't handle <code>cloudflare.config.ts</code>, use the CLI fallback in the starter README (template → <code>npm run deploy</code> → connect Workers Builds), then carry on.</p>
 
 			<p class="step-success">When the build says <strong>Success</strong>, click <strong>Visit</strong>. You should see a <strong>Production</strong> badge and three entries. Build log stuck? Refresh the page.</p>
 
@@ -168,7 +170,7 @@ const stepByIndex = (i: number) => STEPS[i];
 				<div class="concept-col">
 					<span class="concept-col-head concept-col-head--prod">Production</span>
 					<div class="concept-cell">code</div>
-					<div class="concept-cell concept-cell--bind">DB → activity-log-db</div>
+					<div class="concept-cell concept-cell--bind">DB → activity-log-db-cf</div>
 				</div>
 				<div class="concept-col">
 					<span class="concept-col-head concept-col-head--preview">Preview</span>
@@ -180,9 +182,9 @@ const stepByIndex = (i: number) => STEPS[i];
 			<PromptBlock client:load collapsed label="Copy this prompt into your agent" text={PROMPTS.configure} />
 
 			<div class="tip">
-				<span class="tip-label">Compare the three bindings</span>
-				<p>The top-level <code>DB</code> points at <code>activity-log-db</code>: that's production. The <code>DB</code> in <code>previews</code> points at <code>workshop-preview-db</code>. Same binding name, so the code doesn't change. Different database, so a Preview never touches production data.</p>
-				<p><code>PREVIEW_DB</code> in <code>wrangler.preview-migrations.jsonc</code> points at the same Preview database. It's only for applying the Preview's migrations from <code>preview-migrations/</code>. Production applies <code>migrations/</code>, so their schemas never mix. This follows the <a href="https://developers.cloudflare.com/workers/previews/resources/#d1-migrations">D1 migrations pattern in the docs</a>.</p>
+				<span class="tip-label">Compare the two bindings</span>
+				<p>The <code>DB</code> in the production <code>return</code> of <code>cloudflare.config.ts</code> points at <code>activity-log-db-cf</code>. The <code>DB</code> in the <code>ctx.isPreview</code> branch points at <code>workshop-preview-db-cf</code>. Same binding name, so the code doesn't change. Different database, so a Preview never touches production data.</p>
+				<p>No extra config file this time: <code>cf d1 migrations apply</code> takes the Preview database's ID and <code>--dir preview-migrations</code>. Production applies <code>migrations/</code> after each deploy, so their schemas never mix.</p>
 			</div>
 		</div>
 	</article>
@@ -371,12 +373,12 @@ const stepByIndex = (i: number) => STEPS[i];
 			</ul>
 			<div class="tip">
 				<span class="tip-label">Take it home</span>
-				<p>Copy <code>AGENTS.md</code> and the MCP config from your <code>worker-previews-starter</code> repo into your own Worker repos. Change the API section to match your app, and your agent will test and debug every branch on its Preview the same way.</p>
+				<p>Copy <code>AGENTS.md</code> and the MCP config from your <code>worker-previews-starter-cf</code> repo into your own Worker repos. Change the API section to match your app, and your agent will test and debug every branch on its Preview the same way.</p>
 			</div>
 			<p class="wrapup-p">Keep going: the <a href={LINKS.blog}>Worker Previews announcement</a> and the <a href={LINKS.docs}>Previews docs</a> (custom domains, secrets, per-branch resources).</p>
 
 			<h3 class="step-gate">Clean up</h3>
-			<p class="step-gate-lede">Keep <code>workshop-preview-db</code>: every future Preview of this Worker uses it, unless a branch points its Preview at its own database. Closing a PR only removes its Preview. The repo, Worker, and both databases stay until you delete them.</p>
+			<p class="step-gate-lede">Keep <code>workshop-preview-db-cf</code>: every future Preview of this Worker uses it, unless a branch points its Preview at its own database. Closing a PR only removes its Preview. The repo, Worker, and both databases stay until you delete them.</p>
 			<details class="aside">
 				<summary>Want everything gone?</summary>
 				<div class="aside-body">

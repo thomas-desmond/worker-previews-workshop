@@ -1,5 +1,5 @@
 export const SITE = {
-	title: "Worker Previews Workshop",
+	title: "Worker Previews Workshop (cf CLI test)",
 	tagline: "Isolated environments for every change your agent makes.",
 	description:
 		"Deploy a production Worker, test a candidate D1 schema safely in a Preview, diagnose a real failure, and merge a fix without changing production data.",
@@ -63,7 +63,7 @@ export const STEPS = [
 	},
 ] as const;
 
-export const REPO_URL = "https://github.com/thomas-desmond/worker-previews-starter";
+export const REPO_URL = "https://github.com/thomas-desmond/worker-previews-starter-cf";
 
 /** Remote Workers Observability MCP server. The starter repo ships config for it. */
 const OBSERVABILITY_MCP_URL = "https://observability.mcp.cloudflare.com/mcp";
@@ -71,20 +71,20 @@ const OBSERVABILITY_MCP_URL = "https://observability.mcp.cloudflare.com/mcp";
 export const PROMPTS = {
 	checkPrereqs: `Check that my machine is ready for the Cloudflare Worker Previews workshop. Before each command, tell me in one line what it does.
 
-1. Check: \`node -v\` (v20 or newer), \`git --version\`, \`gh auth status\`, \`npx wrangler whoami\`.
+1. Check: \`node -v\` (v20 or newer), \`git --version\`, \`gh auth status\`, \`npx cf auth whoami\` (the Cloudflare CLI, \`cf\`; npx may ask to install it).
 2. Missing or outdated tool: tell me the install command for my OS and ask before you run it.
-3. Not signed in to GitHub or Cloudflare: don't sign in for me. Tell me to run \`gh auth login\` or \`npx wrangler login\` myself (they open my browser), wait for me, then check again.
+3. Not signed in to GitHub or Cloudflare: don't sign in for me. Tell me to run \`gh auth login\` or \`npx cf auth login\` myself (they open my browser), wait for me, then check again.
 4. More than one Cloudflare account: list them in the table and say we'll pick one after deploying. Don't ask me to set anything.
 
-Ignore Wrangler warnings about missing optional permissions: the workshop doesn't need them.
+Ignore cf warnings about missing optional permissions or Docker: the workshop doesn't need them.
 
 Finish with a short table (tool, status, version or account), then "Ready" or what's left to fix. Don't clone or deploy anything yet.`,
 
 	clone: `Get my copy of the Cloudflare Worker Previews workshop repo onto this machine. Before each command, tell me in one line what it does.
 
-1. Clone it: \`gh repo clone worker-previews-starter\`. Not found? I renamed it in the deploy form: ask me for the name.
+1. Clone it: \`gh repo clone worker-previews-starter-cf\`. Not found? I renamed it in the deploy form: ask me for the name.
 2. Inside the folder, run \`npm install\`. Ignore npm audit warnings.
-3. Only if \`npx wrangler whoami\` shows more than one Cloudflare account: list them and ask me which one I deployed to. Check it with \`CLOUDFLARE_ACCOUNT_ID=<id> npx wrangler d1 list\` (it should list \`activity-log-db\`). Then add \`"account_id": "<id>"\` at the top level of \`wrangler.json\` and commit it on its own: \`git commit -am "Pin Cloudflare account"\`. Tell me in one line why: every Wrangler command now uses this account, in any terminal. With one account, skip this step.
+3. Only if \`npx cf auth whoami\` shows more than one Cloudflare account: list them and ask me which one I deployed to. Check it with \`CLOUDFLARE_ACCOUNT_ID=<id> npx cf d1 list\` (it should list \`activity-log-db-cf\`). Then add \`accountId: "<id>"\` next to \`worker\` in both objects that \`cloudflare.config.ts\` returns (Preview and production), and commit it on its own: \`git commit -am "Pin Cloudflare account"\`. Tell me in one line why: every cf command in this repo now uses this account, in any terminal. With one account, skip this step.
 4. In plain language, tell me what this app is: at most three short sentences, no file names or code. Cover what it does, where its data lives, and that the repo includes rules and tools for you to use later in the workshop.
 5. Give me the folder's full path and the exact commands to restart you inside it, with one line on why.
 
@@ -101,12 +101,12 @@ Steps:
 
 1. Create a branch: \`git checkout -b isolate-preview-db\`.
    Explain: every branch I push gets its own Preview, with its own URL.
-2. Create the database: \`npx wrangler d1 create workshop-preview-db\`. Wrangler may offer to add it to wrangler.json: it mustn't, because it would put it at the top level.
-   Explain: why this database must not go at the top level.
-3. In \`wrangler.json\`, inside the existing \`previews\` block, keep \`vars\` and add a \`d1_databases\` entry (binding \`DB\`, the new database's name and ID) and \`"observability": { "enabled": true }\`. Leave the top-level config unchanged.
-   Explain: what a Preview would get without this block.
-4. Create \`wrangler.preview-migrations.jsonc\` with only a top-level \`d1_databases\` entry: binding \`PREVIEW_DB\`, the same database name and ID, and \`"migrations_dir": "preview-migrations"\`. Then show me the three bindings side by side: \`DB\` at the top level of \`wrangler.json\`, \`DB\` in \`previews\`, and \`PREVIEW_DB\`. Just those, not the whole files.
-   Explain: production deploys apply \`migrations/\` through \`wrangler.json\`, so the Preview database gets its own config and its own migrations folder, and the two never touch.
+2. Create the database: \`npx cf d1 create --name workshop-preview-db-cf\`. Note its ID.
+   Explain: why this database must never be production's.
+3. In \`cloudflare.config.ts\`, inside the \`if (ctx.isPreview)\` branch, keep \`ENVIRONMENT\` and add \`DB: bindings.d1({ name: "workshop-preview-db-cf", id: "<the new ID>" })\` to its \`env\`. Leave the production \`return\` unchanged. Then show me the two \`DB\` bindings side by side, production and Preview. Just those lines, not the whole file.
+   Explain: what a Preview would get without this binding.
+4. Run \`npm run check\` to confirm the config still type-checks and builds.
+   Explain: production deploys apply \`migrations/\` to production's database, and the Preview database gets its own folder, \`preview-migrations/\`, applied by ID, so the two never touch.
 5. Commit: \`git add -A && git commit -m "Give Previews their own D1 database"\`.
    Explain: once this merges, every new branch's Preview uses this database by default.
 
@@ -126,7 +126,7 @@ Steps:
 2. Open a pull request against main: \`gh pr create --fill\`. Give me the PR link.
    Explain: where the Preview URL shows up.
 3. Wait for the Workers Builds check: \`gh pr checks --watch\`. If it says no checks reported, wait a few seconds and retry. It can take a minute or two.
-   Explain: a branch build runs \`wrangler preview\`, not a production deploy.
+   Explain: a branch build runs \`npx cf previews deploy\`, which uses the \`ctx.isPreview\` branch of the config, not a production deploy.
 4. Get the Preview URL from the Cloudflare bot's comment on the PR.
    Explain: the Preview URL stays the same for the branch, while each push also gets its own deployment URL in the bot's table.
 
@@ -141,8 +141,8 @@ Format each step like this, and keep the whole reply short:
 
 Steps:
 
-1. Check that \`wrangler.preview-migrations.jsonc\` and the \`previews\` block in \`wrangler.json\` point at the same database, then apply the Preview migrations: \`npx wrangler d1 migrations apply PREVIEW_DB --remote --config wrangler.preview-migrations.jsonc\`. List the migrations it applied.
-   Explain: the \`PREVIEW_DB\` binding only exists in that config file, so this command can't reach production, and D1 records what it applied, so running it again is safe.
+1. Take the \`DB\` ID from the \`ctx.isPreview\` branch of \`cloudflare.config.ts\`, and confirm with \`npx cf d1 list\` that it's \`workshop-preview-db-cf\`, not production's. Then apply the Preview migrations: \`npx cf d1 migrations apply <preview-db-id> --dir preview-migrations\`. List the migrations it applied.
+   Explain: the ID decides which database this touches, so checking it is what keeps production safe, and D1 records what it applied, so running it again is safe.
 2. Test the Preview with curl, against the Preview URL from the PR's bot comment and the API in AGENTS.md: list the entries, add one, then delete one. Show each request's status code in a short table.
    Explain: you can add and delete data freely, because this database isn't production's.
 
@@ -207,7 +207,7 @@ Format each step like this, and keep the whole reply short:
 Steps:
 
 1. Merge the pull request: \`gh pr merge --merge\`.
-   Explain: what Workers Builds deploys to production now, which part of wrangler.json production uses, and that its deploy applies only \`migrations/\`.
+   Explain: what Workers Builds deploys to production now, which part of \`cloudflare.config.ts\` production uses, and that its deploy (\`npm run deploy\`, then \`postdeploy\`) applies only \`migrations/\`.
 2. Wait for Workers Builds to finish deploying \`main\` (watch the check on main's latest commit; it can take a minute or two).
    Explain: production only changes through \`main\`, by the same pipeline that built your Previews.
 3. Test production: list, add, delete the entry you added, list again. Show the status codes in a short table, and confirm the seeded entries are still there. Don't run anything from \`preview-migrations/\` against production.
@@ -230,7 +230,7 @@ Steps:
    Explain: this branch gets its own Preview automatically, with no setup this time.
 2. Make the change and show me only the lines you changed. Run the project checks, commit, push, and open a pull request with \`gh pr create --fill\`.
    Explain: why the new Preview already has a database: \`main\` now binds every Preview to one shared Preview database, which is never production's.
-   Explain: what sharing means here: this Preview already has the earlier branch's schema and test rows, and a Preview migration applied for one branch shows up in every Preview. A branch that needs its own database can point both \`previews.d1_databases\` and \`wrangler.preview-migrations.jsonc\` at a different one.
+   Explain: what sharing means here: this Preview already has the earlier branch's schema and test rows, and a Preview migration applied for one branch shows up in every Preview. A branch that needs its own database can point the \`ctx.isPreview\` \`DB\` binding, and the migrations command, at a different one.
 3. Wait for the Workers Builds check (\`gh pr checks --watch\`; if it reports no checks yet, wait a few seconds and retry). Get the new Preview URL from the bot's comment, check the change there yourself, and re-run list, add, delete, list so nothing else broke. Show the status codes in a short table.
    Explain: you check your own work on a Preview before I review it.
 
@@ -238,9 +238,9 @@ Don't merge. End with the PR link and the new Preview URL, each on its own line,
 
 	cleanup: `Delete everything this workshop created. Before each command, tell me in one line what it does.
 
-1. Find the real names: the Worker and both D1 databases from \`wrangler.json\` (top level and \`previews\`; \`wrangler.preview-migrations.jsonc\` points at the same Preview database), and the GitHub repo from the git remote. They may differ from the defaults.
+1. Find the real names: the Worker and both D1 databases from \`cloudflare.config.ts\` (production \`return\` and \`ctx.isPreview\` branch), their IDs from \`npx cf d1 list\`, and the GitHub repo from the git remote. They may differ from the defaults.
 2. List exactly what you'll delete, and wait for my yes.
-3. Delete the Worker (\`npx wrangler delete <name>\`), both databases (\`npx wrangler d1 delete <name>\`), and the repo (\`gh repo delete <owner>/<repo> --yes\`). If gh says it needs the \`delete_repo\` scope, tell me to run \`gh auth refresh -s delete_repo\` myself (it opens my browser), wait for me, then retry.
+3. Delete the Worker (\`npx cf workers delete <name> --force\`), both databases (\`npx cf d1 delete <id> --force\`), and the repo (\`gh repo delete <owner>/<repo> --yes\`). If gh says it needs the \`delete_repo\` scope, tell me to run \`gh auth refresh -s delete_repo\` myself (it opens my browser), wait for me, then retry.
 
 Don't touch any other Workers, databases, or repositories. End with a short list of what's gone, and remind me the local folder is still on my machine.`,
 } as const;
