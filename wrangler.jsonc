@@ -1,10 +1,19 @@
 {
 	"$schema": "./node_modules/wrangler/config-schema.json",
 	"name": "worker-previews-workshop",
+	"account_id": "4ada3fc2e7dcf09a09749af670622778",
 	"compatibility_date": "2026-08-07",
 	"assets": {
 		"directory": "./dist"
 	},
+	"workers_dev": true,
+	"preview_urls": true,
+	"routes": [
+		{
+			"pattern": "previews.cf-dev-platform.com",
+			"custom_domain": true
+		}
+	],
 	// Required so Workers Builds can run `npx wrangler preview` on PRs.
 	// This site is not the student Previews exercise; the block can stay empty.
 	"previews": {}
