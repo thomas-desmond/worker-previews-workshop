@@ -120,6 +120,16 @@ const stepByIndex = (i: number) => STEPS[i];
 
 			<p class="step-success">When the build says <strong>Success</strong>, click <strong>Visit</strong>. You should see a <strong>Production</strong> badge and three entries. Build log stuck? Refresh the page.</p>
 
+			<details class="aside">
+				<summary>Button didn't work? Set it up with your agent</summary>
+				<div class="aside-body">
+					<p>GitHub app errors, permission problems, or a form that won't finish: don't keep retrying the button. Your agent can do the same setup with <code>gh</code> and Wrangler. It copies the repo, creates your production database, and deploys your Worker. Then it walks you through connecting Workers Builds in the dashboard.</p>
+					<p>If Builds still won't connect, the workshop works anyway: your agent creates each Preview itself, and the only thing you lose is the bot's comment on the PR.</p>
+					<PromptBlock client:load collapsed label="Copy this prompt into your agent" text={PROMPTS.deployFallback} />
+					<p>When it's done, open the production URL it gives you, restart your agent in the folder, and skip to Step 3.</p>
+				</div>
+			</details>
+
 			<p class="deploy-repo-link">Curious what you're deploying? The <a href={REPO_URL} target="_blank" rel="noopener noreferrer">starter repo</a> is on GitHub.</p>
 		</div>
 	</article>
@@ -206,6 +216,7 @@ const stepByIndex = (i: number) => STEPS[i];
 				<span class="tip-label">Open both links</span>
 				<p><strong>The PR first:</strong> scroll to the Cloudflare bot's comment. That's where your team finds the Preview.</p>
 				<p><strong>Then the Preview URL:</strong> the badge says <strong>Preview</strong>, and the page says the database is connected but has no schema yet. That's your new Preview database: empty, and nothing to do with production's data. Keep this tab and production open. You'll compare them next.</p>
+				<p><strong>Set up without Workers Builds?</strong> There's no bot comment. Your agent creates the Preview itself and gives you the same URL.</p>
 			</div>
 			<Figure
 				src="/screenshots/app-preview-needs-schema.png"

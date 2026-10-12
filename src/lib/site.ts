@@ -80,6 +80,38 @@ Ignore Wrangler warnings about missing optional permissions: the workshop doesn'
 
 Finish with a short table (tool, status, version or account), then "Ready" or what's left to fix. Don't clone or deploy anything yet.`,
 
+	deployFallback: `The Deploy to Cloudflare button didn't work for me. Set up my copy of the Cloudflare Worker Previews workshop by hand, ending where the button would have: my own GitHub repo, my own production D1 database, and a live Worker. Before each command, tell me in one line what it does.
+
+Before you create anything, check whether it already exists from my failed button attempt (\`gh repo view worker-previews-starter\`, \`npx wrangler d1 list\`). If it does, tell me what you found and ask whether to reuse it or delete it.
+
+1. Run \`npx wrangler whoami\`. If I have more than one Cloudflare account, ask me which one to use, and add \`CLOUDFLARE_ACCOUNT_ID=<id>\` in front of every Wrangler command until step 4.
+2. Copy the repo: \`gh repo create worker-previews-starter --public --template ${REPO_URL.replace("https://github.com/", "")} --clone\`. Go into the folder and run \`npm install\`. Ignore npm audit warnings. If the folder is empty, wait a few seconds and run \`git pull origin main\`.
+3. Create the production database: \`npx wrangler d1 create activity-log-db\`. Don't let Wrangler add it to wrangler.json.
+4. In \`wrangler.json\`, change only the top-level \`d1_databases\` entry's \`database_id\` to the new ID. Keep binding \`DB\` and name \`activity-log-db\`, and don't touch \`previews\`. If I have more than one account, add \`"account_id": "<id>"\` at the top level.
+5. Deploy: \`npm run deploy\`. It applies \`migrations/\` to the new database, then deploys. If Wrangler says the account needs a workers.dev subdomain, tell me to run \`npm run deploy\` myself in that folder and answer its question, then wait for me.
+6. Commit and push: \`git commit -am "Use my production database" && git push\`.
+7. Check production: curl \`<workers.dev URL>/api/entries\`. It should return three entries. Give me the URL on its own line.
+
+Then stop and tell me to connect Workers Builds in the Cloudflare dashboard:
+- Open Workers & Pages, then \`worker-previews-starter\`, then Settings, then Builds, and click Connect.
+- Pick my GitHub account, the \`worker-previews-starter\` repo, and branch \`main\`.
+- Leave the build command empty. Deploy command: \`npm run deploy\`. Turn on Preview builds, with preview command \`npx wrangler preview\`.
+Ask me whether it worked.
+
+- It worked: say so in one line.
+- It failed (GitHub app or permission errors): don't retry. Add the section below to the end of \`AGENTS.md\`, then commit and push it. Tell me in one line that the workshop still works: you'll create each Preview yourself, and the only thing I lose is the bot's comment on the PR.
+
+\`\`\`
+## No Workers Builds on this repo
+
+Workers Builds isn't connected, so pushes don't build anything and no bot comments on PRs. When a workshop prompt says to wait for the Workers Builds check or read the bot's comment, do this instead:
+- After pushing a branch, run \`npx wrangler preview --json\` on it. The Preview URL is \`preview.urls[0]\`. Skip \`gh pr checks\`.
+- After merging, deploy production yourself: \`git checkout main && git pull && npm run deploy\`.
+- There's no dashboard link from the bot: tell me to open the Worker in the dashboard and pick the branch in the dropdown in its header.
+\`\`\`
+
+Finish with the folder's full path and the exact commands to restart you inside it, with one line on why. Keep your whole reply short.`,
+
 	clone: `Get my copy of the Cloudflare Worker Previews workshop repo onto this machine. Before each command, tell me in one line what it does.
 
 1. Clone it: \`gh repo clone worker-previews-starter\`. Not found? I renamed it in the deploy form: ask me for the name.
