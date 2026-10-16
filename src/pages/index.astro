@@ -28,7 +28,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(0).label}</h2>
-				<p class="stepcard-lede">Paste this into your coding agent. It checks your machine and helps you fix anything missing.</p>
+				<p class="stepcard-lede">This workshop is agent-driven: your coding agent runs every step. Paste this into it, and it checks your machine and helps you fix anything missing. No agent yet? Install <a href="https://opencode.ai">OpenCode</a>, which comes with free models.</p>
 			</div>
 		</div>
 
@@ -170,7 +170,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(3).label}</h2>
-				<p class="stepcard-lede">Previews inherit your code, not your settings. A Preview never falls back to production's database, so until you give it one, it has none.</p>
+				<p class="stepcard-lede">A Preview runs your branch's code, but its bindings come from the <code>previews</code> block, not production's settings. Some resources, like Durable Objects, get their own copy automatically. A D1 database doesn't: until you give the Preview one, it has none.</p>
 			</div>
 		</div>
 
@@ -183,7 +183,7 @@ const stepByIndex = (i: number) => STEPS[i];
 				</div>
 				<div class="concept-col">
 					<span class="concept-col-head concept-col-head--preview">Preview</span>
-					<div class="concept-cell concept-cell--inherit">code (inherited)</div>
+					<div class="concept-cell concept-cell--inherit">code (this branch)</div>
 					<div class="concept-cell concept-cell--empty">DB → nothing until you add it</div>
 				</div>
 			</div>
@@ -206,7 +206,7 @@ const stepByIndex = (i: number) => STEPS[i];
 			</div>
 			<div class="stepcard-head-copy">
 				<h2 class="stepcard-title">{stepByIndex(4).label}</h2>
-				<p class="stepcard-lede">Every branch you push gets its own Preview: a separate copy of your Worker, with its own URL, running this branch's code and settings. The pull request is where its URL shows up.</p>
+				<p class="stepcard-lede">The deploy button turned on Preview builds, so Workers Builds runs <code>npx wrangler preview</code> on every push to a branch other than <code>main</code>. That creates or updates the branch's Preview: a separate copy of your Worker with its own URL, running the branch's code and settings. The pull request is where its URL shows up.</p>
 			</div>
 		</div>
 
@@ -353,12 +353,14 @@ const stepByIndex = (i: number) => STEPS[i];
 		</div>
 
 		<div class="stepcard-body">
-			<PromptBlock client:load collapsed label="Edit the first line to your own idea, then copy" text={PROMPTS.yourTurn} />
+			<PromptBlock client:load collapsed label="Copy this prompt into your agent" text={PROMPTS.yourTurn} />
+			<p class="step-note">Want to try your own idea? Change the first line in your agent before you send it.</p>
 
 			<div class="tip">
 				<span class="tip-label">Try it yourself</span>
 				<p><strong>Open the new Preview URL:</strong> your change is there, at a URL named after the new branch.</p>
 				<p><strong>Open production:</strong> no change. It only updates when you merge.</p>
+				<p><strong>Try another change:</strong> paste the prompt again with a different first line. Each new branch gets its own Preview.</p>
 			</div>
 		</div>
 	</article>

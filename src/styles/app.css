@@ -561,7 +561,8 @@ html {
 	margin: 0;
 }
 
-.tip a {
+.tip a,
+.stepcard-lede a {
 	color: var(--brand-deep);
 	text-decoration: underline;
 	font-weight: 600;
@@ -648,6 +649,12 @@ html {
 .deploy-cta-link img {
 	width: 260px;
 	height: auto;
+}
+
+.step-note {
+	margin: 0;
+	font-size: 0.9rem;
+	color: var(--ink-soft);
 }
 
 .deploy-repo-link {
