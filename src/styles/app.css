@@ -523,6 +523,10 @@ html {
 	color: var(--ink-soft);
 }
 
+.step-required-body + .step-required-body {
+	margin-top: 0.5rem;
+}
+
 /* ─── STEP GATE (a human decision partway through a step) ── */
 .step-gate {
 	margin: 0.5rem 0 -1rem;
