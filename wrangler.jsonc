@@ -6,6 +6,12 @@
 	"assets": {
 		"directory": "./dist"
 	},
+	"observability": {
+		"enabled": true,
+		"logs": {
+			"head_sampling_rate": 1
+		}
+	},
 	"workers_dev": true,
 	"preview_urls": true,
 	"routes": [
