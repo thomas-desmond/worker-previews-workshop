@@ -68,12 +68,16 @@ export const REPO_URL = "https://github.com/thomas-desmond/worker-previews-start
 /** Remote Workers Observability MCP server. The starter repo ships config for it. */
 const OBSERVABILITY_MCP_URL = "https://observability.mcp.cloudflare.com/mcp";
 
+/** Agents mix up the branch's Preview URL and a per-push deployment URL from the bot's table. */
+const PREVIEW_URL_HINT =
+	"The Preview URL starts with the branch name; a deployment URL in the bot's table starts with a deployment ID instead. Always give me the Preview URL, never a deployment URL.";
+
 export const PROMPTS = {
 	checkPrereqs: `Check that my machine is ready for the Cloudflare Worker Previews workshop. Before each command, tell me in one line what it does.
 
 1. Check: \`node -v\` (v20 or newer), \`git --version\`, \`gh auth status\`, \`npx wrangler whoami\`.
 2. Missing or outdated tool: tell me the install command for my OS and ask before you run it.
-3. Not signed in to GitHub or Cloudflare: don't sign in for me. Tell me to run \`gh auth login\` or \`npx wrangler login\` myself (they open my browser), wait for me, then check again.
+3. Not signed in to GitHub or Cloudflare: don't sign in for me. Tell me to run \`gh auth login\` or \`npx wrangler login\` myself (they open my browser), wait for me, then check again. If I don't have a Cloudflare account yet, tell me I can sign up for a free one on the page \`npx wrangler login\` opens.
 4. More than one Cloudflare account: list them and tell me to run \`export CLOUDFLARE_ACCOUNT_ID=<id>\` (PowerShell: \`$env:CLOUDFLARE_ACCOUNT_ID="<id>"\`) in the terminal I start you from, then restart you there.
 
 Ignore Wrangler warnings about missing optional permissions: the workshop doesn't need them.
@@ -110,14 +114,14 @@ Workers Builds isn't connected, so pushes don't build anything and no bot commen
 - There's no dashboard link from the bot: tell me to open the Worker in the dashboard and pick the branch in the dropdown in its header.
 \`\`\`
 
-Finish with the folder's full path and the exact commands to restart you inside it, with one line on why. Keep your whole reply short.`,
+Finish with the folder's full path, how to exit this session, and the exact commands to restart you inside it, with one line on why. Keep your whole reply short.`,
 
 	clone: `Get my copy of the Cloudflare Worker Previews workshop repo onto this machine. Before each command, tell me in one line what it does.
 
 1. Clone it: \`gh repo clone worker-previews-starter\`. Not found? I renamed it in the deploy form: ask me for the name.
 2. Inside the folder, run \`npm install\`. Ignore npm audit warnings.
 3. In plain language, tell me what this app is: at most three short sentences, no file names or code. Cover what it does, where its data lives, and that the repo includes rules and tools for you to use later in the workshop.
-4. Give me the folder's full path and the exact commands to restart you inside it, with one line on why.
+4. Give me the folder's full path, how to exit this session, and the exact commands to restart you inside it, with one line on why.
 
 Keep your whole reply short. Don't create a branch or change any files yet.`,
 
@@ -158,10 +162,10 @@ Steps:
    Explain: where the Preview URL shows up.
 3. Wait for the Workers Builds check: \`gh pr checks --watch\`. If it says no checks reported, wait a few seconds and retry. It can take a minute or two.
    Explain: a branch build runs \`wrangler preview\`, not a production deploy.
-4. Get the Preview URL from the Cloudflare bot's comment on the PR.
+4. Get the Preview URL from the Cloudflare bot's comment on the PR. ${PREVIEW_URL_HINT}
    Explain: the Preview URL stays the same for the branch, while each push also gets its own deployment URL in the bot's table.
 
-Then stop. Don't open or test the Preview: I'll open it myself. End your reply with two links on their own lines: the PR, then the Preview URL.`,
+Then stop. Don't open or test the Preview: I'll open it myself. End your reply with two links on their own lines: the PR, then the Preview URL (the one starting with the branch name).`,
 
 	testPreview: `Apply the Preview migrations, including a candidate schema change, to the Preview database, then test the Preview's API to see what works and what doesn't. I'm learning, so explain why each step matters.
 
@@ -174,14 +178,14 @@ Steps:
 
 1. Check that \`wrangler.preview-migrations.jsonc\` and the \`previews\` block in \`wrangler.json\` point at the same database, then apply the Preview migrations: \`npx wrangler d1 migrations apply PREVIEW_DB --remote --config wrangler.preview-migrations.jsonc\`. List the migrations it applied.
    Explain: the \`PREVIEW_DB\` binding only exists in that config file, so this command can't reach production, and D1 records what it applied, so running it again is safe.
-2. Test the Preview with curl, against the Preview URL from the PR's bot comment and the API in AGENTS.md: list the entries, add one, then delete one. Show each request's status code in a short table.
+2. Test the Preview with curl, against the Preview URL from the PR's bot comment and the API in AGENTS.md: list the entries, add one, then delete one. Show each request's status code in a short table. ${PREVIEW_URL_HINT}
    Explain: you can add and delete data freely, because this database isn't production's.
 
 If something fails, say what failed, but don't look for the cause or read the code: the next step finds it from the Preview's logs.
 
 End by telling me to try it myself, in two short lines:
 - Open the Preview URL (put it on its own line) and click Delete on a row.
-- Refresh my production tab and check its entries are untouched, and say in one sentence why they are.`,
+- Refresh my production tab and check its entries are the same as before, with none of the Preview's rows, and say in one sentence why.`,
 
 	readPreviewLogs: `Find out why delete fails on this branch's Preview, from the Preview's own logs. I'm learning, so explain why each step matters.
 
@@ -223,7 +227,7 @@ Steps:
    Explain: once merged, this code runs against production's schema too.
 2. Run the project checks, then commit and push.
    Explain: the push redeploys this branch's Preview at the same URL.
-3. Wait for the Workers Builds check (\`gh pr checks --watch\`; if it reports no checks yet, wait a few seconds and retry). Confirm your commit appears in the bot comment's deployment table. Then re-run list, add, delete, list against the same Preview URL, and show the status codes in a short table.
+3. Wait for the Workers Builds check (\`gh pr checks --watch\`; if it reports no checks yet, wait a few seconds and retry). Confirm your commit appears in the bot comment's deployment table. Then re-run list, add, delete, list against the same Preview URL, and show the status codes in a short table. ${PREVIEW_URL_HINT}
    Explain: you check your own work on a real deploy before a human reviews it.
 
 Don't merge. End by telling me to review it myself, in short lines: open the PR (link on its own line) and find the new row in the bot's deployment table, open the Preview URL (on its own line) and click Delete, and check production is unchanged. Then say that merging is my call.`,
@@ -262,7 +266,7 @@ Steps:
 2. Make the change and show me only the lines you changed. Run the project checks, commit, push, and open a pull request with \`gh pr create --fill\`.
    Explain: why the new Preview already has a database: \`main\` now binds every Preview to one shared Preview database, which is never production's.
    Explain: what sharing means here: this Preview already has the earlier branch's schema and test rows, and a Preview migration applied for one branch shows up in every Preview. A branch that needs its own database can point both \`previews.d1_databases\` and \`wrangler.preview-migrations.jsonc\` at a different one.
-3. Wait for the Workers Builds check (\`gh pr checks --watch\`; if it reports no checks yet, wait a few seconds and retry). Get the new Preview URL from the bot's comment, check the change there yourself, and re-run list, add, delete, list so nothing else broke. Show the status codes in a short table.
+3. Wait for the Workers Builds check (\`gh pr checks --watch\`; if it reports no checks yet, wait a few seconds and retry). Get the new Preview URL from the bot's comment. ${PREVIEW_URL_HINT} Check the change there yourself, and re-run list, add, delete, list so nothing else broke. Show the status codes in a short table.
    Explain: you check your own work on a Preview before I review it.
 
 Don't merge. End with the PR link and the new Preview URL, each on its own line, and tell me to open the Preview and see the change myself.`,
