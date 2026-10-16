@@ -561,7 +561,8 @@ html {
 	margin: 0;
 }
 
-.tip a {
+.tip a,
+.stepcard-lede a {
 	color: var(--brand-deep);
 	text-decoration: underline;
 	font-weight: 600;

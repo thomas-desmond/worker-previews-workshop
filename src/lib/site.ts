@@ -11,8 +11,9 @@ export const LINKS = {
 } as const;
 
 export const LEARNING_OBJECTIVES = [
-	"Give every branch its own Preview, with its own URL, database, and logs, isolated from production.",
-	"Let your agent test, debug, and fix its own work on that Preview, then approve the merge from what it shows you.",
+	"A Preview is separate from production: it runs your branch's code with its own URL and logs, and uses only the resources bound to it.",
+	"A Preview's database can have its own migrations, so you can test a schema change without touching production's data.",
+	"With Workers Builds creating a Preview on every push, your agent can test, debug, and fix its own work there, and you approve the merge from what it shows you.",
 ] as const;
 
 export const STEPS = [
